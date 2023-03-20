@@ -16,3 +16,4 @@ au BufReadPost *
 \ exe "norm g`\"" |
 \ endif
 
+inoremap jk <esc>
