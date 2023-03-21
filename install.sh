@@ -1,8 +1,10 @@
 set -x # Show commands
-#set -e # Terminate on error
+set -e # Terminate on error
 
 DIR=$(pwd)
-ln -sn $DIR/vim/vim/        ~/.vim
-ln -sn $DIR/vim/vimrc       ~/.vimrc
 
-ln -sn $DIR/tmux/tmux.conf  ~/.tmux.conf
+ln -snf $DIR/vim/vim/        ~/.vim
+ln -snf $DIR/vim/vimrc       ~/.vimrc
+
+ln -snf $DIR/tmux/tmux.conf  ~/.tmux.conf
+
