@@ -1,4 +1,4 @@
-set number          "line number on the left
+set number relativenumber  "line number on the left
 set autoindent
 set hlsearch        "highlight search with / or ?
 set showmatch       "highlight matching brackets
@@ -18,3 +18,6 @@ au BufReadPost *
 
 inoremap jk <esc>
 
+" When insert mode, display cursorline
+autocmd InsertEnter * set cursorline
+autocmd InsertLeave * set nocursorline
