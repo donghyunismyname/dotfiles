@@ -17,3 +17,4 @@ au BufReadPost *
 \ endif
 
 inoremap jk <esc>
+
