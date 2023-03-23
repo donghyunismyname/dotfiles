@@ -8,6 +8,7 @@ set sw=4            "shift width for use with >, <, or =
 set expandtab       "push tab to insert spaces; for use with :retab to change taps to spaces
 set sts=4           "make spaces feel like tabs (like deleting)
 
+syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
 "Start where last edited
