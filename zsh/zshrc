@@ -145,3 +145,24 @@ fi
 # fzf and cdhist integration
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
+
+
+# zsh theme agnoster newline
+prompt_end() {
+if [[ -n $CURRENT_BG ]]; then
+    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
+  else
+    echo -n "%{%k%}"
+  fi
+  echo -n "\n%{%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR%{%f%}"
+  CURRENT_BG=''
+}
+
+# zsh theme agnoster shorten path
+prompt_dir() {
+  prompt_segment blue $CURRENT_FG '%2~'
+}
+
+# zsh theme agnoster hide user@machine
+export DEFAULT_USER=$USER
+
