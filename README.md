@@ -7,6 +7,7 @@ An attempt to create my own dotfiles
 - tmux
 - zsh
 - tree
+- bat
 
 ## Dependency (install script provided)
 - oh-my-zsh
