@@ -1,5 +1,9 @@
-set -x # Show commands
-set -e # Terminate on error
+#!/bin/sh
+
+set -x # show commands
+set -e # terminate on error
+
+echo "[WARNING] Overwrite existing dotfiles: .vim .vimrc .tmux.conf .zshrc"
 
 DIR=$(pwd)
 

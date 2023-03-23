@@ -2,10 +2,16 @@
 An attempt to create my own dotfiles
 
 
-## Useful
+## Dependency (install on your own)
 - vim
 - tmux
 - zsh
+- tree
+
+## Dependency (install script provided)
 - oh-my-zsh
 - fzf
 - cdhist
+
+## Reference
+https://github.com/wookayin/dotfiles/
