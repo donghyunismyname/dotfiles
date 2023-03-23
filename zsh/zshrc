@@ -101,11 +101,20 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# fzf preview
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+
+# cdhist
 if type cdhist &>/dev/null; then
     . <(cdhist -i)
 fi
 
+# fzf and cdhist integration
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
+
+# vim mode on command line
+#set -o vi
 
