@@ -160,7 +160,8 @@ if [[ -n $CURRENT_BG ]]; then
 
 # zsh theme agnoster shorten path
 prompt_dir() {
-  prompt_segment blue $CURRENT_FG '%2~'
+  CURRENT_FG=black
+  prompt_segment 31 $CURRENT_FG '%2~'
 }
 
 # zsh theme agnoster hide user@machine
