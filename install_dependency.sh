@@ -12,7 +12,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # cdhist
 git clone http://github.com/bulletmark/cdhist
-cd cdhist
-sudo pip3 install -U .
+pip3 install -U cdhist/.
 
 
