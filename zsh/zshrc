@@ -113,6 +113,7 @@ alias gl="git log --graph --oneline --all"
 alias gs="git status"
 alias gd="git diff"
 alias rm="rm -i"
+alias vim=nvim
 
 
 
