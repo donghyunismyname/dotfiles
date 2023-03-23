@@ -71,7 +71,7 @@ ZSH_THEME="agnoster"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+#plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -101,11 +101,41 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+
+
+# vim mode on command line
+#set -o vi
+
+# aliases
+alias python=python3
+alias gl="git log --graph --oneline --all"
+
+
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# fzf preview
+# fzf bindkey
+bindkey '^E' fzf-cd-widget
+bindkey '^ ' fzf-file-widget
+
+# fzf-cd-widget preview
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+
+# Preview file content using bat (https://github.com/sharkdp/bat)
+export FZF_CTRL_T_OPTS="
+  --preview 'bat -n --color=always {}'
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+
+# CTRL-/ to toggle small preview window to see the full command
+# CTRL-Y to copy the command into clipboard using pbcopy
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --color header:italic
+  --header 'Press CTRL-Y to copy command into clipboard'"
+
 
 # cdhist
 if type cdhist &>/dev/null; then
@@ -114,7 +144,4 @@ fi
 
 # fzf and cdhist integration
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
-
-# vim mode on command line
-#set -o vi
 
