@@ -3,7 +3,7 @@ An attempt to create my own dotfiles
 
 
 ## Dependency (install on your own)
-- vim
+- vim/neovim
 - tmux
 - zsh
 - tree
@@ -14,6 +14,7 @@ An attempt to create my own dotfiles
 - oh-my-zsh
 - fzf
 - cdhist
+- vim-plug
 
 
 ## Installation
@@ -34,6 +35,10 @@ https://gist.github.com/jadia/1f4c2190730ef646d41823b6a6c30926
 
 Special characters break on tmux
 https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-tmux
+
+Neovim plugins is not installed well
+https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_checkhealth_provider/
+
 
 
 ## Inspired by
