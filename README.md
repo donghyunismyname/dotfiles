@@ -7,7 +7,9 @@ An attempt to create my own dotfiles
 - tmux
 - zsh
 - tree
-- bat
+- bat (like cat but fancy)
+- various plugins of vim
+    + coc.nvim
 
 
 ## Dependency (install script provided)
@@ -19,7 +21,7 @@ An attempt to create my own dotfiles
 
 ## Installation
 Run the installation script:
-```
+d```
 sh install_dependency.sh
 sh_install_symlink.sh
 ```
@@ -43,3 +45,5 @@ https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_ch
 
 ## Inspired by
 https://github.com/wookayin/dotfiles/
+
+
