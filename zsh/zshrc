@@ -108,7 +108,11 @@ source $ZSH/oh-my-zsh.sh
 
 # aliases
 alias python=python3
+alias pip=pip3
 alias gl="git log --graph --oneline --all"
+alias gs="git status"
+alias gd="git diff"
+alias rm="rm -i"
 
 
 
