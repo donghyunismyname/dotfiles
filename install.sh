@@ -8,3 +8,5 @@ ln -snf $DIR/vim/vimrc       ~/.vimrc
 
 ln -snf $DIR/tmux/tmux.conf  ~/.tmux.conf
 
+ln -snf $DIR/zsh/zshrc       ~/.zshrc
+
