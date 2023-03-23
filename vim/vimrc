@@ -1,5 +1,5 @@
 set number relativenumber  "line number on the left
-set autoindent
+set autoindent      "autoindent
 set hlsearch        "highlight search with / or ?
 set showmatch       "highlight matching brackets
 set mouse=a         "allow mouse
@@ -11,14 +11,22 @@ set sts=4           "make spaces feel like tabs (like deleting)
 syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
-"Start where last edited
+"start where last edited
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
 \ exe "norm g`\"" |
 \ endif
 
+"press jk fast to enter normal mode
 inoremap jk <esc>
 
-" When insert mode, display cursorline
+"in insert mode, display cursorline
 autocmd InsertEnter * set cursorline
 autocmd InsertLeave * set nocursorline
+
+"autosave
+"autocmd TextChanged,TextChangedI <buffer> silent write
+
+"show vertical line at column 80
+set colorcolumn=80
+
