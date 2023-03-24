@@ -21,7 +21,7 @@ An attempt to create my own dotfiles
 
 ## Installation
 Run the installation script:
-d```
+```
 sh install_dependency.sh
 sh_install_symlink.sh
 ```
