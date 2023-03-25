@@ -38,7 +38,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Plugin outside ~/.vim/plugged with post-update hook
 "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-
 " Unmanaged plugin (manually installed and updated)
 "Plug '~/my-prototype-plugin'
 
@@ -52,17 +51,6 @@ call plug#end()
 
 
 
-
-set number relativenumber  "line number on the left
-set autoindent      "autoindent
-set hlsearch        "highlight search with / or ?
-set showmatch       "highlight matching brackets
-set mouse=a         "allow mouse
-set ts=4            "tap size
-set sw=4            "shift width for use with >, <, or =
-set expandtab       "push tab to insert spaces; for use with :retab to change taps to spaces
-set sts=4           "make spaces feel like tabs (like deleting)
-
 syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
@@ -72,16 +60,43 @@ au BufReadPost *
 \ exe "norm g`\"" |
 \ endif
 
-"press jk fast to enter normal mode
-inoremap jk <esc>
+set number relativenumber  "line number on the left
+set autoindent      "autoindent
+set hlsearch        "highlight search with / or ?
+set ignorecase      "ignore case for search
+set incsearch       "show search result for input character
+set showmatch       "highlight matching brackets
+set mouse=a         "allow mouse
+set ts=4            "tap size
+set sw=4            "shift width for use with >, <, or =
+set expandtab       "spaces instead of tabs; `:retab` to change taps to spaces
+set sts=4           "make spaces feel like tabs (like deleting)
+set colorcolumn=80  "show vertical line at column 80
+set nowrap          "no wraparound trailing characters
+set scrolloff=99999 "put cursor always in center
+set list            "make whitespaces visible
+set listchars=tab:>-,trail:~,extends:>,precedes:< "make whitespace visible
 
-"in insert mode, display cursorline
-autocmd InsertEnter * set cursorline
-autocmd InsertLeave * set nocursorline
+"display cursorline
+set cursorline
+set cursorcolumn
+"autocmd insertenter * set nocursorline
+"autocmd insertleave * set cursorline
+"autocmd insertenter * set nocursorcolumn
+"autocmd insertleave * set cursorcolumn
 
 "autosave
 "autocmd TextChanged,TextChangedI <buffer> silent write
 
-"show vertical line at column 80
-set colorcolumn=80
-
+"keymaps
+"H works as <home>
+"L works as <end>
+inoremap jk <esc>
+nnoremap H 0
+nnoremap J 5j
+nnoremap K 5k
+nnoremap L $
+vnoremap H 0
+vnoremap J 5j
+vnoremap K 5k
+vnoremap L $
