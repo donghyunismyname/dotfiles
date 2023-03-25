@@ -3,12 +3,12 @@
 set -x # show commands
 set -e # terminate on error
 
-echo "[WARNING] Overwrite existing dotfiles: .vim .vimrc .tmux.conf .zshrc"
+# echo "[WARNING] Overwrite existing dotfiles: .vim .vimrc .tmux.conf .zshrc"
 
 DIR=$(pwd)
 
 # vim
-ln -sni $DIR/vim/vim/        ~/.vim
+ln -sni $DIR/vim/            ~/.vim
 ln -sni $DIR/vim/vimrc       ~/.vimrc
 
 # neovim
