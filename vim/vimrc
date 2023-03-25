@@ -37,7 +37,6 @@ set list            "make whitespaces visible
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 
 
-
 "display cursorline
 set cursorline
 set cursorcolumn
