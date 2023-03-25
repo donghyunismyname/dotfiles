@@ -29,6 +29,7 @@ It's likely that things do not work.
 In that case, please install manually by following the scripts.
 
 
+
 ## Troubleshooting
 ```
 zsh | characters not in range
