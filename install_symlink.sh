@@ -7,13 +7,20 @@ set -e # terminate on error
 
 DIR=$(pwd)
 
-# vim
-ln -sni $DIR/vim/            ~/.vim
-ln -sni $DIR/vim/vimrc       ~/.vimrc
+# vimrc
+ln -sni $DIR/vim/vimrc           ~/.vimrc
 
-# neovim
-mkdir -p ~/.config/nvim
-ln -sni $DIR/vim/init.vim    ~/.config/nvim/init.vim
+# vim colorscheme
+mkdir -p                         ~/.vim/colors
+ln -sni $DIR/vim/jellybeans.vim  ~/.vim/colors/jellybeans.vim
+
+# spacevim easy-to-use configuration
+ln -sni $DIR/vim/init.toml      ~/.SpaceVim.d/init.toml
+
+# spacevim vimscript custom configuration
+mkdir -p                        ~/.SpaceVim.d/autoload
+ln -sni $DIR/vim/myspacevim.vim ~/.SpaceVim.d/autoload/myspacevim.vim
+
 
 # tmux
 ln -sni $DIR/tmux/tmux.conf  ~/.tmux.conf

@@ -1,11 +1,13 @@
-syntax enable "make colorscheme work on mac
-colorscheme jellybeans
+function! myspacevim#before() abort
 
-"start where last edited
-au BufReadPost *
-\ if line("'\"") > 0 && line("'\"") <= line("$") |
-\ exe "norm g`\"" |
-\ endif
+endfunction
+
+
+
+
+
+
+function! myspacevim#after() abort
 
 set number relativenumber  "line number on the left
 set autoindent      "autoindent
@@ -24,18 +26,8 @@ set scrolloff=99999 "put cursor always in center
 set list            "make whitespaces visible
 "set listchars=tab:>-,trail:~,extends:>,precedes:<
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
-
-
-"display cursorline
 set cursorline
 set cursorcolumn
-"autocmd insertenter * set nocursorline
-"autocmd insertleave * set cursorline
-"autocmd insertenter * set nocursorcolumn
-"autocmd insertleave * set cursorcolumn
-
-"autosave
-"autocmd TextChanged,TextChangedI <buffer> silent write
 
 "keymaps
 "H works as <home>
@@ -49,3 +41,5 @@ vnoremap H 0
 vnoremap J 5j
 vnoremap K 5k
 vnoremap L $
+
+endfunction
