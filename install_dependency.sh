@@ -19,4 +19,5 @@ curl -sLf https://spacevim.org/install.sh | bash -s -- --install neovim
 
 # Vim dependency
 pip install pynvim
+pip install python-language-server
 

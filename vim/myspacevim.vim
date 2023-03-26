@@ -52,21 +52,24 @@ set scrolloff=99999 "put cursor always in center
 set list            "make whitespaces visible
 "set listchars=tab:>-,trail:~,extends:>,precedes:<
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
-set cursorline
-set cursorcolumn
+
+"set cursorline
+"set cursorcolumn
+"autocmd insertenter * set cursorline
+"autocmd insertleave * set cursorline
+"autocmd insertenter * set cursorcolumn
+"autocmd insertleave * set cursorcolumn
 
 
 "keymaps
-"H works as <home>
-"L works as <end>
 inoremap jk <esc>
-nnoremap H 0
-nnoremap J 5j
-nnoremap K 5k
-nnoremap L $
-vnoremap H 0
-vnoremap J 5j
-vnoremap K 5k
-vnoremap L $
+nnoremap H 5j
+"nnoremap J 5j
+"nnoremap K 5k
+nnoremap L 5k
+vnoremap H 5j
+"jkvnoremap J 5j
+"vnoremap K 5k
+vnoremap L 5k
 
 endfunction

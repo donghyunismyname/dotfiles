@@ -18,7 +18,7 @@ Mostly like you can use `apt` or `brew` to install them.
 - neovim
 
 
-## Dependency (install script provided)
+## Dependency (install script provided)j
 - oh-my-zsh
 - fzf
 - cdhist
