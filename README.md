@@ -1,22 +1,28 @@
 # dotfiles
-An attempt to create my own dotfiles
+An attempt to create my own dotfiles.
+zsh, vim, and tmux combine together to create an awesome
+development environment.
+
+
+## Recommended Fonts
+- https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
+- https://github.com/naver/d2codingfont
 
 
 ## Dependency (install on your own)
-- vim/neovim
-- tmux
+Mostly like you can use `apt` or `brew` to install them.
 - zsh
-- tree
+- tree (show directory stuructures as a tree)
 - bat (like cat but fancy)
-- various plugins of vim
-    + coc.nvim
+- tmux
+- neovim
 
 
 ## Dependency (install script provided)
 - oh-my-zsh
 - fzf
 - cdhist
-- vim-plug
+- spacevim
 
 
 ## Installation
