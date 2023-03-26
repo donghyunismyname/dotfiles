@@ -4,10 +4,36 @@ endfunction
 
 
 
-
-
-
 function! myspacevim#after() abort
+
+
+
+"Coc 
+call coc#config('coc.preferences', {
+			\ "autoTrigger": "always",
+			\ "maxCompleteItemCount": 10,
+			\ "codeLens.enable": 1,
+			\ "diagnostic.virtualText": 1,
+			\})
+
+call coc#config("suggest.noselect", 1)
+
+let s:coc_extensions = [
+			\ 'coc-dictionary',
+			\ 'coc-json',
+			\ 'coc-ultisnips',
+			\ 'coc-tag',
+            \ 'coc-clangd',
+            \ 'coc-pyright',
+            \ 'coc-jedi',
+			\]
+
+for extension in s:coc_extensions
+	call coc#add_extension(extension)
+endfor
+
+
+
 
 set number relativenumber  "line number on the left
 set autoindent      "autoindent
@@ -28,6 +54,7 @@ set list            "make whitespaces visible
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set cursorline
 set cursorcolumn
+
 
 "keymaps
 "H works as <home>
