@@ -112,8 +112,31 @@ alias pip=pip3
 alias gl="git log --graph --oneline --all"
 alias gs="git status"
 alias gd="git diff"
-alias rm="rm -i"
+alias rm="gio trash"
+alias cp="cp -i"
 alias vim=nvim
+
+# mv to ~/.trash when rm
+move_to_trash() {
+  local trash_dir
+  trash_dir="${HOME}/trash"
+
+  if [ ! -d "${trash_dir}" ]; then
+    echo "Trash directory doesn't exist. Creating..."
+    mkdir "${trash_dir}"
+    echo "Created!"
+  fi
+
+  local new_dir_name
+  new_dir_name="${trash_dir}/$(date +%Y-%m-%d-%H-%M-%S)/"
+  mkdir "${new_dir_name}"
+
+  echo "Moving to: ${new_dir_name}"
+  mv "$@" ${new_dir_name}
+  echo 'Done!'
+}
+alias rm="move_to_trash"
+
 
 
 
@@ -121,8 +144,7 @@ alias vim=nvim
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # fzf bindkey
-bindkey '^E' fzf-cd-widget
-bindkey '^ ' fzf-file-widget
+bindkey '^G' fzf-cd-widget
 
 # fzf-cd-widget preview
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
