@@ -45,6 +45,10 @@
     auto_completion_tab_key_behavior = "smart"
 
 [[layers]]
+    name = 'lsp'
+    enabled_clients = ['pyls', 'clangd']
+
+[[layers]]
     name = 'shell'
     default_position = 'top'
     default_height = 30
