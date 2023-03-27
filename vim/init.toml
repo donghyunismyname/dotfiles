@@ -98,3 +98,7 @@
     repo = 'junegunn/fzf.vim'
     merged = false
 
+[[custom_plugins]]
+    repo = 'tpope/vim-commentary'
+    merged = false
+

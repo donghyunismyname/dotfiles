@@ -7,6 +7,15 @@ endfunction
 
 function! myspacevim#after() abort
 
+filetype plugin on
+
+" comment toggling with https://github.com/tpope/vim-commentary
+" must be resursive
+nmap - gcc
+vmap - gc
+
+
+
 "Coc 
 "prevent default behavior for 
 inoremap <cr> <cr>
