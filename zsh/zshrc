@@ -132,8 +132,7 @@ move_to_trash() {
   mkdir "${new_dir_name}"
 
   echo "Moving to: ${new_dir_name}"
-  mv "$@" ${new_dir_name}
-  echo 'Done!'
+  mv "$@" ${new_dir_name} && echo "Done!"
 }
 alias rm="move_to_trash"
 
@@ -193,4 +192,5 @@ prompt_dir() {
 
 # zsh theme agnoster hide user@machine
 export DEFAULT_USER=$USER
+
 
