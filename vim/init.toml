@@ -61,7 +61,9 @@
     name = 'lang#c'
     enable_clang_syntax_highlight = true
 
-
+# C-hjkl to navigate both vim windows and tmux panes.
+# Also check the tmux configuration file.
+# https://github.com/christoomey/vim-tmux-navigator
 [[layers]]
     name = "tmux"
 
