@@ -10,7 +10,7 @@
     # if you want to use more colorscheme, please load the colorscheme
     # layer
     colorscheme = "nord"
-    # colorscheme = "jellybeans"
+    #colorscheme = "jellybeans"
     colorscheme_bg = "dark"
 
     # Disable guicolors in basic mode, many terminal do not support 24bit
@@ -46,7 +46,7 @@
 
 [[layers]]
     name = 'lsp'
-    enabled_clients = ['pyls', 'clangd']
+    enabled_clients = ['clangd', 'pylsp']
 
 [[layers]]
     name = 'shell'
@@ -55,7 +55,7 @@
 
 [[layers]]
     name = 'lang#python'
-    enabled_linters = ['python', 'pylint']
+   enabled_linters = ['python', 'pylint']
 
 [[layers]]
     name = 'lang#c'
@@ -66,3 +66,22 @@
 
 [[layers]]
     name = "tmux"
+
+[[custom_plugins]]
+    #repo = 'dominikduda/vim_current_word'
+    repo = 'IngoMeyer441/coc_current_word'
+    # `on_cmd` option means this plugin will be loaded
+    # only when the specific commands are called.
+    # for example, when `:ColorHighlight` or `:ColorToggle`
+    # commands are called.
+    #on_cmd = ['ColorHighlight', 'ColorToggle']
+    # `on_func` option means this plugin will be loaded
+    # only when the specific functions are called.
+    # for example, when `colorizer#ColorToggle()` function is called.
+    #on_func = 'colorizer#ColorToggle'
+    # `merged` option is used for merging plugins directory.
+    # When `merged` is `true`, all files in this custom plugin
+    # will be merged into `~/.cache/vimfiles/.cache/init.vim/`
+    # for neovim or `~/.cache/vimfiles/.cache/vimrc/` for vim.
+    merged = false
+    # For more options see `:h dein-options`.
