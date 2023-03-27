@@ -22,6 +22,7 @@ Mostly like you can use `apt` or `brew` to install them.
 - oh-my-zsh
 - fzf
 - cdhist
+- diff-so-fancy (make git diff fancy)
 - spacevim
 
 
