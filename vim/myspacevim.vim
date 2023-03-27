@@ -3,12 +3,13 @@ function! myspacevim#before() abort
 endfunction
 
 
-
 function! myspacevim#after() abort
 
 
-
 "Coc 
+"prevent default behavior for 
+inoremap <cr> <cr>
+
 call coc#config('coc.preferences', {
 			\ "autoTrigger": "always",
 			\ "maxCompleteItemCount": 10,
@@ -26,6 +27,7 @@ let s:coc_extensions = [
             \ 'coc-clangd',
             \ 'coc-pyright',
             \ 'coc-jedi',
+            \ 'coc-highlight',
 			\]
 
 for extension in s:coc_extensions
