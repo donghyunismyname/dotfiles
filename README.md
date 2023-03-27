@@ -1,6 +1,6 @@
 # dotfiles
 An attempt to create my own dotfiles.
-zsh, vim, and tmux combine together to create an awesome
+`zsh`, `vim`, and `tmux` combine together to create an awesome
 development environment.
 
 
@@ -18,7 +18,7 @@ Mostly like you can use `apt` or `brew` to install them.
 - neovim
 
 
-## Dependency (install script provided)j
+## Dependency (install script provided)
 - oh-my-zsh
 - fzf
 - cdhist
