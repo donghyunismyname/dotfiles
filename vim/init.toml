@@ -61,8 +61,6 @@
     name = 'lang#c'
     enable_clang_syntax_highlight = true
 
-[[layers]]
-    name = "denite"
 
 [[layers]]
     name = "tmux"
@@ -85,3 +83,16 @@
     # for neovim or `~/.cache/vimfiles/.cache/vimrc/` for vim.
     merged = false
     # For more options see `:h dein-options`.
+
+#[[layers]]
+    #name = "denite"
+    #name = "fzf"
+
+[[custom_plugins]]
+    repo = 'junegunn/fzf'
+    merged = false
+
+[[custom_plugins]]
+    repo = 'junegunn/fzf.vim'
+    merged = false
+

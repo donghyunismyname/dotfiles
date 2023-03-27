@@ -3,8 +3,9 @@ function! myspacevim#before() abort
 endfunction
 
 
-function! myspacevim#after() abort
 
+
+function! myspacevim#after() abort
 
 "Coc 
 "prevent default behavior for 
@@ -54,6 +55,7 @@ set scrolloff=99999 "put cursor always in center
 set list            "make whitespaces visible
 "set listchars=tab:>-,trail:~,extends:>,precedes:<
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
+set nostartofline   "keep column position when c-u or c-d
 
 "set cursorline
 "set cursorcolumn
