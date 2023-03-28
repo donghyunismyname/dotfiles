@@ -86,9 +86,9 @@
     merged = false
     # For more options see `:h dein-options`.
 
-#[[layers]]
-    #name = "denite"
-    #name = "fzf"
+# [[layers]]
+    # name = "denite"
+    # name = "fzf"
 
 [[custom_plugins]]
     repo = 'junegunn/fzf'
@@ -102,3 +102,10 @@
     repo = 'tpope/vim-commentary'
     merged = false
 
+[[custom_plugins]]
+    repo = 'davidhalter/jedi-vim'
+    merged = false
+
+[[custom_plugins]]
+    repo = 'tpope/vim-fugitive'
+    merged = false
