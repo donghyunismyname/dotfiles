@@ -112,9 +112,7 @@ alias pip=pip3
 alias gl="git log --graph --oneline --all"
 alias gs="git status"
 alias gd="git diff"
-alias rm="gio trash"
 alias cp="cp -i"
-alias vim=nvim
 
 # mv to ~/.trash when rm
 move_to_trash() {
@@ -123,8 +121,7 @@ move_to_trash() {
 
   if [ ! -d "${trash_dir}" ]; then
     echo "Trash directory doesn't exist. Creating..."
-    mkdir "${trash_dir}"
-    echo "Created!"
+    mkdir "${trash_dir}" && echo "Created!"
   fi
 
   local new_dir_name
@@ -191,6 +188,7 @@ prompt_dir() {
 }
 
 # zsh theme agnoster hide user@machine
+# note that it is not hidden when connedted via ssh
 export DEFAULT_USER=$USER
 
 
