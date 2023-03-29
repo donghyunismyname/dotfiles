@@ -16,13 +16,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 git clone http://github.com/bulletmark/cdhist ~/install/cdhist
 pip3 install -U ~/install/cdhist/.
 
-# SpaceVim
-# curl -sLf https://spacevim.org/install.sh | bash -s -- --install neovim
-
-# Vim dependency
-# pip install pynvim
-# pip install python-language-server
-
 # diff-so-fancy
 git clone https://github.com/so-fancy/diff-so-fancy ~/install/diff-so-fancy
 sudo ln -snf ~/install/diff-so-fancy/diff-so-fancy /usr/local/bin/diff-so-fancy
@@ -45,5 +38,6 @@ git config --global color.diff.old        "red bold"
 git config --global color.diff.new        "green bold"
 git config --global color.diff.whitespace "red reverse"
 
-
-
+# Doom Emacs
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+~/.config/emacs/bin/doom install
