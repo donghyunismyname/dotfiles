@@ -7,6 +7,19 @@ au BufReadPost *
 \ exe "norm g`\"" |
 \ endif
 
+" https://nickjanetakis.com/blog/change-your-vim-cursor-from-a-block-to-line-in-normal-and-insert-mode
+" Use a line cursor within insert mode and a block cursor everywhere else.
+" Reference chart of values:
+"   Ps = 0  -> blinking block.
+"   Ps = 1  -> blinking block (default).
+"   Ps = 2  -> steady block.
+"   Ps = 3  -> blinking underline.
+"   Ps = 4  -> steady underline.
+"   Ps = 5  -> blinking bar (xterm).
+"   Ps = 6  -> steady bar (xterm).
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
 set number relativenumber  "line number on the left
 set autoindent      "autoindent
 set hlsearch        "highlight search with / or ?
@@ -40,13 +53,9 @@ set cursorcolumn
 
 inoremap jk <esc>
 
-inoremap jk <esc>
-nnoremap H 5j
-"nnoremap J 5j
-"nnoremap K 5k
-nnoremap L 5k
-vnoremap H 5j
-"jkvnoremap J 5j
-"vnoremap K 5k
-vnoremap L 5k
+nnoremap zh :vs<cr>
+nnoremap zj :sp<cr><c-w>j
+nnoremap zk :sp<cr>
+nnoremap zl :vs<cr><c-w>l
+nnoremap zd :wq<cr>
 

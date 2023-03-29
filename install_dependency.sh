@@ -17,11 +17,11 @@ git clone http://github.com/bulletmark/cdhist ~/install/cdhist
 pip3 install -U ~/install/cdhist/.
 
 # SpaceVim
-curl -sLf https://spacevim.org/install.sh | bash -s -- --install neovim
+# curl -sLf https://spacevim.org/install.sh | bash -s -- --install neovim
 
 # Vim dependency
-pip install pynvim
-pip install python-language-server
+# pip install pynvim
+# pip install python-language-server
 
 # diff-so-fancy
 git clone https://github.com/so-fancy/diff-so-fancy ~/install/diff-so-fancy
