@@ -15,7 +15,6 @@ Mostly like you can use `apt` or `brew` to install them.
 - tree (show directory stuructures as a tree)
 - bat (like cat but fancy)
 - tmux
-- neovim
 
 
 ## Dependency (install script provided)
@@ -23,7 +22,6 @@ Mostly like you can use `apt` or `brew` to install them.
 - fzf
 - cdhist
 - diff-so-fancy (make git diff fancy)
-- spacevim
 
 
 ## Installation
