@@ -107,6 +107,9 @@ source $ZSH/oh-my-zsh.sh
 #set -o vi
 
 # aliases
+alias e=emacsclient
+alias ed="emacs --daemon"
+alias edkill="emacsclient -e \"(kill-emacs)\""
 alias python=python3
 alias pip=pip3
 alias gl="git log --graph --oneline --all"
