@@ -41,3 +41,4 @@ git config --global color.diff.whitespace "red reverse"
 # Doom Emacs
 git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
 ~/.config/emacs/bin/doom install
+sudo ln -snf ~/.config/emacs/bin/doom /usr/local/bin/doom
