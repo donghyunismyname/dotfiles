@@ -59,3 +59,8 @@ nnoremap zk :sp<cr>
 nnoremap zl :vs<cr><c-w>l
 nnoremap zd :wq<cr>
 
+vnoremap > >gv
+vnoremap < <gv
+nnoremap > >>
+nnoremap < <<
+
