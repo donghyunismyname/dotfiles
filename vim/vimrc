@@ -49,18 +49,35 @@ set cursorcolumn
 "autocmd insertleave * set cursorcolumn
 
 "autosave
-"autocmd TextChanged,TextChangedI <buffer> silent write
+autocmd TextChanged,TextChangedI <buffer> silent write
 
+"jk to escape insert mode
 inoremap jk <esc>
 
-nnoremap zh :vs<cr>
-nnoremap zj :sp<cr><c-w>j
-nnoremap zk :sp<cr>
-nnoremap zl :vs<cr><c-w>l
-nnoremap zd :wq<cr>
-
+"indent/unindent faster
 vnoremap > >gv
 vnoremap < <gv
 nnoremap > >>
 nnoremap < <<
+
+"up/down faster
+nnoremap J 5j
+nnoremap K 5k
+
+"split panes
+nnoremap z<space>h :vs<cr>
+nnoremap z<space>j :sp<cr><c-w>j
+nnoremap z<space>k :sp<cr>
+nnoremap z<space>l :vs<cr><c-w>l
+
+"move panes
+nnoremap zh <c-w>h
+nnoremap zj <c-w>j
+nnoremap zk <c-w>k
+nnoremap zl <c-w>l
+
+"close pane
+nnoremap zd :wq<cr>
+
+
 
