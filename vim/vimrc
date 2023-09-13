@@ -1,7 +1,7 @@
 syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
-"start where last left
+"start cursor where last left
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
 \ exe "norm g`\"" |
@@ -35,8 +35,8 @@ set colorcolumn=80  "show vertical line at column 80
 set nowrap          "no wraparound trailing characters
 set scrolloff=99999 "put cursor always in center
 set list            "make whitespaces visible
-"set listchars=tab:>-,trail:~,extends:>,precedes:<
-set listchars=tab:»\ ,trail:·,extends:>,precedes:<
+set listchars=tab:>-,trail:~,extends:>,precedes:<
+"set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
 
 
@@ -54,6 +54,13 @@ autocmd TextChanged,TextChangedI <buffer> silent write
 "jk to escape insert mode
 inoremap jk <esc>
 
+"use system clipboard
+nnoremap yy "*yy
+vnoremap y "*y
+vnoremap x "*x
+nnoremap p "*p
+vnoremap p "*p
+
 "indent/unindent faster
 vnoremap > >gv
 vnoremap < <gv
@@ -61,8 +68,14 @@ nnoremap > >>
 nnoremap < <<
 
 "up/down faster
+nnoremap H ^
 nnoremap J 5j
 nnoremap K 5k
+nnoremap L $
+vnoremap H ^
+vnoremap J 5j
+vnoremap K 5k
+vnoremap L $
 
 "split panes
 nnoremap z<space>h :vs<cr>
@@ -77,7 +90,14 @@ nnoremap zk <c-w>k
 nnoremap zl <c-w>l
 
 "close pane
-nnoremap zd :wq<cr>
+nnoremap zd :q<cr>
 
+
+
+
+
+
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
 
 
