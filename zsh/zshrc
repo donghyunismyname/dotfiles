@@ -107,16 +107,21 @@ source $ZSH/oh-my-zsh.sh
 #set -o vi
 
 # aliases
+alias tmux="tmux -u"
+alias python=python3
+alias pip=pip3
+
 alias e="emacsclient -t"
 alias ec="emacsclient -c"
 alias ed="emacs --daemon"
 alias edkill="emacsclient -e \"(kill-emacs)\""
-alias python=python3
-alias pip=pip3
-alias gl="git log --graph --oneline --all"
+
+alias gl="git log --graph --all"
 alias gs="git status"
 alias gd="git diff"
+
 alias cp="cp -i"
+
 
 # mv to ~/.trash when rm
 move_to_trash() {
