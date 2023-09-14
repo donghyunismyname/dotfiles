@@ -22,6 +22,7 @@ let &t_EI = "\e[2 q"
 
 set number relativenumber  "line number on the left
 set autoindent      "autoindent
+set si              "make autodentdent smarter
 set hlsearch        "highlight search with / or ?
 set ignorecase      "ignore case for search
 set incsearch       "show search result for input character
@@ -36,7 +37,6 @@ set nowrap          "no wraparound trailing characters
 set scrolloff=99999 "put cursor always in center
 set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
-"set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
 
 
@@ -50,6 +50,9 @@ set cursorcolumn
 
 "autosave
 autocmd TextChanged,TextChangedI <buffer> silent write
+
+"automatically strip trailing whitespace when a file is saved
+autocmd BufWritePre * :%s/\s\+$//e
 
 "jk to escape insert mode
 inoremap jk <esc>
@@ -67,7 +70,7 @@ vnoremap < <gv
 nnoremap > >>
 nnoremap < <<
 
-"up/down faster
+"left/down/up/left faster
 nnoremap H ^
 nnoremap J 5j
 nnoremap K 5k
@@ -93,8 +96,18 @@ nnoremap zl <c-w>l
 nnoremap zd :q<cr>
 
 
+"plugin: vim-commentary
+nmap - gcc
+vmap - gcgv
 
 
+"plugin: vim-fzf
+set rtp+=~/.fzf
+
+
+"plugin: vim-airline
+" let g:airline_powerline_fonts = 1
+let g:airline_symbols_ascii = 1
 
 
 filetype plugin on
