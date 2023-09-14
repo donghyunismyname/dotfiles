@@ -103,6 +103,10 @@ nnoremap zd :q<cr>
 nmap - gcc
 vmap - gcgv
 
+"plugin: vim-mucomplete
+set completeopt+=menuone
+set completeopt+=noselect
+let g:mucomplete#enable_auto_at_startup = 1
 
 
 "plugin: vim-airline
