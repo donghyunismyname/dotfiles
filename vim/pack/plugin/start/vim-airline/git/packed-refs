@@ -1,0 +1,19 @@
+# pack-refs with: peeled fully-peeled sorted 
+a4d69d53b5c81715ac597db881ec7deae6b0a71a refs/remotes/origin/535
+f7835562a33ca57fe7dc3320af3167ca4e255b9d refs/remotes/origin/639-spike
+f083d765d813d6563fa83099add1d9353a25308d refs/remotes/origin/add-branch-test
+0f78ad819a038b59631d547c241d010bc34bb42e refs/remotes/origin/dynamic_width
+e6bb8427dc2d2dc3583ed1bf5ff6a9682c854d32 refs/remotes/origin/master
+a6886f2997c4f83b268ccf4796bdaad8372788b4 refs/remotes/origin/vim9script
+52685102bae03c3cdd8f582a0b7aaf892162fef3 refs/tags/v0.1
+c0f96df97fb159bee954fb787a96205652af4a77 refs/tags/v0.10
+507d4f394f8d6f8bf8b08a63a8596bea3884f4c3 refs/tags/v0.11
+^ad716f1df4f89589c0b13b9a39e68a10adba5e13
+161daa79426889d722c52569e9b1e1e277be9168 refs/tags/v0.2
+d20bdc54e535031e962281e5363885e9a9cbc36c refs/tags/v0.3
+ccb00be717d36276514ed660f6f6b6d3413b1fad refs/tags/v0.4
+55f524de774873a2d8106e01b42b236f8c5bcbb4 refs/tags/v0.5
+5976cf3a48f293069a3957f393c44fb807136c43 refs/tags/v0.6
+401ce611c6f9b9e8be0857cf6094604033e1b717 refs/tags/v0.7
+410429a95c67eed8eeb26681838d3766a2437806 refs/tags/v0.8
+e02176aca15905e80dbb38de2a53416cf6460cfe refs/tags/v0.9
