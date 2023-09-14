@@ -1,6 +1,9 @@
 syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+
 "start cursor where last left
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -101,16 +104,85 @@ nmap - gcc
 vmap - gcgv
 
 
-"plugin: vim-fzf
-set rtp+=~/.fzf
-
 
 "plugin: vim-airline
 " let g:airline_powerline_fonts = 1
 let g:airline_symbols_ascii = 1
 
 
-filetype plugin on
-set omnifunc=syntaxcomplete#Complete
+
+"plugin: vim-fzf
+set rtp+=~/.fzf
+
+function! Trim(input_string)
+    return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
+endfunction
+
+function! s:get_git_dir(path)
+  let curr = fnamemodify(expand(a:path), ':p')
+  if empty(curr)   " empty buffer, etc.: fall back to current dir
+    let curr = getcwd()
+  endif
+  try
+    return FugitiveExtractGitDir(curr)
+  catch /E117/  " Unknown function: maybe incompatible fugitive
+    return fugitive#extract_git_dir(curr)
+  endtry
+endfunction
+
+" Command :F (FzfSmart)
+function! FzfSmart(path) abort
+  " If args are given (e.g. :F <args>), run :Files <args>
+  let l:path = Trim(a:path)
+  if !empty(l:path)
+    let l:path = expand(l:path)
+    if !isdirectory(l:path)   " for a file, the directory that contains it
+      if filereadable(l:path)
+        let l:path = fnamemodify(l:path, ":h")
+      else  " does not exist, error
+        echohl WarningMsg | call Echom('Does not exist: ' . l:path) | echohl NONE | return 0
+      endif
+    endif
+  endif
+
+  " (1) If a FZF tree/explorer is shown with no argument,
+  " invoke :Files (with preview) rather than :GFiles
+  if empty(l:path) && index(['nerdtree'], &filetype) >= 0
+    let l:target_path = b:NERDTree.root.path._str()
+    " if the current buffer is the pinned on in the tab (vim-nerdtree-tabs),
+    " let fzf open files in another window. Otherwise, open in the current window.
+    if exists('t:NERDTreeBufName') && bufname('%') == t:NERDTreeBufName
+      wincmd w   " we need to move the focus outside nerdtree
+    endif
+    call fzf#vim#files(l:target_path, fzf#vim#with_preview())
+    return 1
+  endif
+
+  " (2) If the given path (or CWD) is in a git repo,
+  " invoke :GFiles (plus untracked files)
+  let l:git_dir = s:get_git_dir(!empty(l:path) ? l:path : '%')
+  if ! empty(l:git_dir)
+    let l:old_cwd = getcwd()
+    execute ':tcd ' . l:git_dir . '/..'
+    echon ':GFiles (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
+    GFiles -c -o --exclude-standard
+    execute ':tcd ' . l:old_cwd
+    return 2
+
+  " (3) not in git repo, invoke :Files <args> by fallback
+  else
+    execute ':Files ' . l:path
+    return 3
+  endif
+endfunction
+
+" :F is a shortcut for :GFiles or :FZF
+command! -complete=dir -nargs=* F        call FzfSmart(<q-args>)
+
+" Invoke F (FZF) Using Ctrl-P
+" nmap <C-P> :bw<cr>:F<CR>
+" nmap <C-P> :F<CR>
+nmap <space><space> :F<cr>
+
 
 
