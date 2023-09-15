@@ -1,14 +1,19 @@
+" colorscheme
 syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
+
+" vim built-in autocomplete
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
+
 
 "start cursor where last left
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
 \ exe "norm g`\"" |
 \ endif
+
 
 " https://nickjanetakis.com/blog/change-your-vim-cursor-from-a-block-to-line-in-normal-and-insert-mode
 " Use a line cursor within insert mode and a block cursor everywhere else.
@@ -23,10 +28,13 @@ au BufReadPost *
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
 
-set number relativenumber  "line number on the left
+
+" various basic options
+set number          "line number on the left
+set relativenumber  "line number relative
 set autoindent      "autoindent
 set si              "make autodentdent smarter
-set hlsearch        "highlight search with / or ?
+set hlsearch        "highlight search with / or ? (:noh to erase highlight)
 set ignorecase      "ignore case for search
 set incsearch       "show search result for input character
 set showmatch       "highlight matching brackets
@@ -51,14 +59,18 @@ set cursorcolumn
 "autocmd insertenter * set nocursorcolumn
 "autocmd insertleave * set cursorcolumn
 
+
 "autosave
 autocmd TextChanged,TextChangedI <buffer> silent write
+
 
 "automatically strip trailing whitespace when a file is saved
 autocmd BufWritePre * :%s/\s\+$//e
 
+
 "jk to escape insert mode
 inoremap jk <esc>
+
 
 "use system clipboard
 nnoremap yy "*yy
@@ -67,11 +79,13 @@ vnoremap x "*x
 nnoremap p "*p
 vnoremap p "*p
 
+
 "indent/unindent faster
 vnoremap > >gv
 vnoremap < <gv
 nnoremap > >>
 nnoremap < <<
+
 
 "left/down/up/left faster
 nnoremap H ^
@@ -83,17 +97,20 @@ vnoremap J 5j
 vnoremap K 5k
 vnoremap L $
 
+
 "split panes
 nnoremap z<space>h :vs<cr>
 nnoremap z<space>j :sp<cr><c-w>j
 nnoremap z<space>k :sp<cr>
 nnoremap z<space>l :vs<cr><c-w>l
 
+
 "move panes
 nnoremap zh <c-w>h
 nnoremap zj <c-w>j
 nnoremap zk <c-w>k
 nnoremap zl <c-w>l
+
 
 "close pane
 nnoremap zd :q<cr>
@@ -103,16 +120,17 @@ nnoremap zd :q<cr>
 nmap - gcc
 vmap - gcgv
 
+
 "plugin: vim-mucomplete
 set completeopt+=menuone
 set completeopt+=noselect
 let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#no_mappings = 1
 
 
 "plugin: vim-airline
 " let g:airline_powerline_fonts = 1
 let g:airline_symbols_ascii = 1
-
 
 
 "plugin: vim-fzf
