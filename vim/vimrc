@@ -45,7 +45,7 @@ set expandtab       "spaces instead of tabs; `:retab` to change taps to spaces
 set sts=4           "make spaces feel like tabs (like deleting)
 set colorcolumn=80  "show vertical line at column 80
 set nowrap          "no wraparound trailing characters
-set scrolloff=99999 "put cursor always in center
+set scrolloff=5     "show code above and below cursor
 set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
@@ -99,21 +99,14 @@ vnoremap L $
 
 
 "split panes
-nnoremap z<space>h :vs<cr>
-nnoremap z<space>j :sp<cr><c-w>j
-nnoremap z<space>k :sp<cr>
-nnoremap z<space>l :vs<cr><c-w>l
-
-
-"move panes
-nnoremap zh <c-w>h
-nnoremap zj <c-w>j
-nnoremap zk <c-w>k
-nnoremap zl <c-w>l
+nnoremap <space>h :vs<cr>
+nnoremap <space>j :sp<cr><c-w>j
+nnoremap <space>k :sp<cr>
+nnoremap <space>l :vs<cr><c-w>l
 
 
 "close pane
-nnoremap zd :q<cr>
+nnoremap <space>q :q<cr>
 
 
 "plugin: vim-commentary
@@ -136,7 +129,7 @@ let g:airline_symbols_ascii = 1
 "plugin: vim-fzf
 set rtp+=~/.fzf
 
-"vim-fzf from Wookayin
+"vim-fzf settings from Wookayin
 function! Trim(input_string)
     return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
