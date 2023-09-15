@@ -98,6 +98,10 @@ vnoremap K 5k
 vnoremap L $
 
 
+"exit visual mode
+vnoremap <space> <c-c>
+
+
 "split panes
 nnoremap <space>h :vs<cr>
 nnoremap <space>j :sp<cr><c-w>j
@@ -109,12 +113,16 @@ nnoremap <space>l :vs<cr><c-w>l
 nnoremap <space>q :q<cr>
 
 
-"plugin: vim-commentary
-nmap - gcc
-vmap - gcgv
+"reload .vimrc
+nnoremap <space>r :source $MYVIMRC<cr>
 
 
-"plugin: vim-mucomplete
+" plugin: vim-commentary
+nmap ; gcc
+vmap ; gcgv
+
+
+" plugin: vim-mucomplete
 set completeopt+=menuone
 set completeopt+=noselect
 let g:mucomplete#enable_auto_at_startup = 1
@@ -124,6 +132,11 @@ let g:mucomplete#no_mappings = 1
 "plugin: vim-airline
 " let g:airline_powerline_fonts = 1
 let g:airline_symbols_ascii = 1
+
+
+" plugin: vim-easymotion
+nnoremap <cr> <Plug>(easymotion-overwin-w)
+vnoremap <cr> <Plug>(easymotion-lineanywhere)
 
 
 "plugin: vim-fzf
@@ -198,7 +211,9 @@ command! -complete=dir -nargs=* F        call FzfSmart(<q-args>)
 " Invoke F (FZF) Using Ctrl-P
 " nmap <C-P> :bw<cr>:F<CR>
 " nmap <C-P> :F<CR>
-nmap <space><space> :F<cr>
+nmap <space><space> :History<cr>
+nmap <space>o :F<cr>
+
 
 
 
