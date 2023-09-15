@@ -3,18 +3,27 @@ syntax enable "make colorscheme work on mac
 colorscheme jellybeans
 
 
-" vim built-in autocomplete
-filetype plugin on
-set omnifunc=syntaxcomplete#Complete
+filetype plugin on  "understand file types
+set pastetoggle=<f2> "togle paste mode
+autocmd FileType * set formatoptions-=o "disable autoindent
 
 
-"start cursor where last left
+" start cursor where last left
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
 \ exe "norm g`\"" |
 \ endif
 
 
+"autosave
+autocmd TextChanged,TextChangedI <buffer> silent write
+
+
+"automatically strip trailing whitespace when a file is saved
+autocmd BufWritePre * :%s/\s\+$//e
+
+
+" Cursor shape
 " https://nickjanetakis.com/blog/change-your-vim-cursor-from-a-block-to-line-in-normal-and-insert-mode
 " Use a line cursor within insert mode and a block cursor everywhere else.
 " Reference chart of values:
@@ -31,10 +40,8 @@ let &t_EI = "\e[2 q"
 
 " various basic options
 set number          "line number on the left
-set relativenumber  "line number relative
 set autoindent      "autoindent
-set si              "make autodentdent smarter
-set hlsearch        "highlight search with / or ? (:noh to erase highlight)
+" set hlsearch        "highlight search (:noh to clear) (better use easymotion)
 set ignorecase      "ignore case for search
 set incsearch       "show search result for input character
 set showmatch       "highlight matching brackets
@@ -54,18 +61,13 @@ set nostartofline   "keep column position when c-u or c-d
 "display cursorline
 set cursorline
 set cursorcolumn
+
+
+"Show no cursorline on insert mode
 "autocmd insertenter * set nocursorline
 "autocmd insertleave * set cursorline
 "autocmd insertenter * set nocursorcolumn
 "autocmd insertleave * set cursorcolumn
-
-
-"autosave
-autocmd TextChanged,TextChangedI <buffer> silent write
-
-
-"automatically strip trailing whitespace when a file is saved
-autocmd BufWritePre * :%s/\s\+$//e
 
 
 "jk to escape insert mode
@@ -136,7 +138,24 @@ let g:airline_symbols_ascii = 1
 
 " plugin: vim-easymotion
 nnoremap <cr> <Plug>(easymotion-overwin-w)
-vnoremap <cr> <Plug>(easymotion-lineanywhere)
+vnoremap <cr> <Plug>(easymotion-bd-jk)
+nnoremap s <Plug>(easymotion-s)
+vnoremap s <Plug>(easymotion-s)
+nnoremap ' <Plug>(easymotion-lineanywhere)
+vnoremap ' <Plug>(easymotion-lineanywhere)
+
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+
+" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+" Without these mappings, `n` & `N` works fine. (These mappings just provide
+" different highlight method and have some other features )
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
+
+
+
+
 
 
 "plugin: vim-fzf
@@ -213,6 +232,8 @@ command! -complete=dir -nargs=* F        call FzfSmart(<q-args>)
 " nmap <C-P> :F<CR>
 nmap <space><space> :History<cr>
 nmap <space>o :F<cr>
+
+
 
 
 
