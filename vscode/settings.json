@@ -1,0 +1,30 @@
+{
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "cmake.configureOnOpen": true,
+    "files.autoSave": "afterDelay",
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "k"],
+            "after": ["<Esc>"]
+        }
+    ],
+
+    "vim.handleKeys": {
+        "<C-z>": false,
+        "<C-x>": false,
+        "<C-c>": false,
+        "<C-v>": false,
+        "<C-h>": false,
+        "<C-f>": false,
+        "<C-j>": false,
+        "<C-y>": false,
+        "<C-a>": false,
+        "<C-p>": false,
+    },
+    "vim.useSystemClipboard": true,
+    "editor.minimap.enabled": false,
+    "editor.inlineSuggest.enabled": true,
+    "workbench.colorTheme": "Visual Studio Dark - C++",
+}
