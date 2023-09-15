@@ -17,7 +17,8 @@ Mostly like you can use `apt` or `brew` to install them.
 - tmux
 - ripgrep
 - fd (try `fd` or `fd-find` for installation)
-- emacs
+- neovim
+- (?) emacs
 
 
 ## Dependency (install script provided)
@@ -25,17 +26,17 @@ Mostly like you can use `apt` or `brew` to install them.
 - fzf
 - cdhist
 - diff-so-fancy (make git diff fancy)
-- doom emacs
+- (?) doom emacs
 
 
 ## Installation
 Run the installation script:
 ```
-sh install_dependency.sh
-sh_install_symlink.sh
+sh install-dependency.sh
+sh install-symlink.sh
 ```
 It's likely that things do not work.
-In that case, please install manually by following the scripts.
+In that case, please install manually following the scripts.
 
 
 
