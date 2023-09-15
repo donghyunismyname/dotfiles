@@ -1,0 +1,7 @@
+# pack-refs with: peeled fully-peeled sorted 
+ec3dedd3c1c4a7f81e011278a0ad222c29848e3e refs/remotes/origin/cjt-update-is-vim
+2eb16d5dbf2b3366041c1ee7e48616bd144140ec refs/remotes/origin/cmd
+addb64a772cb4a3ae1f1363583012b2cada2cd66 refs/remotes/origin/master
+e1591c6504e6780eb37b0ca136324d65859c8b73 refs/remotes/origin/restyled/cjt-update-is-vim
+22734100c02990ff090f3544319620ef3f516dea refs/tags/v1.0
+^85b8e5f60c1690cde57dbb66467ce39cd1b63343
