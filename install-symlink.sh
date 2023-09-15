@@ -7,16 +7,9 @@ set -x # show commands
 
 DIR=$(pwd)
 
-# vimrc
+# vim
 ln -sni $DIR/vim/vimrc           ~/.vimrc
-
-# vim colorscheme
-mkdir -p                         ~/.vim/colors
-ln -sni $DIR/vim/jellybeans.vim  ~/.vim/colors/jellybeans.vim
-
-# vim package
-mkdir -p                         ~/.vim
-ln -sni $DIR/vim/pack            ~/.vim/pack
+ln -sni $DIR/vim                 ~/.vim
 
 # tmux
 ln -sni $DIR/tmux/tmux.conf  ~/.tmux.conf
