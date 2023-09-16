@@ -18,7 +18,7 @@ Mostly like you can use `apt` or `brew` to install them.
 - ripgrep
 - fd (try `fd` or `fd-find` for installation)
 - neovim
-- (?) emacs
+- emacs
 
 
 ## Dependency (install script provided)
@@ -26,7 +26,6 @@ Mostly like you can use `apt` or `brew` to install them.
 - fzf
 - cdhist
 - diff-so-fancy (make git diff fancy)
-- (?) doom emacs
 
 
 ## Installation
