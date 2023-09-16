@@ -76,7 +76,7 @@ set cursorcolumn
 inoremap jk <esc>
 
 
-"use system clipboard
+"use system clipboard depending on context
 nnoremap yy "*yy
 vnoremap y "*y
 vnoremap x "*x
@@ -92,14 +92,15 @@ nnoremap < <<
 
 
 "left/down/up/left faster
-nnoremap H ^
-nnoremap J 5j
-nnoremap K 5k
-nnoremap L $
-vnoremap H ^
-vnoremap J 5j
-vnoremap K 5k
-vnoremap L $
+noremap H ^
+noremap J 5j
+noremap K 5k
+noremap L $
+
+
+"move with current line up/down
+noremap U <cmd>m-2<cr>
+noremap M <cmd>m+1<cr> 
 
 
 "exit visual mode
