@@ -1,24 +1,38 @@
 #!/bin/sh
 
-set -x # show commands
-# set -e # terminate on error
+echo "[WARNING] Overwrite existing files by symbolic links:"
+echo "    ~/.vimrc"
+echo "    ~/.vim"
+echo "    ~/.tmux.conf"
+echo "    ~/.zshrc"
+echo "    ~/.emacs.d"
+read -p "Do you want to continue? (y/N): " ans
 
-# echo "[WARNING] Overwrite existing dotfiles: .vim .vimrc .tmux.conf .zshrc"
+if [[ $ans != "y" ]]; then
+    echo "Abort installation"
+    exit 1
+fi
+
 
 DIR=$(pwd)
+set -x # Show commands
+
 
 # vim
-ln -sni $DIR/vim/vimrc           ~/.vimrc
-ln -sni $DIR/vim                 ~/.vim
+ln -snf $DIR/vim/vimrc           ~/.vimrc
+ln -snf $DIR/vim                 ~/.vim
 
 # nvim
-ln -sni $DIR/nvim                ~/.config/nvim
+ln -snf $DIR/nvim                ~/.config/nvim
 
 # tmux
-ln -sni $DIR/tmux/tmux.conf  ~/.tmux.conf
+ln -snf $DIR/tmux/tmux.conf  ~/.tmux.conf
 
 # zsh
-ln -sni $DIR/zsh/zshrc       ~/.zshrc
+ln -snf $DIR/zsh/zshrc       ~/.zshrc
+
+# emacs
+ln -snf $DIR/emacs           ~/.emacs.d
 
 
 
