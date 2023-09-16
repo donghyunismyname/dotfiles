@@ -119,6 +119,8 @@ alias edkill="emacsclient -e \"(kill-emacs)\""
 alias gl="git log --graph --all"
 alias gs="git status"
 alias gd="git diff"
+alias glp='git log --graph --all --pretty'     # orignal format
+alias glpp='git log --graph --all --pretty -p' # orignal format + diff
 
 alias cp="cp -i"
 
