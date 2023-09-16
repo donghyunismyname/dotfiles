@@ -8,7 +8,7 @@ set pastetoggle=<f2> "togle paste mode
 autocmd FileType * set formatoptions-=o "disable autoindent
 
 
-" start cursor where last left
+" pick up cursor where last left
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
 \ exe "norm g`\"" |
