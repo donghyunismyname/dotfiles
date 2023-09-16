@@ -19,20 +19,20 @@ set -x # Show commands
 
 
 # vim
-ln -snf $DIR/vim/vimrc           ~/.vimrc
-ln -snf $DIR/vim                 ~/.vim
+ln -snfF $DIR/vim/vimrc           ~/.vimrc
+ln -snfF $DIR/vim                 ~/.vim
 
 # nvim
-ln -snf $DIR/nvim                ~/.config/nvim
+ln -snfF $DIR/nvim                ~/.config/nvim
 
 # tmux
-ln -snf $DIR/tmux/tmux.conf  ~/.tmux.conf
+ln -snfF $DIR/tmux/tmux.conf  ~/.tmux.conf
 
 # zsh
-ln -snf $DIR/zsh/zshrc       ~/.zshrc
+ln -snfF $DIR/zsh/zshrc       ~/.zshrc
 
 # emacs
-ln -snf $DIR/emacs           ~/.emacs.d
+ln -snfF $DIR/emacs           ~/.emacs.d
 
 
 
