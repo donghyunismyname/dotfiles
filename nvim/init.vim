@@ -6,11 +6,28 @@ source ~/.vimrc
 
 " vim-plug: Vim Plugin Manager
 call plug#begin()
-Plug 'ggandor/leap.nvim'
+
+
+Plug 'rlane/pounce.nvim'
+map s <cmd>Pounce<cr>
+map S <cmd>PounceRepeat<cr>
+
+
+Plug 'phaazon/hop.nvim'
+map <cr> <cmd>HopWordMW<cr>
+
+
+" ultisnips
+" vim-easycomplete
+" vim-snippets
+
+
 call plug#end()
 
-" plugin: leap.nvim
-lua require('leap').add_default_mappings()
 
 
-" lua require('hop').setup()
+
+
+
+
+lua require('hop').setup()
