@@ -11,6 +11,9 @@ DIR=$(pwd)
 ln -sni $DIR/vim/vimrc           ~/.vimrc
 ln -sni $DIR/vim                 ~/.vim
 
+# nvim
+ln -sni $DIR/nvim                ~/.config/nvim
+
 # tmux
 ln -sni $DIR/tmux/tmux.conf  ~/.tmux.conf
 
