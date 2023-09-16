@@ -17,9 +17,13 @@ Plug 'phaazon/hop.nvim'
 map <cr> <cmd>HopWordMW<cr>
 
 
-" ultisnips
-" vim-easycomplete
-" vim-snippets
+" Plug 'SirVer/ultisnips'
+" Plug 'honza/vim-snippets'
+" Plug 'jayli/vim-easycomplete'
+" noremap gr :EasyCompleteReference<CR>
+" noremap gd :EasyCompleteGotoDefinition<CR>
+" noremap rn :EasyCompleteRename<CR>
+" noremap gb :BackToOriginalBuffer<CR>
 
 
 call plug#end()
