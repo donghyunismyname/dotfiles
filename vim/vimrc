@@ -39,9 +39,10 @@ let &t_EI = "\e[2 q"
 
 
 " various basic options
+set nocompatible    "disable compatibility to old-time vi
 set number          "line number on the left
 set autoindent      "autoindent
-" set hlsearch        "highlight search (:noh to clear) (better use easymotion)
+set nohlsearch      "no highlight search (better use easymotion)
 set ignorecase      "ignore case for search
 set incsearch       "show search result for input character
 set showmatch       "highlight matching brackets
@@ -52,10 +53,11 @@ set expandtab       "spaces instead of tabs; `:retab` to change taps to spaces
 set sts=4           "make spaces feel like tabs (like deleting)
 set colorcolumn=80  "show vertical line at column 80
 set nowrap          "no wraparound trailing characters
-set scrolloff=5     "show code above and below cursor
+set scrolloff=10    "show code above and below cursor
 set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
+
 
 
 "display cursorline
@@ -139,14 +141,12 @@ let g:airline_symbols_ascii = 1
 " plugin: vim-easymotion
 nnoremap <cr> <Plug>(easymotion-overwin-w)
 vnoremap <cr> <Plug>(easymotion-bd-jk)
-nnoremap s <Plug>(easymotion-s)
-vnoremap s <Plug>(easymotion-s)
 nnoremap ' <Plug>(easymotion-lineanywhere)
 vnoremap ' <Plug>(easymotion-lineanywhere)
 
+" Better than vim default search
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
-
 " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
 " Without these mappings, `n` & `N` works fine. (These mappings just provide
 " different highlight method and have some other features )
