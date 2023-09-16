@@ -21,6 +21,6 @@ git clone https://github.com/so-fancy/diff-so-fancy ~/install/diff-so-fancy
 sudo ln -snf ~/install/diff-so-fancy/diff-so-fancy /usr/local/bin/diff-so-fancy
 
 # Doom Emacs
-git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
-~/.config/emacs/bin/doom install
-sudo ln -snf ~/.config/emacs/bin/doom /usr/local/bin/doom
+# git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+# ~/.config/emacs/bin/doom install
+# sudo ln -snf ~/.config/emacs/bin/doom /usr/local/bin/doom
