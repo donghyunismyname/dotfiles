@@ -15,23 +15,29 @@ fi
 
 
 DIR=$(pwd)
-set -x # Show commands
+# set -x # Show commands
 
 
 # vim
+rm -ri                            ~/.vimrc
+rm -ri                            ~/.vim
 ln -snfF $DIR/vim/vimrc           ~/.vimrc
 ln -snfF $DIR/vim                 ~/.vim
 
 # nvim
+rm -ri                            ~/.config/nvim
 ln -snfF $DIR/nvim                ~/.config/nvim
 
 # tmux
+rm -ri                        ~/.tmux.conf
 ln -snfF $DIR/tmux/tmux.conf  ~/.tmux.conf
 
 # zsh
+rm -ri                        ~/.zshrc
 ln -snfF $DIR/zsh/zshrc       ~/.zshrc
 
 # emacs
+rm -ri                        ~/.emacs.d
 ln -snfF $DIR/emacs           ~/.emacs.d
 
 
