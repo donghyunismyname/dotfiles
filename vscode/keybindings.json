@@ -212,6 +212,9 @@
         "command": "workbench.action.toggleMaximizedPanel",
         "when": "panelFocus"
     },
+
+
+    // Movement in Panel
     {
         "key": "ctrl+l",
         "command": "workbench.action.nextPanelView",
@@ -223,10 +226,6 @@
         "when": "panelFocus"
     },
     {
-        "key": "ctrl+shift+w",
-        "command": "-workbench.action.closeWindow"
-    },
-    {
         "key": "ctrl+n",
         "command": "workbench.action.quickOpenNavigateNext",
         "when": "inQuickOpen"
@@ -235,5 +234,42 @@
         "key": "ctrl+p",
         "command": "workbench.action.quickOpenNavigatePrevious",
         "when": "inQuickOpen"
-    }
+    },
+
+
+    // Disable this shortcut
+    {
+        "key": "ctrl+shift+w",
+        "command": "-workbench.action.closeWindow"
+    },
+
+
+    // Hover over previews
+    {
+        "key": "h",
+        "command": "editor.action.scrollLeftHover",
+        "when": "editorHoverFocused"
+    },
+    {
+        "key": "j",
+        "command": "editor.action.scrollDownHover",
+        "when": "editorHoverFocused"
+    },
+    {
+        "key": "k",
+        "command": "editor.action.scrollUpHover",
+        "when": "editorHoverFocused"
+    },
+    {
+        "key": "l",
+        "command": "editor.action.scrollRightHover",
+        "when": "editorHoverFocused"
+    },
+
+
+    // Reopen closed editor
+    {
+        "key": "ctrl+shift+w",
+        "command": "workbench.action.reopenClosedEditor"
+    },
 ]

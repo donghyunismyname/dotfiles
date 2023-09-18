@@ -1,4 +1,12 @@
 {
+
+    // ????
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "cmake.configureOnOpen": true,
+
+
     // Theme
     "workbench.colorTheme": "Visual Studio Dark - C++",
 
@@ -10,18 +18,21 @@
     // Unfocused panes are dimmed
     "accessibility.dimUnfocused.enabled": true,
     "accessibility.dimUnfocused.opacity": 0.8,
+
+
+    // Editor settings
     "editor.inlineSuggest.enabled": true,
     "editor.cursorSurroundingLines": 10,
     "editor.cursorBlinking": "blink",
     "editor.rulers": [80],
-    "editor.renderControlCharacters": true,
+    "editor.minimap.enabled": false,
 
 
     // Cursorline
     "editor.renderLineHighlight": "all",
     "workbench.colorCustomizations": {
         "editor.lineHighlightBackground": "#ffffff10",
-        // "editor.lineHighlightBorder": "#808080",
+        // "editor.lineHighlightBorder": "#00000000",
     },
 
 
@@ -36,45 +47,87 @@
     ],
 
 
-    "[python]": {
-        "editor.formatOnType": true
-    },
-    "cmake.configureOnOpen": true,
 
+    // ==================== VIM ======================
+    // Highlighted yank
+    "vim.highlightedyank.enable": true,
+    "vim.highlightedyank.duration": 500,
+    "vim.highlightedyank.color": "rgba(255, 255, 0, 1)",
+    "vim.highlightedyank.textColor": "rgba(0, 0, 0, 1)",
 
-    // =========== VIM ===========
-    "vim.useSystemClipboard": true,
+    // Use ctrl keys
     "vim.handleKeys": {
-        "<C-z>": false,
-        "<C-x>": false,
-        "<C-c>": false,
-        "<C-v>": false,
-        "<C-b>": false,
+        "<C-z>": false, // undo
+        "<C-x>": false, // cut
+        "<C-c>": false, // copy
+        "<C-v>": false, // paste
+        "<C-b>": false, // toggle primary sidebar
 
-        "<C-h>": false,
-        "<C-j>": false,
-        "<C-k>": false,
-        "<C-l>": false,
+        "<C-h>": false, // left
+        "<C-j>": false, // down
+        "<C-k>": false, // up
+        "<C-l>": false, // right
 
-        "<C-q>": false,
-        "<C-w>": false,
-        "<C-e>": false,
+        "<C-q>": false, // primary sidebar
+        "<C-w>": false, // close editor
+        "<C-e>": false, // explorer
 
-        "<C-m>": false,
-        "<C-y>": false,
-        "<C-f>": false,
-        "<C-a>": false,
+        "<C-m>": false, // multiselect
+        "<C-y>": false, // redo
+        "<C-f>": false, // find
+        "<C-a>": false, // select all
 
-        "<C-t>": false,
-        "<C-g>": false,
+        "<C-t>": false, // new editor terminal
+        "<C-g>": false, // go to line (not necessary)
     },
+
+    // jk dda-dak to exit insert mode
     "vim.insertModeKeyBindings": [
         {
             "before": ["j", "k"],
             "after": ["<Esc>"]
         }
     ],
+
+    // Language Server Protocol
+    // https://dev.to/ansonh/10-vs-code-vim-tricks-to-boost-your-productivity-1b0n#5-lsp-keybindings
+    "vim.normalModeKeyBindings": [
+        {
+          "before": ["g", "p", "d"],
+          "commands": ["editor.action.peekDefinition"]
+        },
+        {
+          "before": ["g", "h"],
+          "commands": ["editor.action.showDefinitionPreviewHover"]
+        },
+        {
+          "before": ["g", "i"],
+          "commands": ["editor.action.goToImplementation"]
+        },
+        {
+          "before": ["g", "p", "i"],
+          "commands": ["editor.action.peekImplementation"]
+        },
+        {
+          "before": ["g", "q"],
+          "commands": ["editor.action.quickFix"]
+        },
+        {
+          "before": ["g", "r"],
+          "commands": ["editor.action.referenceSearch.trigger"]
+        },
+        {
+          "before": ["g", "t"],
+          "commands": ["editor.action.goToTypeDefinition"]
+        },
+        {
+          "before": ["g", "p", "t"],
+          "commands": ["editor.action.peekTypeDefinition"]
+        },
+    ],
+
     "vim.normalModeKeyBindingsNonRecursive": [
+        // HJKL
         {
             "before": ["H"],
             "after": ["^"],
@@ -91,6 +144,8 @@
             "before": ["K"],
             "after": ["5", "k"],
         },
+
+        // INDENT
         {
             "before": ["<"],
             "after": ["<", "<"],
@@ -99,8 +154,29 @@
             "before": [">"],
             "after": [">", ">"],
         },
+
+        // Yank & Paste
+        {
+            "before": ["y"],
+            "after": ["\"", "*", "y"],
+        },
+        {
+            "before": ["Y"],
+            "after": ["\"", "*", "y", "$"],
+        },
+        {
+            "before": ["p"],
+            "after": ["\"", "*", "p"],
+        },
+        {
+            "before": ["P"],
+            "after": ["\"", "*", "P"],
+        },
+
     ],
+
     "vim.visualModeKeyBindingsNonRecursive": [
+        // HJKL
         {
             "before": ["H"],
             "after": ["^"],
@@ -117,13 +193,33 @@
             "before": ["K"],
             "after": ["5", "k"],
         },
+
+        // Indent
         {
             "before": ["<"],
-            "after": ["<","g", "v"],
+            "after": ["<","g","v"],
         },
         {
             "before": [">"],
-            "after": [">","g", "v"],
+            "after": [">","g","v"],
+        },
+
+        // Yank & Paste
+        {
+            "before": ["y"],
+            "after": ["\"","*","y","g","v"],
+        },
+        {
+            "before": ["Y"],
+            "after": ["\"","*","y","g","v"],
+        },
+        {
+            "before": ["p"],
+            "after": ["\"","*","p","g","v","\"","*","y"],
+        },
+        {
+            "before": ["P"],
+            "after": ["\"","*","p","g","v","\"","*","y"],
         },
     ],
 }
