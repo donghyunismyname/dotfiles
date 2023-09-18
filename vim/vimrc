@@ -79,6 +79,8 @@ inoremap jk <esc>
 "use system clipboard depending on context
 set clipboard=unnamed
 nnoremap dd "add
+"paste without overriding curent register
+vnoremap p pgvy
 
 
 "indent/unindent faster
