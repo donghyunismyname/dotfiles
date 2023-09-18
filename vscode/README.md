@@ -78,6 +78,7 @@ or one of the following directories for user-wise scope.
 - inoremap jk <esc>
 - nnoremap > >>
 - vnoremap > >gv
+- Yanded text is blinked yellow
 - Use system clipboard for yank and paste 
 - For x, d, c, internal clipboard is used
 - Yanking does not lose visual mode
