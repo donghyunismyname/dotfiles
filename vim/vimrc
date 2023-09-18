@@ -99,8 +99,8 @@ noremap L $
 
 
 "move with current line up/down
-noremap U <cmd>m-2<cr>
-noremap M <cmd>m+1<cr> 
+" noremap U <cmd>m-2<cr>
+" noremap M <cmd>m+1<cr>
 
 
 "exit visual mode
