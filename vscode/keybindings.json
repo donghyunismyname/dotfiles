@@ -10,4 +10,14 @@
         "command": "workbench.action.focusActiveEditorGroup",
         "when":    "terminalFocus",
     },
+    {
+        "key": "ctrl+t",
+        "command": "editor.action.addSelectionToNextFindMatch",
+        "when": "editorFocus"
+    },
+    {
+        "key": "ctrl+t",
+        "command": "-editor.action.addSelectionToNextFindMatch",
+        "when": "editorFocus"
+    },
 ]
