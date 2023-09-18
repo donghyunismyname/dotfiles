@@ -15,7 +15,7 @@ or one of the following directories for user-wise scope.
 
 
 
-## Useful Plugins
+## Must-have Plugins
 - Vim
 - Jumpy2 (compatible with Vim)
 - GitHub Copilot
@@ -25,26 +25,28 @@ or one of the following directories for user-wise scope.
 ## Useful Default Bindings
 ```
 <c-w>: close editor
+<c-w>: (disabled) close vscode
 
 <c-`>: toggle terminal
-
 <c-b>: toggle primary side bar
+<command pallette> toggle vim node
 
 <c-e>: go to file
-
 <c-E>: open explorer
 
 <c-f>: find
-
 <c-F>: open search
 
-<f4>: next item in search
+<c-G>: source control
 
+<f4>: next item in search
 <shift-f4>: previous item in search
 
 <f12>: go to definition
-
 <shift-f12>: go to references
+
+<f8>: go to next problem
+<shift-f8> go to previous problem
 ```
 
 
@@ -52,18 +54,20 @@ or one of the following directories for user-wise scope.
 ## Custom Bindings
 
 ```
-<c-[hjkl]>: move among editor groups
+<c-space>n: trigger suggestion
+<c-t>: open new terminal in editor area (<c-w> to close)
+<c-m>: multiselect
 
+<c-[hjkl]>: move among editor groups
 <c-space>[hjkl]: split editor to desired direction
 
-<c-space><c-space>: move focus to terminal/back to editor
+<c-space><c-space>: zoom in/out
+<c-space><enter>: move focus to panel/back to editor
 
-<c-space><space>: trigger suggestion
+<c-[pn]> or <c-[kj]>: navigate to previous/next item in quick open menu
+<c-[,.]>: navigate to previous/next tab (previously <c-pageup/down>)
 
-<c-[pn]>: navigate to previous/next item in quick open menu
-
-<c-[,.]>: navigate to previous/next tab/terminal (previously <c-pageup/down>
-
-<c-t>: open new terminal in editor area (<c-w> to close)
+(panelFocus) <c-[hl]>: preivous/next panel view
+(panelFocus) <c-[kj]>: previous/next terminal group
 ```
 
