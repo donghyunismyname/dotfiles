@@ -76,26 +76,17 @@ set cursorcolumn
 inoremap jk <esc>
 
 
-"use system clipboard depending on context
-set clipboard=unnamed
-nnoremap d "_d
-nnoremap D "_D
-nnoremap x "_x
-nnoremap X "_X
-vnoremap d "_d
-vnoremap D "_D
-vnoremap x "_x
-vnoremap X "_X
-
-nnoremap Y y$
-
-"paste without overriding curent register
-vnoremap p pgvy
-vnoremap P Pgvy
+"use system clipboard for yank and paste
+nnoremap y "*y
+nnoremap Y "*y$
+nnoremap p "*p
+nnoremap P "*P
 "after yanking, visual mode keeps going
-vnoremap y ygv
-vnoremap Y y$gv
-
+vnoremap y "*ygv
+vnoremap Y "*ygv
+"paste without overriding current register
+vnoremap p "*pgv"*y
+vnoremap P "*Pgv"*y
 
 
 "indent/unindent faster
