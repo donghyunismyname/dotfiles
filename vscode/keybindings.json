@@ -1,16 +1,19 @@
 // Place your key bindings in this file to override the defaults
 [
-    // Toggle between terminal and editor focus
+    // <c-space><space> to toggle between terminal and editor focus
     {
-        "key":     "ctrl+space ctrl+space",
+        "key":     "ctrl+space space",
         "command": "workbench.action.terminal.focus",
-        "when": "editorFocus",
+        "when": "editorFocus || terminalEditorFocus",
     },
     {
-        "key":     "ctrl+space ctrl+space",
+        "key":     "ctrl+space space",
         "command": "workbench.action.focusActiveEditorGroup",
-        "when":    "terminalFocus || focusedView",
+        "when":    "focusedView || terminalFocus",
     },
+
+
+    // <c-m> to multiselect words
     {
         "key": "ctrl+m",
         "command": "editor.action.addSelectionToNextFindMatch",
@@ -21,6 +24,9 @@
         "command": "-editor.action.addSelectionToNextFindMatch",
         "when": "editorFocus"
     },
+
+
+    // <c-[hjkl]> to navigate among panes
     {
         "key": "ctrl+k",
         "command": "workbench.action.focusAboveGroup"
@@ -53,6 +59,9 @@
         "key": "ctrl+k ctrl+right",
         "command": "-workbench.action.focusRightGroup"
     },
+
+
+    // <c-space>[hjkl] to split panes
     {
         "key": "ctrl+space h",
         "command": "workbench.action.splitEditorLeft"
@@ -85,8 +94,11 @@
         "key": "ctrl+k ctrl+oem_5",
         "command": "-workbench.action.splitEditorDown"
     },
+
+
+    // <c-space>n to trigger suggestions
     {
-        "key": "ctrl+space space",
+        "key": "ctrl+space n",
         "command": "editor.action.triggerParameterHints",
         "when": "editorHasSignatureHelpProvider && editorTextFocus"
     },
@@ -96,7 +108,7 @@
         "when": "editorHasSignatureHelpProvider && editorTextFocus"
     },
     {
-        "key": "ctrl+space space",
+        "key": "ctrl+space n",
         "command": "editor.action.triggerSuggest",
         "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
     },
@@ -105,6 +117,9 @@
         "command": "-editor.action.triggerSuggest",
         "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
     },
+
+
+    // <c-[pn]> to navigate quick menu
     {
         "key": "ctrl+n",
         "command": "workbench.action.quickOpenNavigateNext"
@@ -113,6 +128,9 @@
         "key": "ctrl+p",
         "command": "workbench.action.quickOpenNavigatePrevious"
     },
+
+
+    // <c-[,.]> to naviagate tabs/terminals instead of <c-pageup/down>
     {
         "key": "ctrl+oem_comma",
         "command": "workbench.action.terminal.focusPrevious",
@@ -143,10 +161,6 @@
         "command": "-workbench.action.nextEditorInGroup"
     },
     {
-        "key": "ctrl+t",
-        "command": "workbench.action.createTerminalEditor"
-    },
-    {
         "key": "ctrl+oem_comma",
         "command": "workbench.action.previousEditorInGroup",
         "when": "editorFocus || terminalEditorFocus"
@@ -159,6 +173,16 @@
         "key": "ctrl+oem_comma",
         "command": "-workbench.action.openSettings"
     },
+
+
+    // <c-t> to open terminal in editor area
+    {
+        "key": "ctrl+t",
+        "command": "workbench.action.createTerminalEditor"
+    },
+
+
+
     {
         "key": "ctrl+l",
         "command": "-workbench.action.chat.clear",
@@ -174,6 +198,9 @@
         "command": "-notebook.centerActiveCell",
         "when": "notebookEditorFocused"
     },
+
+
+    // <c-w> to kill terminal in editor area
     {
         "key": "ctrl+w",
         "command": "workbench.action.terminal.killEditor",
@@ -183,5 +210,13 @@
         "key": "ctrl+w",
         "command": "-workbench.action.terminal.killEditor",
         "when": "terminalEditorFocus && terminalFocus && terminalHasBeenCreated && resourceScheme == 'vscode-terminal' || terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+    },
+
+
+    // <c-space><c-space> to zoom in/out
+    {
+        "key": "ctrl+space ctrl+space",
+        "command": "workbench.action.toggleEditorWidths",
+        "when": "editorFocus || terminalEditorFocus"
     }
 ]
