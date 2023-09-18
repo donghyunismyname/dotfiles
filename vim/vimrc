@@ -114,7 +114,8 @@ nnoremap <space>k :sp<cr>
 nnoremap <space>l :vs<cr><c-w>l
 
 
-"close pane
+"remap :w and :q
+nnoremap <space>w :w<cr>
 nnoremap <space>q :q<cr>
 
 
