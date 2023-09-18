@@ -77,11 +77,8 @@ inoremap jk <esc>
 
 
 "use system clipboard depending on context
-nnoremap yy "*yy
-vnoremap y "*y
-vnoremap x "*x
-nnoremap p "*p
-vnoremap p "*p
+set clipboard=unnamed
+nnoremap dd "add
 
 
 "indent/unindent faster
