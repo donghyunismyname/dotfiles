@@ -1,9 +1,74 @@
 {
+    // Theme
+    "workbench.colorTheme": "Visual Studio Dark - C++",
+
+
+    // Autosave
+    "files.autoSave": "afterDelay",
+
+
+    // Unfocused panes are dimmed
+    "accessibility.dimUnfocused.enabled": true,
+    "accessibility.dimUnfocused.opacity": 0.8,
+
+
+    // Various options
+    "editor.minimap.enabled": false,
+    "editor.inlineSuggest.enabled": true,
+    "editor.cursorSurroundingLines": 10,
+    "editor.cursorBlinking": "blink",
+    "editor.rulers": [80],
+    "editor.renderControlCharacters": true,
+
+
+    // Cursorline
+    "editor.renderLineHighlight": "all",
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#ffffff10",
+        // "editor.lineHighlightBorder": "#808080",
+    },
+
+
+    // ctrl + [hjkl] to switch between editor groups including terminal
+    "terminal.integrated.commandsToSkipShell": [
+        "workbench.action.focusAboveGroup",
+        "workbench.action.focusBelowGroup",
+        "workbench.action.focusLeftGroup",
+        "workbench.action.focusRightGroup",
+    ],
+
+
     "[python]": {
         "editor.formatOnType": true
     },
     "cmake.configureOnOpen": true,
-    "files.autoSave": "afterDelay",
+
+
+    "vim.useSystemClipboard": true,
+    "vim.handleKeys": {
+        "<C-z>": false,
+        "<C-x>": false,
+        "<C-c>": false,
+        "<C-v>": false,
+        "<C-b>": false,
+
+        "<C-h>": false,
+        "<C-j>": false,
+        "<C-k>": false,
+        "<C-l>": false,
+
+        "<C-q>": false,
+        "<C-w>": false,
+        "<C-e>": false,
+
+        "<C-m>": false,
+        "<C-y>": false,
+        "<C-f>": false,
+        "<C-a>": false,
+
+        "<C-t>": false,
+        "<C-g>": false,
+    },
     "vim.insertModeKeyBindings": [
         {
             "before": ["j", "k"],
@@ -27,25 +92,39 @@
             "before": ["K"],
             "after": ["5", "k"],
         },
+        {
+            "before": ["<"],
+            "after": ["<", "<"],
+        },
+        {
+            "before": [">"],
+            "after": [">", ">"],
+        },
     ],
-
-    "vim.handleKeys": {
-        "<C-z>": false,
-        "<C-x>": false,
-        "<C-c>": false,
-        "<C-v>": false,
-        "<C-h>": false,
-        "<C-f>": false,
-        "<C-j>": false,
-        "<C-y>": false,
-        "<C-a>": false,
-        "<C-p>": false,
-        "<C-t>": false,
-    },
-    "vim.useSystemClipboard": true,
-    "editor.minimap.enabled": false,
-    "editor.inlineSuggest.enabled": true,
-    "editor.cursorSurroundingLines": 10,
-    "editor.cursorBlinking": "solid",
-    "workbench.colorTheme": "Visual Studio Dark - C++",
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": ["H"],
+            "after": ["^"],
+        },
+        {
+            "before": ["L"],
+            "after": ["$"],
+        },
+        {
+            "before": ["J"],
+            "after": ["5", "j"],
+        },
+        {
+            "before": ["K"],
+            "after": ["5", "k"],
+        },
+        {
+            "before": ["<"],
+            "after": ["<","g", "v"],
+        },
+        {
+            "before": [">"],
+            "after": [">","g", "v"],
+        },
+    ],
 }
