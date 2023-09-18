@@ -2,18 +2,18 @@
 [
     // <c-space><space> to toggle between terminal and editor focus
     {
-        "key":     "ctrl+space space",
-        "command": "workbench.action.terminal.focus",
-        "when": "editorFocus || terminalEditorFocus",
+        "key": "ctrl+enter",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "inOutput || !editorFocus",
     },
     {
-        "key":     "ctrl+space space",
-        "command": "workbench.action.focusActiveEditorGroup",
-        "when":    "focusedView || terminalFocus",
+        "key": "ctrl+enter",
+        "command": "workbench.action.focusPanel",
+        "when": "!focusedView && !panelFocus"
     },
 
 
-    // <c-m> to multiselect words
+    // <c-m> to multiselect
     {
         "key": "ctrl+m",
         "command": "editor.action.addSelectionToNextFindMatch",
@@ -29,7 +29,8 @@
     // <c-[hjkl]> to navigate among panes
     {
         "key": "ctrl+k",
-        "command": "workbench.action.focusAboveGroup"
+        "command": "workbench.action.focusAboveGroup",
+        "when": "!panelFocus && !focusedView"
     },
     {
         "key": "ctrl+k ctrl+up",
@@ -37,7 +38,8 @@
     },
     {
         "key": "ctrl+j",
-        "command": "workbench.action.focusBelowGroup"
+        "command": "workbench.action.focusBelowGroup",
+        "when": "!focusedView && !panelFocus"
     },
     {
         "key": "ctrl+k ctrl+down",
@@ -45,7 +47,8 @@
     },
     {
         "key": "ctrl+h",
-        "command": "workbench.action.focusLeftGroup"
+        "command": "workbench.action.focusLeftGroup",
+        "when": "!focusedView && !panelFocus"
     },
     {
         "key": "ctrl+k ctrl+left",
@@ -53,7 +56,8 @@
     },
     {
         "key": "ctrl+l",
-        "command": "workbench.action.focusRightGroup"
+        "command": "workbench.action.focusRightGroup",
+        "when": "!focusedView && !panelFocus"
     },
     {
         "key": "ctrl+k ctrl+right",
@@ -121,18 +125,20 @@
 
     // <c-[pn]> to navigate quick menu
     {
-        "key": "ctrl+n",
-        "command": "workbench.action.quickOpenNavigateNext"
+        "key": "ctrl+j",
+        "command": "workbench.action.quickOpenNavigateNext",
+        "when": "inQuickOpen"
     },
     {
-        "key": "ctrl+p",
-        "command": "workbench.action.quickOpenNavigatePrevious"
+        "key": "ctrl+k",
+        "command": "workbench.action.quickOpenNavigatePrevious",
+        "when": "inQuickOpen"
     },
 
 
     // <c-[,.]> to naviagate tabs/terminals instead of <c-pageup/down>
     {
-        "key": "ctrl+oem_comma",
+        "key": "ctrl+k",
         "command": "workbench.action.terminal.focusPrevious",
         "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
     },
@@ -142,7 +148,7 @@
         "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
     },
     {
-        "key": "ctrl+oem_period",
+        "key": "ctrl+j",
         "command": "workbench.action.terminal.focusNext",
         "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
     },
@@ -182,24 +188,6 @@
     },
 
 
-
-    {
-        "key": "ctrl+l",
-        "command": "-workbench.action.chat.clear",
-        "when": "hasChatProvider && inChat"
-    },
-    {
-        "key": "ctrl+l",
-        "command": "-expandLineSelection",
-        "when": "textInputFocus"
-    },
-    {
-        "key": "ctrl+l",
-        "command": "-notebook.centerActiveCell",
-        "when": "notebookEditorFocused"
-    },
-
-
     // <c-w> to kill terminal in editor area
     {
         "key": "ctrl+w",
@@ -217,6 +205,35 @@
     {
         "key": "ctrl+space ctrl+space",
         "command": "workbench.action.toggleEditorWidths",
-        "when": "editorFocus || terminalEditorFocus"
+        "when": "!panelFocus"
+    },
+    {
+        "key": "ctrl+space ctrl+space",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": "panelFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.nextPanelView",
+        "when": "panelFocus"
+    },
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.previousPanelView",
+        "when": "panelFocus"
+    },
+    {
+        "key": "ctrl+shift+w",
+        "command": "-workbench.action.closeWindow"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "workbench.action.quickOpenNavigateNext",
+        "when": "inQuickOpen"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "workbench.action.quickOpenNavigatePrevious",
+        "when": "inQuickOpen"
     }
 ]
