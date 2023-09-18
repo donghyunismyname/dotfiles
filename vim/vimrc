@@ -78,9 +78,24 @@ inoremap jk <esc>
 
 "use system clipboard depending on context
 set clipboard=unnamed
-nnoremap dd "add
+nnoremap d "_d
+nnoremap D "_D
+nnoremap x "_x
+nnoremap X "_X
+vnoremap d "_d
+vnoremap D "_D
+vnoremap x "_x
+vnoremap X "_X
+
+nnoremap Y y$
+
 "paste without overriding curent register
 vnoremap p pgvy
+vnoremap P Pgvy
+"after yanking, visual mode keeps going
+vnoremap y ygv
+vnoremap Y y$gv
+
 
 
 "indent/unindent faster
