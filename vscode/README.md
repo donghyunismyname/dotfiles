@@ -25,7 +25,8 @@ or one of the following directories for user-wise scope.
 ## Useful Default Bindings
 ```
 <c-w>: close editor
-<c-w>: (disabled) close vscode
+<c-W>: (disabled) close vscode
+<c-W>: (custom) reopen closed editor
 
 <c-`>: toggle terminal
 <c-b>: toggle primary side bar
@@ -56,7 +57,7 @@ or one of the following directories for user-wise scope.
 ```
 <c-space>n: trigger suggestion
 <c-t>: open new terminal in editor area (<c-w> to close)
-<c-m>: multiselect
+<c-m>: multiselect (originally <c-d>, also works by gb)
 
 <c-[hjkl]>: move among editor groups
 <c-space>[hjkl]: split editor to desired direction
@@ -70,4 +71,36 @@ or one of the following directories for user-wise scope.
 (panelFocus) <c-[hl]>: preivous/next panel view
 (panelFocus) <c-[kj]>: previous/next terminal group
 ```
+
+
+## Custom VSCodeVim Settings
+```
+- inoremap jk <esc>
+- nnoremap > >>
+- vnoremap > >gv
+- Use system clipboard for yank and paste 
+- For x, d, c, internal clipboard is used
+- Yanking does not lose visual mode
+- Pasting does not lose system clipboard
+```
+
+
+## VSCodeVim Tricks
+```
+https://dev.to/ansonh/10-vs-code-vim-tricks-to-boost-your-productivity-1b0n
+
+
+gd: go to definition
+gi: go to implementation
+gt: go to type definition
+gpd: peek definition
+gpi: peek implementation
+gpt: peek type definition
+gr: go to reference
+gh: hover cursor
+gq: quick fix
+
+gb: multiselect
+```
+
 
