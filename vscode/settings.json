@@ -10,10 +10,6 @@
     // Unfocused panes are dimmed
     "accessibility.dimUnfocused.enabled": true,
     "accessibility.dimUnfocused.opacity": 0.8,
-
-
-    // Various options
-    "editor.minimap.enabled": false,
     "editor.inlineSuggest.enabled": true,
     "editor.cursorSurroundingLines": 10,
     "editor.cursorBlinking": "blink",
@@ -35,6 +31,8 @@
         "workbench.action.focusBelowGroup",
         "workbench.action.focusLeftGroup",
         "workbench.action.focusRightGroup",
+        "workbench.action.focusActiveEditorGroup",
+        "workbench.action.focusPanel"
     ],
 
 
@@ -44,6 +42,7 @@
     "cmake.configureOnOpen": true,
 
 
+    // =========== VIM ===========
     "vim.useSystemClipboard": true,
     "vim.handleKeys": {
         "<C-z>": false,
