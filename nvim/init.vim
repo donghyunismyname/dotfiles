@@ -17,6 +17,10 @@ Plug 'phaazon/hop.nvim'
 map <cr> <cmd>HopWordMW<cr>
 
 
+" TODO: add appropriate key map
+Plug 'kqito/vim-easy-replace'
+
+
 " Plug 'SirVer/ultisnips'
 " Plug 'honza/vim-snippets'
 " Plug 'jayli/vim-easycomplete'
@@ -27,11 +31,13 @@ map <cr> <cmd>HopWordMW<cr>
 
 
 call plug#end()
-
-
-
-
-
-
-
 lua require('hop').setup()
+
+
+" highlight yanked text
+au TextYankPost * silent!
+\ lua vim.highlight.on_yank { higroup="IncSearch", timeout=1000 }
+
+
+
+
