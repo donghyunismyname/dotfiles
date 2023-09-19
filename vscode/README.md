@@ -24,9 +24,7 @@ or one of the following directories for user-wise scope.
 
 ## Useful Default Bindings
 ```
-<c-w>: close editor
-<c-W>: (disabled) close vscode
-<c-W>: (custom) reopen closed editor
+<c-shift-t>: reopen closed editor
 
 <c-`>: toggle terminal
 <c-b>: toggle primary side bar
@@ -57,8 +55,11 @@ or one of the following directories for user-wise scope.
 
 ```
 <c-space>n: trigger suggestion
-<c-t>: open new terminal in editor area (<c-w> to close)
+<c-space>t: open new terminal in editor area (<c-w> to close)
+
 <c-m>: multiselect (originally <c-d>, also works by gb)
+<c-q>: close editor
+<c-d>: kill terminal
 
 <c-[hjkl]>: move among editor groups
 <c-space>[hjkl]: split editor to desired direction

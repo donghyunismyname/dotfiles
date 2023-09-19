@@ -49,7 +49,7 @@
 
 
     // Extension for make vscode transparent
-    "glassit.alpha": 220,
+    "glassit.alpha": 255,
 
 
 
@@ -76,17 +76,13 @@
         "<C-k>": false, // up
         "<C-l>": false, // right
 
-        "<C-q>": false, // primary sidebar
-        // "<C-w>": false, // close editor
+        "<C-q>": false, // quit (close window)
         "<C-e>": false, // explorer
 
         "<C-m>": false, // multiselect
         "<C-y>": false, // redo
         "<C-f>": false, // find
         "<C-a>": false, // select all
-
-        "<C-t>": false, // new editor terminal
-        "<C-g>": false, // go to line (not necessary)
     },
 
     // jk dda-dak to exit insert mode

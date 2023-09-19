@@ -183,14 +183,7 @@
 
     // <c-t> to open terminal in editor area
     {
-        "key": "ctrl+t",
-        "command": "workbench.action.createTerminalEditor"
-    },
-
-
-    // <c-w> to kill terminal in editor area
-    {
-        "key": "ctrl+w",
+        "key": "ctrl+d",
         "command": "workbench.action.terminal.killEditor",
         "when": "terminalEditorFocus"
     },
@@ -269,13 +262,6 @@
 
     // Reopen closed editor
     {
-        "key": "ctrl+shift+w",
-        "command": "workbench.action.reopenClosedEditor"
-    },
-
-
-    // With word wrapping, move cursor by each display line
-    {
         "key": "up",
         "command": "cursorUp",
         "when": "editorTextFocus && vim.active && !inDebugRepl && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
@@ -294,5 +280,22 @@
         "key": "j",
         "command": "cursorDown",
         "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode == 'Normal' && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
-      }
+    },
+    {
+        "key": "ctrl+q",
+        "command": "workbench.action.closeActiveEditor"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeActiveEditor"
+    },
+    {
+        "key": "ctrl+space t",
+        "command": "workbench.action.createTerminalEditor"
+    },
+    {
+        "key": "ctrl+d",
+        "command": "workbench.action.terminal.kill",
+        "when": "panelFocus"
+    }
 ]
