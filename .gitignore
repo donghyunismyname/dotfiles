@@ -1,4 +1,5 @@
 *.swp
+*.netrwhist
 emacs/elpa
 emacs/transient
 
