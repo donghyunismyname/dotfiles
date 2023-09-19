@@ -8,6 +8,13 @@ set pastetoggle=<f2> "togle paste mode
 autocmd FileType * set formatoptions-=o "disable autoindent
 
 
+"togglw word wrap
+map zw :set wrap!<cr>
+"with word wrap, move cursor by each display line
+noremap <expr> j v:count ? 'j' : 'gj'
+noremap <expr> k v:count ? 'k' : 'gk'
+
+
 " pick up cursor where last left
 au BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
