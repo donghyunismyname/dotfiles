@@ -5,8 +5,8 @@ development environment.
 
 
 ## Recommended Fonts
-- https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
-- https://github.com/naver/d2codingfont
+- (DroidSansMono Nerd Font) https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf
+- (D2Coding) https://github.com/naver/d2codingfont
 
 
 ## Dependency (install on your own)
