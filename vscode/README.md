@@ -30,6 +30,7 @@ or one of the following directories for user-wise scope.
 
 <c-`>: toggle terminal
 <c-b>: toggle primary side bar
+<alt-z>: toggle word wrap mode
 <command pallette> toggle vim node
 
 <c-e>: go to file
