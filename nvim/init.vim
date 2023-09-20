@@ -36,7 +36,7 @@ lua require('hop').setup()
 
 " highlight yanked text
 au TextYankPost * silent!
-\ lua vim.highlight.on_yank { higroup="IncSearch", timeout=1000 }
+\ lua vim.highlight.on_yank { higroup="IncSearch", timeout=200 }
 
 
 
