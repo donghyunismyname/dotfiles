@@ -55,7 +55,10 @@
 
     // ==================== VIM ======================
     "vim.easymotion": true,
+    "vim.sneak": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
     "vim.replaceWithRegister": false,
+    "vim.leader": "<space>",
 
     // Highlighted yank
     "vim.highlightedyank.enable": true,
