@@ -1,6 +1,7 @@
 " colorscheme
 syntax enable "make colorscheme work on mac
-colorscheme jellybeans
+" colorscheme jellybeans
+colorscheme hybrid
 
 
 filetype plugin on  "understand file types
