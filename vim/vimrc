@@ -116,29 +116,33 @@ noremap L $
 " noremap M <cmd>m+1<cr>
 
 
+" leader key as space
+let mapleader = " "
+
+
 "exit visual mode
-vnoremap <space> <c-c>
+vnoremap <leader> <c-c>
 
 
 "split panes
-nnoremap <space>h :vs<cr>
-nnoremap <space>j :sp<cr><c-w>j
-nnoremap <space>k :sp<cr>
-nnoremap <space>l :vs<cr><c-w>l
+nnoremap <leader>h :vs<cr>
+nnoremap <leader>j :sp<cr><c-w>j
+nnoremap <leader>k :sp<cr>
+nnoremap <leader>l :vs<cr><c-w>l
 
 
 "remap :w and :q
-nnoremap <space>w :w<cr>
-nnoremap <space>q :q<cr>
+nnoremap <leader>w :w<cr>
+nnoremap <leader>q :q<cr>
 
 
 "reload .vimrc
-nnoremap <space>r :source $MYVIMRC<cr>
+nnoremap <leader>r :source $MYVIMRC<cr>
 
 
 " plugin: vim-commentary
-nmap ; gcc
-vmap ; gcgv
+nmap ' gcc
+vmap ' gcgv
 
 
 " plugin: vim-mucomplete
@@ -157,8 +161,6 @@ let g:airline#extensions#whitespace#enabled=0
 " plugin: vim-easymotion
 nnoremap <cr> <Plug>(easymotion-overwin-w)
 vnoremap <cr> <Plug>(easymotion-bd-jk)
-nnoremap ' <Plug>(easymotion-lineanywhere)
-vnoremap ' <Plug>(easymotion-lineanywhere)
 
 " Better than vim default search
 map  / <Plug>(easymotion-sn)
@@ -246,8 +248,8 @@ command! -complete=dir -nargs=* F        call FzfSmart(<q-args>)
 " Invoke F (FZF) Using Ctrl-P
 " nmap <C-P> :bw<cr>:F<CR>
 " nmap <C-P> :F<CR>
-nmap <space><space> :History<cr>
-nmap <space>o :F<cr>
+nmap <leader><leader> :History<cr>
+nmap <leader>o :F<cr>
 
 
 
