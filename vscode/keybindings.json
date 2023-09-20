@@ -297,5 +297,9 @@
         "key": "ctrl+d",
         "command": "workbench.action.terminal.kill",
         "when": "panelFocus"
+    },
+    {
+        "key": "ctrl+space o",
+        "command": "outline.focus"
     }
 ]
