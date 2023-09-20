@@ -15,7 +15,7 @@ or one of the following directories for user-wise scope.
 
 
 
-## Must-have Plugins
+## Useful Plugins
 - Vim
 - Jumpy2 (compatible with Vim)
 - GitHub Copilot
@@ -47,6 +47,8 @@ or one of the following directories for user-wise scope.
 
 <f8>: go to next problem
 <shift-f8> go to previous problem
+
+block + <alt-shift-i>: multiple cursors at the end of each line
 ```
 
 
@@ -105,5 +107,14 @@ gq: quick fix
 
 gb: multiselect
 ```
+
+
+## Glassit
+Make window transparent
+```
+<c-shift-z>: make more transparent
+<c-shift-c>: make more opaque
+```
+
 
 
