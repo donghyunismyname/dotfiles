@@ -49,7 +49,7 @@
 
 
     // Extension for make vscode transparent
-    "glassit.alpha": 240,
+    "glassit.alpha": 255,
 
 
 
