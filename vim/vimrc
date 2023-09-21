@@ -246,7 +246,7 @@ command! -complete=dir -nargs=* F        call FzfSmart(<q-args>)
 " Invoke F (FZF) Using Ctrl-P
 " nmap <C-P> :bw<cr>:F<CR>
 " nmap <C-P> :F<CR>
-nmap <leader><leader> :History<cr>
+" nmap <leader><leader> :History<cr>
 nmap <leader>o :F<cr>
 
 
