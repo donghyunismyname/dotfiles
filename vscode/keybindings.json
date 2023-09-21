@@ -301,5 +301,15 @@
     {
         "key": "ctrl+w",
         "command": "-workbench.action.closeActiveEditor"
+    },
+    {
+        "key": "space",
+        "command": "-jumpy2.exit",
+        "when": "editorTextFocus && jumpy2.jump-mode"
+    },
+    {
+        "key": "backspace",
+        "command": "-jumpy2.reset",
+        "when": "editorTextFocus && jumpy2.jump-mode"
     }
 ]
