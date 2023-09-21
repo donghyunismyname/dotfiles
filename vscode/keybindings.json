@@ -282,14 +282,6 @@
         "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode == 'Normal' && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
     },
     {
-        "key": "ctrl+q",
-        "command": "workbench.action.closeActiveEditor"
-    },
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeActiveEditor"
-    },
-    {
         "key": "ctrl+space t",
         "command": "workbench.action.createTerminalEditor"
     },
@@ -301,5 +293,13 @@
     {
         "key": "ctrl+space o",
         "command": "outline.focus"
+    },
+    {
+        "key": "ctrl+q",
+        "command": "workbench.action.closeActiveEditor"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeActiveEditor"
     }
 ]
