@@ -98,16 +98,14 @@ vnoremap P "*Pgv"*y
 
 
 "indent/unindent faster
-vnoremap > >gv
-vnoremap < <gv
-nnoremap > >>
-nnoremap < <<
+vnoremap > >gvllll
+vnoremap < <gvhhhh
+nnoremap > >>llll
+nnoremap < <<hhhh
 
 
 "left/down/up/left faster
 noremap H ^
-noremap J 5j
-noremap K 5k
 noremap L $
 
 
