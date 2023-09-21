@@ -81,8 +81,9 @@ block + <alt-shift-i>: multiple cursors at the end of each line
 ## Custom VSCodeVim Settings
 ```
 - inoremap jk <esc>
-- nnoremap > >>
-- vnoremap > >gv
+- nnoremap > >>llll
+- vnoremap > >gvllll
+- noremap L $
 - Yanked text is blinked yellow
 - Use system clipboard for yank and paste
 - For x, d, c, internal clipboard is used
