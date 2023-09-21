@@ -23,6 +23,13 @@ Plug 'kqito/vim-easy-replace'
 " <leader>rc use word under current cursor
 
 
+Plug 'michaeljsmith/vim-indent-object'
+
+
+Plug 'bkad/CamelCaseMotion'
+let g:camelcasemotion_key = '<leader>'
+
+
 " Plug 'SirVer/ultisnips'
 " Plug 'honza/vim-snippets'
 " Plug 'jayli/vim-easycomplete'
