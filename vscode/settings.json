@@ -58,11 +58,13 @@
     "vim.sneak": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
     "vim.replaceWithRegister": false,
+    "vim.camelCaseMotion.enable": true,
+    "vim.hlsearch": true,
     "vim.leader": "<space>",
 
     // Highlighted yank
     "vim.highlightedyank.enable": true,
-    "vim.highlightedyank.duration": 1000,
+    "vim.highlightedyank.duration": 500,
     "vim.highlightedyank.color": "rgba(255, 255, 0, 1)",
     "vim.highlightedyank.textColor": "rgba(0, 0, 0, 1)",
 
@@ -79,7 +81,7 @@
         "<C-k>": false, // up
         "<C-l>": false, // right
 
-        "<C-q>": false, // quit (close window)
+        "<C-q>": true, // quit (close window)
         "<C-e>": false, // explorer
 
         "<C-m>": false, // multiselect
@@ -133,6 +135,17 @@
         },
     ],
 
+    "vim.operatorPendingModeKeyBindings": [
+        {
+            "before": ["L"],
+            "after": ["$"]
+        },
+        {
+            "before": ["H"],
+            "after": ["^"]
+        }
+    ],
+
     "vim.normalModeKeyBindingsNonRecursive": [
         // HJKL
         {
@@ -143,23 +156,27 @@
             "before": ["L"],
             "after": ["$"],
         },
-        {
-            "before": ["J"],
-            "after": ["5", "j"],
-        },
-        {
-            "before": ["K"],
-            "after": ["5", "k"],
-        },
+        // {
+        //     "before": ["J"],
+        //     "after": ["5", "j"],
+        // },
+        // {
+        //     "before": ["k"],
+        //     "after": ["5", "k"],
+        // },
 
-        // INDENT
+        // indent
         {
             "before": ["<"],
-            "after": ["<", "<"],
+            "commands": [
+                "editor.action.outdentLines"
+            ],
         },
         {
             "before": [">"],
-            "after": [">", ">"],
+            "commands": [
+                "editor.action.indentLines"
+            ],
         },
 
         // Yank & Paste
@@ -192,23 +209,27 @@
             "before": ["L"],
             "after": ["$"],
         },
-        {
-            "before": ["J"],
-            "after": ["5", "j"],
-        },
-        {
-            "before": ["K"],
-            "after": ["5", "k"],
-        },
+        // {
+        //     "before": ["J"],
+        //     "after": ["5", "j"],
+        // },
+        // {
+        //     "before": ["K"],
+        //     "after": ["5", "k"],
+        // },
 
         // Indent
         {
             "before": ["<"],
-            "after": ["<","g","v"],
+            "commands": [
+                "editor.action.outdentLines"
+            ],
         },
         {
             "before": [">"],
-            "after": [">","g","v"],
+            "commands": [
+                "editor.action.indentLines"
+            ],
         },
 
         // Yank & Paste
