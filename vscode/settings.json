@@ -133,6 +133,16 @@
           "before": ["g", "p", "t"],
           "commands": ["editor.action.peekTypeDefinition"]
         },
+
+
+        {
+          "before": ["leader", "o"],
+          "commands": ["workbench.action.quickOpen"],
+        },
+        {
+          "before": ["leader", "q"],
+          "commands": ["workbench.action.closeActiveEditor"],
+        },
     ],
 
     "vim.operatorPendingModeKeyBindings": [
@@ -250,4 +260,6 @@
             "after": ["\"","*","p","g","v","\"","*","y"],
         },
     ],
+    "editor.lineNumbers": "relative",
+    "editor.smoothScrolling": true,
 }
