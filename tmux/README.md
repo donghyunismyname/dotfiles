@@ -11,6 +11,7 @@ ctrl-q:
 
 ctrl-w: 
     [vim-insert] delete previous word
+    [vim-normal] window management prefix
     [windows] close tap
 
 ctrl-e: 
@@ -34,12 +35,14 @@ ctrl-u:
 
 ctrl-i:
     [vim-normal] go to next position (cf. ctrl-o)
+    [terminal] tab
 
 ctrl-o:
     [vim-normal] go to previous position (cf. ctrl-i)
 
 ctrl-p:
     [emacs/shell] previous item (cf. ctrl-n)
+    [vim-insert] previous item suggestion
 
 ctrl-a:
     [emacs/shell] go to front of line (cf. ctrl-e)
@@ -52,6 +55,7 @@ ctrl-s:
 
 ctrl-d:
     [vim-normal] page down
+    [emacs/terminal] delete character forward
     [vscode] multiselect
 
 ctrl-f:
@@ -98,6 +102,10 @@ ctrl-b:
 
 ctrl-n:
     [emacs/shell] next item (cf. ctrl-p)
+    [vim-insert] next item suggestion
+
+ctrl-m
+    [terminal] carriage return
 ```
 
 
