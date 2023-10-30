@@ -56,12 +56,11 @@ block + <alt-shift-i>: multiple cursors at the end of each line
 ## Custom Bindings
 
 ```
-<c-space>n: trigger suggestion
+<c-space><space>: trigger suggestion
 <c-space>t: open new terminal in editor area (<c-w> to close)
 <c-space>o: focus on outline view
 
 <c-m>: multiselect (originally <c-d>, also works by gb)
-<c-q>: close editor
 <c-d>: kill terminal
 
 <c-[hjkl]>: move among editor groups
