@@ -81,7 +81,8 @@
         "<C-k>": false, // up
         "<C-l>": false, // right
 
-        "<C-q>": true, // quit (close window)
+        "<C-q>": false, // quit (close window)
+        "<C-w>": false, // close tab
         "<C-e>": false, // explorer
 
         "<C-m>": false, // multiselect

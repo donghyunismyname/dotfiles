@@ -1,6 +1,6 @@
 // Place your key bindings in this file to override the defaults
 [
-    // <c-space><space> to toggle between terminal and editor focus
+    // <c-enter> to toggle between terminal and editor focus
     {
         "key": "ctrl+enter",
         "command": "workbench.action.focusActiveEditorGroup",
@@ -102,7 +102,7 @@
 
     // <c-space>n to trigger suggestions
     {
-        "key": "ctrl+space n",
+        "key": "ctrl+space space",
         "command": "editor.action.triggerParameterHints",
         "when": "editorHasSignatureHelpProvider && editorTextFocus"
     },
@@ -112,7 +112,7 @@
         "when": "editorHasSignatureHelpProvider && editorTextFocus"
     },
     {
-        "key": "ctrl+space n",
+        "key": "ctrl+space space",
         "command": "editor.action.triggerSuggest",
         "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
     },
@@ -181,16 +181,20 @@
     },
 
 
-    // <c-t> to open terminal in editor area
+    // <c-space>t to open terminal in editor area
+    {
+        "key": "ctrl+space t",
+        "command": "workbench.action.createTerminalEditor"
+    },
     {
         "key": "ctrl+d",
         "command": "workbench.action.terminal.killEditor",
         "when": "terminalEditorFocus"
     },
     {
-        "key": "ctrl+w",
-        "command": "-workbench.action.terminal.killEditor",
-        "when": "terminalEditorFocus && terminalFocus && terminalHasBeenCreated && resourceScheme == 'vscode-terminal' || terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+        "key": "ctrl+d",
+        "command": "workbench.action.terminal.kill",
+        "when": "panelFocus"
     },
 
 
@@ -237,7 +241,7 @@
     },
 
 
-    // Hover over previews
+    // Scroll previews
     {
         "key": "h",
         "command": "editor.action.scrollLeftHover",
@@ -260,56 +264,9 @@
     },
 
 
-    // Reopen closed editor
-    {
-        "key": "up",
-        "command": "cursorUp",
-        "when": "editorTextFocus && vim.active && !inDebugRepl && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
-      },
-      {
-        "key": "down",
-        "command": "cursorDown",
-        "when": "editorTextFocus && vim.active && !inDebugRepl && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
-      },
-      {
-        "key": "k",
-        "command": "cursorUp",
-        "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode == 'Normal' && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
-      },
-      {
-        "key": "j",
-        "command": "cursorDown",
-        "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode == 'Normal' && !suggestWidgetMultipleSuggestions && !suggestWidgetVisible"
-    },
-    {
-        "key": "ctrl+space t",
-        "command": "workbench.action.createTerminalEditor"
-    },
-    {
-        "key": "ctrl+d",
-        "command": "workbench.action.terminal.kill",
-        "when": "panelFocus"
-    },
+    // Focus outline
     {
         "key": "ctrl+space o",
         "command": "outline.focus"
     },
-    {
-        "key": "ctrl+q",
-        "command": "workbench.action.closeActiveEditor"
-    },
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeActiveEditor"
-    },
-    {
-        "key": "space",
-        "command": "-jumpy2.exit",
-        "when": "editorTextFocus && jumpy2.jump-mode"
-    },
-    {
-        "key": "backspace",
-        "command": "-jumpy2.reset",
-        "when": "editorTextFocus && jumpy2.jump-mode"
-    }
 ]
