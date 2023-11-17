@@ -86,16 +86,16 @@ inoremap jk <esc>
 
 
 "use system clipboard for yank and paste
-nnoremap y "*y
-nnoremap Y "*y$
-nnoremap p "*p
-nnoremap P "*P
+" nnoremap y "*y
+" nnoremap Y "*y$
+" nnoremap p "*p
+" nnoremap P "*P
 "after yanking, visual mode keeps going
-vnoremap y "*ygv
-vnoremap Y "*ygv
+vmap y ygv
+vmap Y ygv
 "paste without overriding current register
-vnoremap p "*pgv"*y
-vnoremap P "*Pgv"*y
+vmap p pgvy
+vmap P Pgvy
 
 
 "indent/unindent faster
