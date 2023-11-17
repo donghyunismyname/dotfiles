@@ -2,6 +2,15 @@
 git config --global pager.status false
 
 
+# git default editor vim
+git config --global core.editor "vim"
+
+
+# git log made pretty
+git config --global log.date short
+git config --global format.pretty "format:%C(auto)%h %C(green)%ad %C(white)%s%C(auto)%d"
+
+
 # git diff pretty
 git config --global core.pager "diff-so-fancy | less --tabs=4"
 git config --global interactive.diffFilter "diff-so-fancy --patch"
@@ -23,6 +32,3 @@ git config --global color.diff.new        "green bold"
 git config --global color.diff.whitespace "red reverse"
 
 
-# git log made pretty
-git config --global log.date short
-git config --global format.pretty "format:%C(auto)%h %C(green)%ad %C(white)%s%C(auto)%d"
