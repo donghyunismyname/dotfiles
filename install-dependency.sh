@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -x # show commands
-set -e # terminate on error
+# set -e # terminate on error
 
 mkdir -p ~/install/
 
