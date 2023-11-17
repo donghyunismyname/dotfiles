@@ -158,8 +158,8 @@ let g:airline#extensions#whitespace#enabled=0
 
 
 " plugin: vim-easymotion
-nnoremap <cr> <Plug>(easymotion-overwin-w)
-vnoremap <cr> <Plug>(easymotion-bd-jk)
+nmap <cr> <Plug>(easymotion-overwin-w)
+vmap <cr> <Plug>(easymotion-bd-jk)
 
 " Better than vim default search
 map  / <Plug>(easymotion-sn)
