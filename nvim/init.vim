@@ -4,6 +4,11 @@ let &packpath=&runtimepath
 source ~/.vimrc
 
 
+" highlight yanked text
+au TextYankPost * silent!
+\ lua vim.highlight.on_yank { higroup="IncSearch", timeout=200 }
+
+
 " vim-plug: Vim Plugin Manager
 call plug#begin()
 
@@ -41,12 +46,5 @@ let g:camelcasemotion_key = '<leader>'
 
 call plug#end()
 lua require('hop').setup()
-
-
-" highlight yanked text
-au TextYankPost * silent!
-\ lua vim.highlight.on_yank { higroup="IncSearch", timeout=200 }
-
-
 
 
