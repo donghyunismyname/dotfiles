@@ -171,6 +171,9 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command into clipboard'"
 
 
+# Sometimes cdhist is installed here
+export PATH=$PATH:$HOME/.local/bin
+
 # cdhist
 if type cdhist &>/dev/null; then
     . <(cdhist -i)
