@@ -119,10 +119,6 @@ noremap L $
 let mapleader = " "
 
 
-"exit visual mode
-vnoremap <leader> <c-c>
-
-
 "split panes
 nnoremap <leader>h :vs<cr>
 nnoremap <leader>j :sp<cr><c-w>j
