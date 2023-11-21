@@ -33,6 +33,7 @@ Run the installation script:
 ```
 sh install-dependency.sh
 sh install-symlink.sh
+sh configure-git.sh
 ```
 It's likely that things do not work.
 In that case, please install manually following the scripts.
