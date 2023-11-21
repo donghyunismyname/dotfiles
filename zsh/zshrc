@@ -187,7 +187,7 @@ export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
 # zsh theme agnoster newline
 prompt_end() {
-if [[ -n $CURRENT_BG ]]; then
+  if [[ -n $CURRENT_BG ]]; then
     echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
   else
     echo -n "%{%k%}"
