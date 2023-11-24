@@ -173,6 +173,11 @@ hi CurrentWord ctermbg=237
 hi CurrentWordTwins ctermbg=237
 
 
+" plugin: kqito/vim-easy-replace
+vnoremap r :<c-u>EasyReplaceWordInVisual<cr>
+vnoremap R :<c-u>EasyReplaceCwordInVisual<cr>
+
+
 
 
 "plugin: vim-fzf
