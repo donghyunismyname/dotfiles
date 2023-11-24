@@ -29,11 +29,11 @@ Mostly like you can use `apt` or `brew` to install them.
 
 
 ## Installation
-Run the installation script:
+Run the installation script inside project diretory
 ```
-sh install-dependency.sh
-sh install-symlink.sh
-sh configure-git.sh
+dotfiles$ sh install-dependency.sh
+dotfiles$ sh install-symlink.sh
+dotfiles$ sh configure-git.sh
 ```
 It's likely that things do not work.
 In that case, please install manually following the scripts.
