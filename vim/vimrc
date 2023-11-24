@@ -132,7 +132,7 @@ nnoremap <leader>q :q<cr>
 
 
 "reload .vimrc
-nnoremap <leader>r :source $MYVIMRC<cr>
+" nnoremap <leader>r :source $MYVIMRC<cr>
 
 
 " plugin: vim-commentary
@@ -167,6 +167,10 @@ map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
 
+" plugin: vim_current_word
+" let g:vim_current_word#highlight_delay = 1000 " milliseconds
+hi CurrentWord ctermbg=237
+hi CurrentWordTwins ctermbg=237
 
 
 
