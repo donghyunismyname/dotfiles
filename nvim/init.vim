@@ -12,13 +12,15 @@ au TextYankPost * silent!
 " vim-plug: Vim Plugin Manager
 call plug#begin()
 
-
-Plug 'rlane/pounce.nvim'
-map s <cmd>Pounce<cr>
-map S <cmd>PounceRepeat<cr>
+Plug 'ggandor/lightspeed.nvim'
 
 
-Plug 'phaazon/hop.nvim'
+" Plug 'rlane/pounce.nvim'
+" map s <cmd>Pounce<cr>
+" map S <cmd>PounceRepeat<cr>
+
+
+" Plug 'phaazon/hop.nvim'
 " map <cr> <cmd>HopWordMW<cr>
 
 
@@ -36,16 +38,25 @@ Plug 'bkad/CamelCaseMotion'
 let g:camelcasemotion_key = '<leader>'
 
 
-" Plug 'SirVer/ultisnips'
-" Plug 'honza/vim-snippets'
-" Plug 'jayli/vim-easycomplete'
-" noremap gr :EasyCompleteReference<CR>
-" noremap gd :EasyCompleteGotoDefinition<CR>
-" noremap rn :EasyCompleteRename<CR>
-" noremap gb :BackToOriginalBuffer<CR>
+Plug 'SirVer/ultisnips'
+Plug 'jayli/vim-easycomplete'
+noremap gr :EasyCompleteReference<CR>
+noremap gd :EasyCompleteGotoDefinition<CR>
+noremap rn :EasyCompleteRename<CR>
+noremap gb :BackToOriginalBuffer<CR>
+let g:easycomplete_diagnostics_enable = 1
+let g:easycomplete_signature_enable = 1
+let g:easycomplete_tabnine_enable = 1
+let g:easycomplete_cursor_word_hl = 1
+let g:easycomplete_nerd_font = 1
+
+
+" Plug 'dense-analysis/ale'
+" let g:ale_enabled = 1
+" let g:ale_completion_enabled = 1
+" let g:ale_lint_on_text_changed = 1
 
 
 call plug#end()
-lua require('hop').setup()
 
 
