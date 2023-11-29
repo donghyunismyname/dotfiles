@@ -38,23 +38,26 @@ Plug 'bkad/CamelCaseMotion'
 let g:camelcasemotion_key = '<leader>'
 
 
-Plug 'SirVer/ultisnips'
-Plug 'jayli/vim-easycomplete'
-noremap gr :EasyCompleteReference<CR>
-noremap gd :EasyCompleteGotoDefinition<CR>
-noremap rn :EasyCompleteRename<CR>
-noremap gb :BackToOriginalBuffer<CR>
-let g:easycomplete_diagnostics_enable = 1
-let g:easycomplete_signature_enable = 1
-let g:easycomplete_tabnine_enable = 1
-let g:easycomplete_cursor_word_hl = 1
-let g:easycomplete_nerd_font = 1
+" Plug 'SirVer/ultisnips'
+" Plug 'jayli/vim-easycomplete'
+" noremap gr :EasyCompleteReference<CR>
+" noremap gd :EasyCompleteGotoDefinition<CR>
+" noremap rn :EasyCompleteRename<CR>
+" noremap gb :BackToOriginalBuffer<CR>
+" let g:easycomplete_diagnostics_enable = 1
+" let g:easycomplete_signature_enable = 1
+" let g:easycomplete_tabnine_enable = 1
+" let g:easycomplete_cursor_word_hl = 1
+" let g:easycomplete_nerd_font = 1
 
 
-" Plug 'dense-analysis/ale'
-" let g:ale_enabled = 1
-" let g:ale_completion_enabled = 1
-" let g:ale_lint_on_text_changed = 1
+noremap gr :ALEFindReferences<cr>
+noremap gd :ALEGoToDefinition<cr>
+noremap gh :ALEHover<cr>
+noremap ? :ALESymbolSearch<space>
+let g:ale_completion_enabled = 1
+set omnifunc=ale#completion#OmniFunc
+Plug 'dense-analysis/ale'
 
 
 call plug#end()
