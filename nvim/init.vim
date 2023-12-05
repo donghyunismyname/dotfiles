@@ -31,11 +31,11 @@ Plug 'ggandor/lightspeed.nvim'
 " <leader>rc use word under current cursor
 
 
-Plug 'michaeljsmith/vim-indent-object'
+" Plug 'michaeljsmith/vim-indent-object'
 
 
-Plug 'bkad/CamelCaseMotion'
-let g:camelcasemotion_key = '<leader>'
+" Plug 'bkad/CamelCaseMotion'
+" let g:camelcasemotion_key = '<leader>'
 
 
 " Plug 'SirVer/ultisnips'
@@ -61,5 +61,4 @@ Plug 'dense-analysis/ale'
 
 
 call plug#end()
-
 
