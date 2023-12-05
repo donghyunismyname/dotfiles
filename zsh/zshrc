@@ -152,7 +152,7 @@ alias rm="move_to_trash"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # fzf bindkey
-bindkey '^G' fzf-cd-widget
+bindkey '^O' fzf-cd-widget
 
 # fzf-cd-widget preview
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"

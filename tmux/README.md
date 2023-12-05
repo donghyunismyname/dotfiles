@@ -2,34 +2,34 @@
 
 There are preexisting `ctrl` bindings.
 You may want to consider them when chooing tmux prefix key.
-`ctrl-space` is the best; however, in some terminal environment 
+`ctrl-space` is the best; however, in some terminal environment
 it is not recognized.
 
 ```
-ctrl-q: 
+ctrl-q:
     [shell] release terminal output (cf. ctrl-s)
 
-ctrl-w: 
+ctrl-w:
     [vim-insert] delete previous word
     [vim-normal] window management prefix
     [windows] close tap
 
-ctrl-e: 
+ctrl-e:
     [emacs/shell] move to end of line (cf. ctrl-a)
 
-ctrl-r: 
+ctrl-r:
     [vim-normal] redo
     [fzf-custom] command history
 
-ctrl-t: 
+ctrl-t:
     [vim-insert] indent (cf. ctrl-d)
     [fzf-custom] find file
 
-ctrl-y: 
+ctrl-y:
     [emacs/shell] yank (paste, cf. ctrl-u)
     [windows] redo
 
-ctrl-u: 
+ctrl-u:
     [emacs/shell] cut
     [vim-normal] page up
 
@@ -54,6 +54,7 @@ ctrl-s:
     [windows] save
 
 ctrl-d:
+    [shell] exit
     [vim-normal] page down
     [emacs/terminal] delete character forward
     [vscode] multiselect
