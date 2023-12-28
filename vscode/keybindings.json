@@ -1,217 +1,53 @@
-// Place your key bindings in this file to override the defaults
+// Place your key bindings in this file to override the default
 [
-    // <c-enter> to toggle between terminal and editor focus
-    {
-        "key": "ctrl+enter",
-        "command": "workbench.action.focusActiveEditorGroup",
-        "when": "inOutput || !editorFocus",
-    },
-    {
-        "key": "ctrl+enter",
-        "command": "workbench.action.focusPanel",
-        "when": "!focusedView && !panelFocus"
-    },
-
-
-    // <c-m> to multiselect
+    // Multiple Cursors Find Next Match
     {
         "key": "ctrl+m",
         "command": "editor.action.addSelectionToNextFindMatch",
         "when": "editorFocus"
     },
-    {
-        "key": "ctrl+t",
-        "command": "-editor.action.addSelectionToNextFindMatch",
-        "when": "editorFocus"
-    },
 
 
-    // <c-[hjkl]> to navigate among panes
+    // ctrl+enter to switch focus
+    // {
+    //     "key": "ctrl+enter",
+    //     "command": "workbench.action.focusActiveEditorGroup",
+    //     "when": "inOutput || !editorFocus"
+    // },
+    // {
+    //     "key": "ctrl+enter",
+    //     "command": "workbench.action.focusPanel",
+    //     "when": "!focusedView && !panelFocus"
+    // },
+
+
+    // Navigate Left Down Up Right
     {
-        "key": "ctrl+k",
-        "command": "workbench.action.focusAboveGroup",
-        "when": "!panelFocus && !focusedView"
-    },
-    {
-        "key": "ctrl+k ctrl+up",
-        "command": "-workbench.action.focusAboveGroup"
+        "key": "ctrl+h",
+        "command": "workbench.action.navigateLeft",
     },
     {
         "key": "ctrl+j",
-        "command": "workbench.action.focusBelowGroup",
-        "when": "!focusedView && !panelFocus"
+        "command": "workbench.action.navigateDown",
     },
     {
-        "key": "ctrl+k ctrl+down",
-        "command": "-workbench.action.focusBelowGroup"
-    },
-    {
-        "key": "ctrl+h",
-        "command": "workbench.action.focusLeftGroup",
-        "when": "!focusedView && !panelFocus"
-    },
-    {
-        "key": "ctrl+k ctrl+left",
-        "command": "-workbench.action.focusLeftGroup"
+        "key": "ctrl+k",
+        "command": "workbench.action.navigateUp",
     },
     {
         "key": "ctrl+l",
-        "command": "workbench.action.focusRightGroup",
-        "when": "!focusedView && !panelFocus"
-    },
-    {
-        "key": "ctrl+k ctrl+right",
-        "command": "-workbench.action.focusRightGroup"
-    },
-
-
-    // <c-space>[hjkl] to split panes
-    {
-        "key": "ctrl+space h",
-        "command": "workbench.action.splitEditorLeft"
-    },
-    {
-        "key": "ctrl+k ctrl+oem_5",
-        "command": "-workbench.action.splitEditorLeft"
-    },
-    {
-        "key": "ctrl+space k",
-        "command": "workbench.action.splitEditorUp"
-    },
-    {
-        "key": "ctrl+k ctrl+oem_5",
-        "command": "-workbench.action.splitEditorUp"
-    },
-    {
-        "key": "ctrl+space l",
-        "command": "workbench.action.splitEditorRight"
-    },
-    {
-        "key": "ctrl+k ctrl+oem_5",
-        "command": "-workbench.action.splitEditorRight"
-    },
-    {
-        "key": "ctrl+space j",
-        "command": "workbench.action.splitEditorDown"
-    },
-    {
-        "key": "ctrl+k ctrl+oem_5",
-        "command": "-workbench.action.splitEditorDown"
-    },
-
-
-    // <c-space>n to trigger suggestions
-    {
-        "key": "ctrl+space space",
-        "command": "editor.action.triggerParameterHints",
-        "when": "editorHasSignatureHelpProvider && editorTextFocus"
-    },
-    {
-        "key": "ctrl+shift+space",
-        "command": "-editor.action.triggerParameterHints",
-        "when": "editorHasSignatureHelpProvider && editorTextFocus"
-    },
-    {
-        "key": "ctrl+space space",
-        "command": "editor.action.triggerSuggest",
-        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
-    },
-    {
-        "key": "ctrl+space",
-        "command": "-editor.action.triggerSuggest",
-        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
-    },
-
-
-    // <c-[pn]> to navigate quick menu
-    {
-        "key": "ctrl+j",
-        "command": "workbench.action.quickOpenNavigateNext",
-        "when": "inQuickOpen"
-    },
-    {
-        "key": "ctrl+k",
-        "command": "workbench.action.quickOpenNavigatePrevious",
-        "when": "inQuickOpen"
-    },
-
-
-    // <c-[,.]> to naviagate tabs/terminals instead of <c-pageup/down>
-    {
-        "key": "ctrl+k",
-        "command": "workbench.action.terminal.focusPrevious",
-        "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
-    },
-    {
-        "key": "ctrl+pageup",
-        "command": "-workbench.action.terminal.focusPrevious",
-        "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
+        "command": "workbench.action.navigateRight",
     },
     {
         "key": "ctrl+j",
-        "command": "workbench.action.terminal.focusNext",
-        "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
+        "command": "workbench.action.nextSideBarView",
+        "when": "sideBarFocus",
     },
     {
-        "key": "ctrl+pagedown",
-        "command": "-workbench.action.terminal.focusNext",
-        "when": "terminalFocus && terminalHasBeenCreated && !terminalEditorFocus || terminalFocus && terminalProcessSupported && !terminalEditorFocus"
+        "key": "ctrl+k",
+        "command": "workbench.action.previousSideBarView",
+        "when": "sideBarFocus",
     },
-    {
-        "key": "ctrl+oem_period",
-        "command": "workbench.action.nextEditorInGroup",
-        "when": "editorFocus || terminalEditorFocus"
-    },
-    {
-        "key": "ctrl+k ctrl+pagedown",
-        "command": "-workbench.action.nextEditorInGroup"
-    },
-    {
-        "key": "ctrl+oem_comma",
-        "command": "workbench.action.previousEditorInGroup",
-        "when": "editorFocus || terminalEditorFocus"
-    },
-    {
-        "key": "ctrl+k ctrl+pageup",
-        "command": "-workbench.action.previousEditorInGroup"
-    },
-    {
-        "key": "ctrl+oem_comma",
-        "command": "-workbench.action.openSettings"
-    },
-
-
-    // <c-space>t to open terminal in editor area
-    {
-        "key": "ctrl+space t",
-        "command": "workbench.action.createTerminalEditor"
-    },
-    {
-        "key": "ctrl+d",
-        "command": "workbench.action.terminal.killEditor",
-        "when": "terminalEditorFocus"
-    },
-    {
-        "key": "ctrl+d",
-        "command": "workbench.action.terminal.kill",
-        "when": "panelFocus"
-    },
-
-
-    // <c-space><c-space> to zoom in/out
-    {
-        "key": "ctrl+space ctrl+space",
-        "command": "workbench.action.toggleEditorWidths",
-        "when": "!panelFocus"
-    },
-    {
-        "key": "ctrl+space ctrl+space",
-        "command": "workbench.action.toggleMaximizedPanel",
-        "when": "panelFocus"
-    },
-
-
-    // Movement in Panel
     {
         "key": "ctrl+l",
         "command": "workbench.action.nextPanelView",
@@ -222,9 +58,96 @@
         "command": "workbench.action.previousPanelView",
         "when": "panelFocus"
     },
+
+
+    // Move among tabs
+    {
+        "key": "ctrl+oem_period",
+        "command": "workbench.action.nextEditorInGroup",
+        "when": "!sideBarFocus && !panelFocus",
+    },
+    {
+        "key": "ctrl+oem_comma",
+        "command": "workbench.action.previousEditorInGroup",
+        "when": "!sideBarFocus && !panelFocus",
+    },
+    {
+        "key": "ctrl+oem_comma",
+        "command": "-workbench.action.openSettings"
+    },
+
+
+    // Split Editor
+    {
+        "key": "ctrl+shift+h",
+        "command": "workbench.action.splitEditorLeft"
+    },
+    {
+        "key": "ctrl+shift+k",
+        "command": "workbench.action.splitEditorUp"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "workbench.action.splitEditorRight"
+    },
+    {
+        "key": "ctrl+shift+j",
+        "command": "workbench.action.splitEditorDown"
+    },
+
+
+    // Trigger Suggest
+    // {
+    //     "key": "ctrl+space space",
+    //     "command": "editor.action.triggerParameterHints",
+    //     "when": "editorHasSignatureHelpProvider && editorTextFocus"
+    // },
+    // {
+    //     "key": "ctrl+shift+space",
+    //     "command": "-editor.action.triggerParameterHints",
+    //     "when": "editorHasSignatureHelpProvider && editorTextFocus"
+    // },
+    // {
+    //     "key": "ctrl+space space",
+    //     "command": "editor.action.triggerSuggest",
+    //     "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    // },
+    // {
+    //     "key": "ctrl+space",
+    //     "command": "-editor.action.triggerSuggest",
+    //     "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    // },
+
+
+    // Zoom toggle
+    {
+        // "key": "ctrl+space ctrl+space",
+        "key": "ctrl+enter",
+        "command": "workbench.action.toggleEditorWidths",
+        "when": "!panelFocus"
+    },
+    {
+        // "key": "ctrl+space ctrl+space",
+        "key": "ctrl+enter",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": "panelFocus"
+    },
+
+
+    // Quick Open
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.quickOpenNavigateNext",
+        "when": "inQuickOpen"
+    },
     {
         "key": "ctrl+n",
         "command": "workbench.action.quickOpenNavigateNext",
+        "when": "inQuickOpen"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.quickOpenNavigatePrevious",
         "when": "inQuickOpen"
     },
     {
@@ -234,14 +157,28 @@
     },
 
 
-    // Disable this shortcut
+    // Terminal
+    {
+        "key": "ctrl+shift+t",
+        "command": "workbench.action.createTerminalEditor"
+    },
+
+
+    // Disable Ctrl+Shift+W
     {
         "key": "ctrl+shift+w",
         "command": "-workbench.action.closeWindow"
     },
 
 
-    // Scroll previews
+    // Disable ctrl+p
+    {
+        "key": "ctrl+p",
+        "command": "-workbench.action.quickOpen"
+    },
+
+
+    // Hover
     {
         "key": "h",
         "command": "editor.action.scrollLeftHover",
@@ -264,9 +201,27 @@
     },
 
 
-    // Focus outline
+
+    // Jumpy2
     {
-        "key": "ctrl+space o",
-        "command": "outline.focus"
+        "key": "ctrl+oem_1",
+        "command": "jumpy2.toggle",
+        "when": "editorTextFocus"
     },
+    {
+        "key": "shift+enter",
+        "command": "-jumpy2.toggle",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+oem_7",
+        "command": "jumpy2.toggleSelection",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+enter",
+        "command": "-jumpy2.toggleSelection",
+        "when": "editorTextFocus"
+    },
+
 ]

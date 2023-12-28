@@ -24,8 +24,6 @@ or one of the following directories for user-wise scope.
 
 ## Useful Default Bindings
 ```
-<c-shift-t>: reopen closed editor
-
 <c-`>: toggle terminal
 <c-b>: toggle primary side bar
 <alt-z>: toggle word wrap mode
@@ -33,6 +31,8 @@ or one of the following directories for user-wise scope.
 
 <c-e>: go to file
 <c-E>: open explorer
+
+<c-O>: outline movement
 
 <c-f>: find
 <c-F>: open search
@@ -49,6 +49,7 @@ or one of the following directories for user-wise scope.
 <shift-f8> go to previous problem
 
 block + <alt-shift-i>: multiple cursors at the end of each line
+<alt+shift+up> / <alt+shift+down>
 ```
 
 
@@ -56,18 +57,14 @@ block + <alt-shift-i>: multiple cursors at the end of each line
 ## Custom Bindings
 
 ```
-<c-space><space>: trigger suggestion
-<c-space>t: open new terminal in editor area (<c-w> to close)
-<c-space>o: focus on outline view
+<c-shift-t>: open new terminal in editor area (<c-w> to close)
 
 <c-m>: multiselect (originally <c-d>, also works by gb)
-<c-d>: kill terminal
 
-<c-[hjkl]>: move among editor groups
-<c-space>[hjkl]: split editor to desired direction
+<c-[hjkl]>: navigate
+<c-shift-[hjkl]>: split editor to desired direction
 
-<c-space><c-space>: zoom in/out
-<c-space><enter>: move focus to panel/back to editor
+<c-enter>: zoom in/out
 
 <c-[pn]> or <c-[kj]>: navigate to previous/next item in quick open menu
 <c-[,.]>: navigate to previous/next tab (previously <c-pageup/down>)
