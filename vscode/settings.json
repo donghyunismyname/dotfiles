@@ -1,14 +1,15 @@
 {
+    // formatOnType
+    "editor.formatOnType": false,
 
-    // ????
-    "[python]": {
-        "editor.formatOnType": true
-    },
+    // CMake
     "cmake.configureOnOpen": true,
+    "cmake.options.statusBarVisibility": "visible",
+    "cmake.showOptionsMovedNotification": false,
 
 
     // Theme
-    "workbench.colorTheme": "Visual Studio Dark - C++",
+    "workbench.colorTheme": "Default Dark+",
 
 
     // Autosave
@@ -27,9 +28,11 @@
     "editor.rulers": [80],
     "editor.minimap.enabled": false,
     "editor.wordWrap": "off",
+    "editor.lineNumbers": "relative",
+    "editor.smoothScrolling": true,
 
 
-    // Cursorline
+    // Current line highlighted
     "editor.renderLineHighlight": "all",
     "workbench.colorCustomizations": {
         "editor.lineHighlightBackground": "#ffffff10",
@@ -38,14 +41,14 @@
 
 
     // ctrl + [hjkl] to switch between editor groups including terminal
-    "terminal.integrated.commandsToSkipShell": [
-        "workbench.action.focusAboveGroup",
-        "workbench.action.focusBelowGroup",
-        "workbench.action.focusLeftGroup",
-        "workbench.action.focusRightGroup",
-        "workbench.action.focusActiveEditorGroup",
-        "workbench.action.focusPanel"
-    ],
+    // "terminal.integrated.commandsToSkipShell": [
+    //     "workbench.action.navigateUp",
+    //     "workbench.action.focusBelowGroup",
+    //     "workbench.action.focusLeftGroup",
+    //     "workbench.action.focusRightGroup",
+    //     "workbench.action.focusActiveEditorGroup",
+    //     "workbench.action.focusPanel"
+    // ],
 
 
     // Extension for make vscode transparent
@@ -55,10 +58,11 @@
 
     // ==================== VIM ======================
     "vim.easymotion": true,
-    "vim.sneak": true,
+    "vim.surround": true,
+    "vim.sneak": false,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
     "vim.replaceWithRegister": false,
-    "vim.camelCaseMotion.enable": true,
+    "vim.camelCaseMotion.enable": false,
     "vim.hlsearch": true,
     "vim.leader": "<space>",
 
@@ -81,7 +85,7 @@
         "<C-k>": false, // up
         "<C-l>": false, // right
 
-        "<C-q>": false, // quit (close window)
+        "<C-q>": false, // Move
         "<C-w>": false, // close tab
         "<C-e>": false, // explorer
 
@@ -91,7 +95,7 @@
         "<C-a>": false, // select all
     },
 
-    // jk dda-dak to exit insert mode
+    // jk to exit insert mode
     "vim.insertModeKeyBindings": [
         {
             "before": ["j", "k"],
@@ -154,7 +158,7 @@
         {
             "before": ["H"],
             "after": ["^"]
-        }
+        },
     ],
 
     "vim.normalModeKeyBindingsNonRecursive": [
@@ -208,6 +212,35 @@
             "after": ["\"", "*", "P"],
         },
 
+        // vim.easymotion
+        {
+            "before": ["/"],
+            "after": ["leader", "leader", "/"],
+        },
+        {
+            "before": ["s"],
+            "after": ["leader", "leader", "2", "f"],
+        },
+        {
+            "before": ["S"],
+            "after": ["leader", "leader", "2", "F"],
+        },
+        {
+            "before": ["t"],
+            "after": ["leader", "leader", "t"],
+        },
+        {
+            "before": ["T"],
+            "after": ["leader", "leader", "T"],
+        },
+        {
+            "before": ["f"],
+            "after": ["leader", "leader", "f"],
+        },
+        {
+            "before": ["F"],
+            "after": ["leader", "leader", "F"],
+        },
     ],
 
     "vim.visualModeKeyBindingsNonRecursive": [
@@ -260,7 +293,35 @@
             "before": ["P"],
             "after": ["\"","*","p","g","v","\"","*","y"],
         },
+
+        // vim.easymotion
+        {
+            "before": ["/"],
+            "after": ["leader", "leader", "/"],
+        },
+        {
+            "before": ["s"],
+            "after": ["leader", "leader", "2", "f"],
+        },
+        {
+            "before": ["S"],
+            "after": ["leader", "leader", "2", "F"],
+        },
+        {
+            "before": ["t"],
+            "after": ["leader", "leader", "t"],
+        },
+        {
+            "before": ["T"],
+            "after": ["leader", "leader", "T"],
+        },
+        {
+            "before": ["f"],
+            "after": ["leader", "leader", "f"],
+        },
+        {
+            "before": ["F"],
+            "after": ["leader", "leader", "F"],
+        },
     ],
-    "editor.lineNumbers": "relative",
-    "editor.smoothScrolling": true,
 }
