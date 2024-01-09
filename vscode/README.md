@@ -24,10 +24,10 @@ or one of the following directories for user-wise scope.
 
 ## Useful Default Bindings
 ```
-<c-`>: toggle terminal
-<c-b>: toggle primary side bar
+<c-`>: toggle panel (terminal)
+<c-b>: toggle primary sidebar
 <alt-z>: toggle word wrap mode
-<command pallette> toggle vim node
+<command palette> toggle vim node
 
 <c-e>: go to file
 <c-E>: open explorer
@@ -38,6 +38,7 @@ or one of the following directories for user-wise scope.
 <c-F>: open search
 
 <c-G>: source control
+<c-g>: go to directory in terminal
 
 <f4>: next item in search
 <shift-f4>: previous item in search
@@ -57,7 +58,7 @@ block + <alt-shift-i>: multiple cursors at the end of each line
 ## Custom Bindings
 
 ```
-<c-shift-t>: open new terminal in editor area (<c-w> to close)
+<c-t>: open new terminal in editor area (<c-d> to close)
 
 <c-m>: multiselect (originally <c-d>, also works by gb)
 
@@ -69,8 +70,7 @@ block + <alt-shift-i>: multiple cursors at the end of each line
 <c-[pn]> or <c-[kj]>: navigate to previous/next item in quick open menu
 <c-[,.]>: navigate to previous/next tab (previously <c-pageup/down>)
 
-(panelFocus) <c-[hl]>: preivous/next panel view
-(panelFocus) <c-[kj]>: previous/next terminal group
+(panelFocus) <c-[kj]>: previous/next terminal in panel
 ```
 
 
