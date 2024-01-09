@@ -2,14 +2,21 @@
     // formatOnType
     "editor.formatOnType": false,
 
-    // CMake
+
+    // Cmake
     "cmake.configureOnOpen": true,
     "cmake.options.statusBarVisibility": "visible",
     "cmake.showOptionsMovedNotification": false,
 
 
-    // Theme
-    "workbench.colorTheme": "Default Dark+",
+    // Workbench
+    "workbench.colorTheme": "Visual Studio Dark - C++",
+    "workbench.sideBar.location": "left",
+    "workbench.panel.defaultLocation": "right",
+
+
+    // If the file is already open in the editor, just move focus to it instead of opening a new editor
+    "workbench.editor.revealIfOpen": true,
 
 
     // Autosave
@@ -30,30 +37,46 @@
     "editor.wordWrap": "off",
     "editor.lineNumbers": "relative",
     "editor.smoothScrolling": true,
+    "editor.renderWhitespace": "trailing",
+    "editor.stickyScroll.enabled": true,
+    "editor.fontFamily": "Consolas, 'Courier New', monospace, 'DroidSansM Nerd Font Mono'",
 
 
     // Current line highlighted
-    "editor.renderLineHighlight": "all",
+    "editor.renderLineHighlight": "none",
     "workbench.colorCustomizations": {
         "editor.lineHighlightBackground": "#ffffff10",
         // "editor.lineHighlightBorder": "#00000000",
     },
 
+    
+    // Outline made succint (ctrl+shift+O)
+    "outline.showVariables": false,
 
-    // ctrl + [hjkl] to switch between editor groups including terminal
-    // "terminal.integrated.commandsToSkipShell": [
+
+    // Input not directed to terminal
+    "terminal.integrated.commandsToSkipShell": [
     //     "workbench.action.navigateUp",
     //     "workbench.action.focusBelowGroup",
     //     "workbench.action.focusLeftGroup",
     //     "workbench.action.focusRightGroup",
     //     "workbench.action.focusActiveEditorGroup",
     //     "workbench.action.focusPanel"
-    // ],
+        "workbench.action.createTerminalEditor",
+        "workbench.action.toggleEditorWidths",
+        "workbench.action.toggleMaximizeEditorGroup",
+    ],
+    "terminal.integrated.confirmOnKill": "always",
 
 
-    // Extension for make vscode transparent
+    // ========== Extension for make vscode transparent ==========
     "glassit.alpha": 255,
 
+
+    // ========== Extension: Path Intellisense ==========
+    "typescript.suggest.paths": false,
+    "javascript.suggest.paths": false,
+    "path-intellisense.absolutePathToWorkspace": false,
 
 
     // ==================== VIM ======================
@@ -63,8 +86,9 @@
     "vim.sneakUseIgnorecaseAndSmartcase": true,
     "vim.replaceWithRegister": false,
     "vim.camelCaseMotion.enable": false,
-    "vim.hlsearch": true,
     "vim.leader": "<space>",
+    "vim.hlsearch": false,
+    "vim.inccommand": "replace",
 
     // Highlighted yank
     "vim.highlightedyank.enable": true,
@@ -72,27 +96,31 @@
     "vim.highlightedyank.color": "rgba(255, 255, 0, 1)",
     "vim.highlightedyank.textColor": "rgba(0, 0, 0, 1)",
 
-    // Use ctrl keys
+    // ctrl not directed to vim
     "vim.handleKeys": {
+        "<C-q>": false, // Open anything
+        "<C-w>": false, // close tab
+        "<C-e>": false, // explorer
+        "<C-t>": false, // Go to symbol in workspace
+        "<C-y>": false, // redo
+
+        "<C-a>": false, // select all
+        "<C-s>": false, // save
+        // "<C-d>": false, // 
+        "<C-f>": false, // find
+        "<C-g>": false, // search symbol in workspace
+
         "<C-z>": false, // undo
         "<C-x>": false, // cut
-        "<C-c>": false, // copy
+        // "<C-c>": false, // copy
         "<C-v>": false, // paste
         "<C-b>": false, // toggle primary sidebar
+        "<C-m>": false, // multiselect
 
         "<C-h>": false, // left
         "<C-j>": false, // down
         "<C-k>": false, // up
         "<C-l>": false, // right
-
-        "<C-q>": false, // Move
-        "<C-w>": false, // close tab
-        "<C-e>": false, // explorer
-
-        "<C-m>": false, // multiselect
-        "<C-y>": false, // redo
-        "<C-f>": false, // find
-        "<C-a>": false, // select all
     },
 
     // jk to exit insert mode
@@ -103,51 +131,7 @@
         }
     ],
 
-    // Language Server Protocol
-    // https://dev.to/ansonh/10-vs-code-vim-tricks-to-boost-your-productivity-1b0n#5-lsp-keybindings
     "vim.normalModeKeyBindings": [
-        {
-          "before": ["g", "p", "d"],
-          "commands": ["editor.action.peekDefinition"]
-        },
-        {
-          "before": ["g", "h"],
-          "commands": ["editor.action.showDefinitionPreviewHover"]
-        },
-        {
-          "before": ["g", "i"],
-          "commands": ["editor.action.goToImplementation"]
-        },
-        {
-          "before": ["g", "p", "i"],
-          "commands": ["editor.action.peekImplementation"]
-        },
-        {
-          "before": ["g", "q"],
-          "commands": ["editor.action.quickFix"]
-        },
-        {
-          "before": ["g", "r"],
-          "commands": ["editor.action.referenceSearch.trigger"]
-        },
-        {
-          "before": ["g", "t"],
-          "commands": ["editor.action.goToTypeDefinition"]
-        },
-        {
-          "before": ["g", "p", "t"],
-          "commands": ["editor.action.peekTypeDefinition"]
-        },
-
-
-        {
-          "before": ["leader", "o"],
-          "commands": ["workbench.action.quickOpen"],
-        },
-        {
-          "before": ["leader", "q"],
-          "commands": ["workbench.action.closeActiveEditor"],
-        },
     ],
 
     "vim.operatorPendingModeKeyBindings": [
@@ -162,6 +146,71 @@
     ],
 
     "vim.normalModeKeyBindingsNonRecursive": [
+        // Language Server Protocol
+        // https://dev.to/ansonh/10-vs-code-vim-tricks-to-boost-your-productivity-1b0n#5-lsp-keybindings
+        {
+            "before": ["g", "p", "d"],
+            "commands": ["editor.action.peekDefinition"]
+        },
+        {
+            "before": ["g", "h"],
+            "commands": ["editor.action.showDefinitionPreviewHover"]
+        },
+        {
+            "before": ["g", "i"],
+            "commands": ["editor.action.goToImplementation"]
+        },
+        {
+            "before": ["g", "p", "i"],
+            "commands": ["editor.action.peekImplementation"]
+        },
+        {
+            "before": ["g", "q"],
+            "commands": ["editor.action.quickFix"]
+        },
+        {
+            "before": ["g", "r"],
+            "commands": ["editor.action.referenceSearch.trigger"]
+        },
+        {
+            "before": ["g", "t"],
+            "commands": ["editor.action.goToTypedefinition"]
+        },
+        {
+            "before": ["g", "p", "t"],
+            "commands": ["editor.action.peekTypedefinition"]
+        },
+
+        // Leader
+        {
+            "before": ["leader", "o"],
+            "commands": ["workbench.action.quickOpen"],
+        },
+        {
+            "before": ["leader", "q"],
+            "commands": ["workbench.action.closeActiveEditor"],
+        },        
+        // {
+        //     "before": ["leader", "r"],
+        //     "commands": ["vim-search-and-replace.start"],
+        // },  
+        {
+            "before": ["leader", "v"],
+            "after": ["V", "leader", "leader", "leader", "b", "d", "j", "k"],
+        },  
+
+        // Move to next/previous occurrence of the current symbol
+        {
+            "before": [","],
+            "after": ["#"],
+        },
+        {
+            "before": ["."],
+            "after": ["*"],
+        },
+
+
+        // ========== both normal & visual ==========
         // HJKL
         {
             "before": ["H"],
@@ -171,14 +220,14 @@
             "before": ["L"],
             "after": ["$"],
         },
-        // {
-        //     "before": ["J"],
-        //     "after": ["5", "j"],
-        // },
-        // {
-        //     "before": ["k"],
-        //     "after": ["5", "k"],
-        // },
+        {
+            "before": ["J"],
+            "after": ["j", "j", "j", "j", "j", ],
+        },
+        {
+            "before": ["K"],
+            "after": ["k", "k", "k", "k", "k", ],
+        },
 
         // indent
         {
@@ -213,17 +262,17 @@
         },
 
         // vim.easymotion
-        {
-            "before": ["/"],
-            "after": ["leader", "leader", "/"],
-        },
+        // {
+        //     "before": ["/"],
+        //     "after": ["leader", "leader", "/"],
+        // },
         {
             "before": ["s"],
-            "after": ["leader", "leader", "2", "f"],
+            "after": ["leader", "leader", "2", "s"],
         },
         {
             "before": ["S"],
-            "after": ["leader", "leader", "2", "F"],
+            "after": ["leader", "leader", "/"],
         },
         {
             "before": ["t"],
@@ -244,6 +293,20 @@
     ],
 
     "vim.visualModeKeyBindingsNonRecursive": [
+        // Easy replace
+        {
+            "before": ["r"],
+            "after": [":", "s", "/"]
+        },
+
+        // vv instead of V
+        {
+            "before": ["v"],
+            "after": ["V"],
+        },
+
+
+        // ========== both normal & visual ==========
         // HJKL
         {
             "before": ["H"],
@@ -253,14 +316,14 @@
             "before": ["L"],
             "after": ["$"],
         },
-        // {
-        //     "before": ["J"],
-        //     "after": ["5", "j"],
-        // },
-        // {
-        //     "before": ["K"],
-        //     "after": ["5", "k"],
-        // },
+        {
+            "before": ["J"],
+            "after": ["j", "j", "j", "j", "j", ],
+        },
+        {
+            "before": ["K"],
+            "after": ["k", "k", "k", "k", "k", ],
+        },
 
         // Indent
         {
@@ -295,17 +358,17 @@
         },
 
         // vim.easymotion
-        {
-            "before": ["/"],
-            "after": ["leader", "leader", "/"],
-        },
+        // {
+        //     "before": ["/"],
+        //     "after": ["leader", "leader", "/"],
+        // },
         {
             "before": ["s"],
-            "after": ["leader", "leader", "2", "f"],
+            "after": ["leader", "leader", "2", "s"],
         },
         {
             "before": ["S"],
-            "after": ["leader", "leader", "2", "F"],
+            "after": ["leader", "leader", "/"],
         },
         {
             "before": ["t"],
@@ -324,4 +387,7 @@
             "after": ["leader", "leader", "F"],
         },
     ],
+
+    "remote.SSH.remotePlatform": {
+    },
 }
