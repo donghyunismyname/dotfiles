@@ -66,6 +66,7 @@ set scrolloff=10    "show code above and below cursor
 set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
+set clipboard=unnamedplus "use system clipboard
 
 
 
@@ -85,11 +86,12 @@ set cursorcolumn
 inoremap jk <esc>
 
 
-"use system clipboard for yank and paste
-" nnoremap y "*y
-" nnoremap Y "*y$
-" nnoremap p "*p
-" nnoremap P "*P
+" use system clipboard for yank and paste
+" noremap y *y
+" noremap Y *y$
+" noremap p *p
+" noremap P *P
+
 "after yanking, visual mode keeps going
 vmap y ygv
 vmap Y ygv
@@ -105,9 +107,24 @@ nnoremap > >>llll
 nnoremap < <<hhhh
 
 
+" easier serach and replace
+vnoremap r :s/
+
+
+" vv to visual line
+vnoremap v V
+
+
+" find same word
+noremap , #
+noremap . *
+
+
 "left/down/up/left faster
 noremap H ^
 noremap L $
+noremap J 5j
+noremap K 5k
 
 
 "move with current line up/down
@@ -154,8 +171,8 @@ let g:airline#extensions#whitespace#enabled=0
 
 
 " plugin: vim-easymotion
-nmap <cr> <Plug>(easymotion-overwin-w)
-vmap <cr> <Plug>(easymotion-bd-jk)
+" nmap <cr> <Plug>(easymotion-overwin-w)
+" vmap <cr> <Plug>(easymotion-bd-jk)
 
 " Better than vim default search
 map  / <Plug>(easymotion-sn)
@@ -175,8 +192,8 @@ hi Visual cterm=none ctermbg=darkgrey ctermfg=cyan
 
 
 " plugin: kqito/vim-easy-replace
-vnoremap r :<c-u>EasyReplaceWordInVisual<cr>
-vnoremap R :<c-u>EasyReplaceCwordInVisual<cr>
+" vnoremap r :<c-u>EasyReplaceWordInVisual<cr>
+" vnoremap R :<c-u>EasyReplaceCwordInVisual<cr>
 
 
 
