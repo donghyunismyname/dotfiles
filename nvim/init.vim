@@ -3,6 +3,8 @@ set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath=&runtimepath
 source ~/.vimrc
 
+colorscheme jellybeans
+
 
 " highlight yanked text
 au TextYankPost * silent!
