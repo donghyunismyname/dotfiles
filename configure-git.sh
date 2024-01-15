@@ -1,6 +1,9 @@
+# Force pull --ff-only and merge --ff-only
+git config --global pull.ff only
+git config --global merge.ff only
+
 # git status opens in less
 git config --global pager.status false
-
 
 # git default editor vim
 git config --global core.editor "vim"
