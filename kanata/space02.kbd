@@ -1,0 +1,32 @@
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+
+
+
+
+(deflayer base
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           @second            ralt rmet rctl
+)
+
+(defalias
+    second  (layer-toggle second)
+)
+
+
+(deflayer second
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  tab  esc  ret  del  up   home bspc left spc  rght [    ]    \
+  caps lmet lalt lctl lsft down end  rsft rctl ralt rmet '    ret
+  lsft 1    2    3    4    5    6    7    8    9    0    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
