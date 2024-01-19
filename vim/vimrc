@@ -4,6 +4,11 @@ syntax enable "make colorscheme work on mac
 colorscheme hybrid
 
 
+set autoread
+autocmd FocusGained,BufEnter * checktime
+autocmd CursorHold,CursorHoldI * checktime
+
+
 filetype plugin on  "understand file types
 set pastetoggle=<f2> "togle paste mode
 autocmd FileType * set formatoptions-=o "disable autoindent
@@ -23,8 +28,7 @@ au BufReadPost *
 \ endif
 
 
-"autosave
-autocmd TextChanged,TextChangedI <buffer> silent write
+autocmd FocusLost * silent write
 
 
 "automatically strip trailing whitespace when a file is saved
