@@ -1,0 +1,1 @@
+komorebic start -c "$Env:USERPROFILE/dotfiles/komorebi/komorebi.json" --whkd
