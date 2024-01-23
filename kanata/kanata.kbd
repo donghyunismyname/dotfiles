@@ -29,16 +29,16 @@
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
   @esc-ctl  a         s         d         f         g         h         j         k         l         ;         '         ret
-  sft       z         x         c         v         b         n         m         ,         .         /         rsft
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
   ctl       met       alt                           @spc-nav                                ralt      rmet      rctl
 )
 
  
 (deflayer nav 
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       esc       bck       fwd       C-S-tab   C-S-t     _         home      C-left    C-rght    end       _         _         \
-  @esc-ctl  @mouse    alt       ctl       sft       C-tab     left      down      up        rght      sft       _         _ 
-  sft       C-z       C-y       C-c       C-v       _         _         C-bspc    bspc      del       C-del     rsft
+  tab       bck       fwd       C-S-tab   C-tab     C-S-t     _         C-bspc    bspc      del       C-del     home      end       \
+  @esc-ctl  @mouse    alt       ctl       sft       esc       left      down      up        rght      _         _         ret 
+  sft       C-z       C-y       C-c       C-v       _         _         _         C-left    C-rght    _         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
 
