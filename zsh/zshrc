@@ -120,6 +120,8 @@ alias edkill="emacsclient -e \"(kill-emacs)\""
 alias gl="git log --graph --all"
 alias gs="git status"
 alias gd="git diff"
+alias gds="git diff --staged"
+alias ga="git add"
 alias glp='git log --graph --all --pretty'     # orignal format
 alias glpp='git log --graph --all --pretty -p' # orignal format + diff
 
@@ -148,11 +150,18 @@ alias rm="move_to_trash"
 
 
 
+# bindkey
+bindkey '^U' reverse-menu-complete
+bindkey '^Q' backward-word
+bindkey '^W' forward-word
+
+
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # fzf bindkey
-bindkey '^O' fzf-cd-widget
+bindkey '^G' fzf-cd-widget
 
 # fzf-cd-widget preview
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
