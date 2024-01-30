@@ -71,6 +71,7 @@ set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
 set clipboard=unnamedplus "use system clipboard
+set gdefault        "substitute all matches in a line
 
 
 
