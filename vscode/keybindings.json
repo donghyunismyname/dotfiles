@@ -49,7 +49,7 @@
         "when": "sideBarFocus",
     },
 
-    // Panel Navigation
+    // Panel view navigation
     {
         "key": "ctrl+,",
         "command": "workbench.action.previousPanelView",
@@ -60,9 +60,42 @@
         "command": "workbench.action.nextPanelView",
         "when": "panelFocus"
     },
+
+    // Panel terminal navigation bottom hjkl
+    {
+        "key": "ctrl+h",
+        "when": "panelFocus && panelPosition == 'bottom'",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.action.terminal.focusTabs",
+                "list.focusUp",
+                "list.select"
+            ]
+        },
+    },
+    {
+        "key": "ctrl+l",
+        "when": "panelFocus && panelPosition == 'bottom'",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.action.terminal.focusTabs",
+                "list.focusDown",
+                "list.select"
+            ]
+        },
+    },
     {
         "key": "ctrl+k",
-        "when": "panelFocus",
+        "when": "panelFocus && panelPosition == 'bottom'",
+        "command": "workbench.action.focusActiveEditorGroup",
+    },
+
+    // Panel terminal navigation left right hjkl
+    {
+        "key": "ctrl+k",
+        "when": "panelFocus && (panelPosition == 'left' || panelPosition == 'right')",
         "command": "runCommands",
         "args": {
             "commands": [
@@ -74,7 +107,7 @@
     },
     {
         "key": "ctrl+j",
-        "when": "panelFocus",
+        "when": "panelFocus && (panelPosition == 'left' || panelPosition == 'right')",
         "command": "runCommands",
         "args": {
             "commands": [
@@ -85,7 +118,7 @@
         },
     },
 
-    // Panel Terminal Split
+    // Panel Terminal Split hjkl
     {
         "key": "ctrl+shift+j",
         "when": "panelFocus",
@@ -94,19 +127,21 @@
     {
         "key": "ctrl+shift+l",
         "when": "panelFocus",
-        "command": "runCommands",
-        "args": {
-            "commands": [
-                "workbench.action.terminal.unsplit",
-                "workbench.action.terminal.focusTabs",
-                "list.focusDown",
-                "list.select"
-            ],
-        },
+        "command": "workbench.action.terminal.split",
+    },
+    {
+        "key": "ctrl+shift+h",
+        "when": "panelFocus",
+        "command": "workbench.action.terminal.unsplit",
+    },
+    {
+        "key": "ctrl+shift+k",
+        "when": "panelFocus",
+        "command": "workbench.action.terminal.unsplit",
     },
 
 
-    // Move between tabs
+    // Move between editor tabs
     {
         "key": "ctrl+oem_period",
         "command": "workbench.action.nextEditorInGroup",
@@ -123,29 +158,30 @@
     },
 
 
-    // Split Editor
+    // Split Editor hjkl
     {
         "key": "ctrl+shift+h",
         "command": "workbench.action.splitEditorLeft",
-        "when": "editorFocus",
+        "when": "!panelFocus",
     },
     {
         "key": "ctrl+shift+k",
         "command": "workbench.action.splitEditorUp",
-        "when": "editorFocus",
+        "when": "!panelFocus",
     },
     {
         "key": "ctrl+shift+l",
         "command": "workbench.action.splitEditorRight",
-        "when": "editorFocus",
+        "when": "!panelFocus",
     },
     {
         "key": "ctrl+shift+j",
         "command": "workbench.action.splitEditorDown",
-        "when": "editorFocus",
+        "when": "!panelFocus",
     },
 
-    // Split Editor Terminal
+
+    // Split Editor Terminal hjkl
     {
         "key": "ctrl+shift+h",
         "when": "terminalFocus && !panelFocus",
@@ -191,6 +227,47 @@
         }
     },
 
+    // Move editor to another group hjklj
+    {
+        "key": "ctrl+alt+h",
+        "command": "workbench.action.moveEditorToLeftGroup",
+        "when": "!panelFocus",
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "workbench.action.moveEditorToBelowGroup",
+        "when": "!panelFocus",
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "workbench.action.moveEditorToAboveGroup",
+        "when": "!panelFocus",
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "workbench.action.moveEditorToRightGroup",
+        "when": "!panelFocus",
+    },
+
+    // Resize editor
+    {
+        "key": "ctrl+[",
+        "command": "workbench.action.decreaseViewWidth"
+    },
+    {
+        "key": "ctrl+]",
+        "command": "workbench.action.increaseViewWidth"
+    },
+    {
+        "key": "ctrl+shift+[",
+        "command": "workbench.action.decreaseViewHeight"
+    },
+    {
+        "key": "ctrl+shift+]",
+        "command": "workbench.action.increaseViewHeight"
+    },
+
+
 
     // Trigger Suggest
     // {
@@ -229,7 +306,7 @@
     },
 
 
-    // Quick open control
+    // Quick Open Navigation
     {
         "key": "ctrl+j",
         "command": "workbench.action.quickOpenNavigateNext",
@@ -251,6 +328,17 @@
         "when": "inQuickOpen"
     },
 
+    // Suggestion Navigation
+    {
+        "key": "ctrl+j",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
 
     // Create new terminal
     {
@@ -261,7 +349,7 @@
         "args": {
             "commands": [
                 "workbench.action.createTerminalEditorSameGroup",
-                "workbench.action.terminal.goToRecentDirectory",
+                // "workbench.action.terminal.goToRecentDirectory",
             ]
         }
     },
@@ -281,9 +369,16 @@
     // Search symbol in workspace (not frequently used)
     {
         "key": "ctrl+g",
-        "command" : "workbench.action.showAllSymbols",
+        "command": "workbench.action.showAllSymbols",
         "when": "editorFocus",
     },
+
+    // Run recent terminal command
+    // {
+    //     "key": "ctrl+r",
+    //     "command": "workbench.action.terminal.runRecentCommand",
+    //     "when": "terminalFocus",
+    // },
 
 
     // Disable Ctrl+Shift+W
@@ -296,14 +391,20 @@
         "key": "ctrl+p",
         "command": "-workbench.action.quickOpen"
     },
-    // Disable ctrl+w to close terminal
+    // Disable ctrl+e when on terminal focus
     {
-        "key": "ctrl+w",
-        "command": "-workbench.action.terminal.killEditor",
+        "key": "ctrl+o",
+        "command": "-workbench.action.openfile"
     },
 
+    // Disable ctrl+w to close terminal
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.terminal.killEditor",
+    // },
 
-    // Hover
+
+    // Hover hjkl
     {
         "key": "h",
         "command": "editor.action.scrollLeftHover",
@@ -324,65 +425,124 @@
         "command": "editor.action.scrollRightHover",
         "when": "editorHoverFocused"
     },
-
     
-    // Move lines up/down
+    // Multicursor up/down
     {
-        "key": "alt+j",
-        "command": "editor.action.moveLinesDownAction",
+        "key": "ctrl+p",
+        "command": "editor.action.insertCursorAbove",
+        "when": "editorTextFocus && !suggestWidgetHasFocusedSuggestion"
     },
+    {
+        "key": "ctrl+n",
+        "command": "editor.action.insertCursorBelow",
+        "when": "editorTextFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+
+
+    // alt hjkl
+    // terminal scroll up/down
     {
         "key": "alt+k",
-        "command": "editor.action.moveLinesUpAction",
+        "command": "workbench.action.terminal.scrollUp",
+        "when": "terminalFocus"
     },
+    {
+        "key": "alt+j",
+        "command": "workbench.action.terminal.scrollDownPage",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+h",
+        "command": "workbench.action.terminal.scrollUpPage",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+l",
+        "command": "workbench.action.terminal.scrollDownPage",
+        "when": "terminalFocus"
+    },
+
+    // ctrl alt hjkl
+    // terminal resize
+    {
+        "key": "ctrl+alt+h",
+        "command": "workbench.action.terminal.resizePaneLeft",
+        "when": "panelFocus",
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "workbench.action.terminal.resizePaneDown",
+        "when": "panelFocus",
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "workbench.action.terminal.resizePaneUp",
+        "when": "panelFocus",
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "workbench.action.terminal.resizePaneRight",
+        "when": "panelFocus",
+    },
+
     
 
     // Jumpy2
-    {
-        "key": "ctrl+oem_1",
-        "command": "jumpy2.toggle",
-        "when": "editorTextFocus"
-    },
-    {
-        "key": "shift+enter",
-        "command": "-jumpy2.toggle",
-        "when": "editorTextFocus"
-    },
-    {
-        "key": "ctrl+oem_7",
-        "command": "jumpy2.toggleSelection",
-        "when": "editorTextFocus"
-    },
-    {
-        "key": "shift+alt+enter",
-        "command": "-jumpy2.toggleSelection",
-        "when": "editorTextFocus"
-    },
-
-
-    // Vim Search and Replace
     // {
-    //     "key": "ctrl+shift+r",
-    //     "command": "vim-search-and-replace.start"
+    //     "key": "ctrl+'",
+    //     "command": "jumpy2.toggle",
+    //     "when": "editorTextFocus"
     // },
     // {
-    //     "key": "ctrl+j",
-    //     "command": "vim-search-and-replace.expandSelection",
-    //     "when": "vim-search-and-replace.active",
+    //     "key": "shift+enter",
+    //     "command": "-jumpy2.toggle",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "ctrl+'",
+    //     "command": "jumpy2.toggleSelection",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "shift+alt+enter",
+    //     "command": "-jumpy2.toggleSelection",
+    //     "when": "editorTextFocus"
+    // },
+
+
+    // Open Breadcrumb
+    // {
+    //     "key": "ctrl+;",
+    //     "command": "breadcrumbs.focusAndSelect",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "[",
+    //     "command": "runCommands",
     //     "args": {
-    //         "down": 1
-    //     }
+    //         "commands": [
+    //             "breadcrumbs.focusAndSelect",
+    //             "list.focusUp",
+    //             "list.select",
+    //         ]
+    //     },
+    //     "when": "editorFocus && vim.mode == 'Normal'",
     // },
     // {
-    //     "key": "ctrl+k",
-    //     "command": "vim-search-and-replace.expandSelection",
-    //     "when": "vim-search-and-replace.active",
+    //     "key": "]",
+    //     "command": "runCommands",
     //     "args": {
-    //         "up": 1
-    //     }
+    //         "commands": [
+    //             "breadcrumbs.focusAndSelect",
+    //             "list.focusDown",
+    //             "list.select",
+    //         ]
+    //     },
+    //     "when": "editorFocus && vim.mode == 'Normal'",
     // },
 
 
+    // Previous/next item in explorer
     {
         "key": "alt+a",
         "command": "runCommands",
@@ -404,5 +564,50 @@
                 "list.selectAndPreserveFocus",
             ]
         }
-      }, 
+    },
+
+
+    // Bookmarks
+    // {
+    //     "key": "alt+m",
+    //     "command": "bookmarks.toggle",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "ctrl+alt+k",
+    //     "command": "-bookmarks.toggle",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "alt+oem_comma",
+    //     "command": "bookmarks.jumpToNext",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "-bookmarks.jumpToNext",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "alt+oem_period",
+    //     "command": "bookmarks.jumpToPrevious",
+    //     "when": "editorTextFocus"
+    // },
+    // {
+    //     "key": "ctrl+alt+j",
+    //     "command": "-bookmarks.jumpToPrevious",
+    //     "when": "editorTextFocus"
+    // }
+
+    // Replace default ctrl+f
+    {
+        "key": "ctrl+f",
+        "command": "fuzzySearch.activeTextEditor",
+    },
+
+    // Remove brackets
+    // {
+    //     "key": "ctrl+;",
+    //     "command": "editor.action.removeBrackets",
+    // }
 ]
