@@ -6,6 +6,7 @@ echo "    ~/.vim"
 echo "    ~/.tmux.conf"
 echo "    ~/.zshrc"
 echo "    ~/.emacs.d"
+echo "    ~/.config/i3/config"
 read -p "Do you want to continue? (y/N): " ans
 
 if [[ $ans != "y" ]]; then
@@ -36,9 +37,13 @@ ln -snfF $DIR/tmux/tmux.conf  ~/.tmux.conf
 rm -ri                        ~/.zshrc
 ln -snfF $DIR/zsh/zshrc       ~/.zshrc
 
+# i3
+rm -ri                        ~/.config/i3/config
+ln -snfF $DIR/i3/config       ~/.config/i3/config
+
 # emacs
-rm -ri                        ~/.emacs.d
-ln -snfF $DIR/emacs           ~/.emacs.d
+# rm -ri                        ~/.emacs.d
+# ln -snfF $DIR/emacs           ~/.emacs.d
 
 
 
