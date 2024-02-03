@@ -39,6 +39,16 @@ It's likely that things do not work.
 In that case, please install manually following the scripts.
 
 
+## Install Latest Neovim
+```
+sudo apt-get remove neovim -y
+
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo apt-get update -y
+sudo apt-get install neovim -y
+```
+
+
 
 ## Troubleshooting
 ```
