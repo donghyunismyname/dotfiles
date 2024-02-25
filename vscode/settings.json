@@ -468,14 +468,5 @@
         },
     ],
 
-    "remote.SSH.remotePlatform": {
-        "222.106.243.86": "linux",
-        "kt-s6": "linux",
-        "donghyun-kts6": "linux",
-        "nalbi-s6-kts6": "linux",
-        "nalbi-s4-kts4": "linux",
-        "donghyun-weworkg2": "linux"
-    },
-    "editor.accessibilitySupport": "off",
     "workbench.colorTheme": "Default Dark+",
 }
