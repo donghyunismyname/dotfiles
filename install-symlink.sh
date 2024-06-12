@@ -9,7 +9,7 @@ echo "    ~/.zshrc"
 # echo "    ~/.config/i3/config"
 read -p "Do you want to continue? (y/N): " ans
 
-if [[ $ans != "y" ]]; then
+if [ $ans != "y" ]; then
     echo "Abort installation"
     exit 1
 fi
