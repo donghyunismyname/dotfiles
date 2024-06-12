@@ -52,15 +52,17 @@ sudo apt-get install neovim -y
 
 ## Troubleshooting
 ```
-zsh | characters not in range
+zsh | (anon):12: character not in range
 ```
 https://gist.github.com/jadia/1f4c2190730ef646d41823b6a6c30926
 
 Special characters break on tmux
 https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-tmux
 
-Neovim plugins is not installed well
+Neovim plugins not installed well
 https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_checkhealth_provider/
+
+
 
 
 
