@@ -1,0 +1,52 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,\
+                00,00,00,00,\ 
+                06,00,00,00,\
+                01,00,1d,00,\
+                1d,00,3a,00,\
+                3a,00,46,00,\
+                2e,e0,5c,e0,\
+                30,e0,5d,e0,\
+                00,00,00,00
+
+
+
+
+# 38,00,f1,e0,\
+
+
+# esc <- lctl
+# lctl <- capsLock
+# capslock <- scrolllock
+# volume down <- rwin
+# volume up <- popup
+
+# Reference
+# https://gigglehd.com/gg/soft/12015825 
+# https://www.hopark.kr/change-scancode-map/
+# https://www.passmark.com/products/keytest/
+
+# esc: 00 01
+
+# lctl: 00 1d
+# lwin: e0 5b
+# lalt: 00 38
+# capsLock: 00 3a
+
+# ralt: e0 38
+# rwin: e0 5c
+# rctl: e0 1d
+
+# Korean
+# popup menu (at the right bottom): e0 5d
+# kor/eng swap: e0 f2 (maybe different)
+# hanja: e0 f1 (maybe different)
+
+# volume up; e0 30
+# volume down; e0 2e
+
+# printscreen; e0 37
+# scrolllock; 00 46
+# pausebreak; 00 45
