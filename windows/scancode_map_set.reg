@@ -13,9 +13,11 @@ Windows Registry Editor Version 5.00
 
 
 
+# Better not touch hanja ... it may not wor
 
-# 38,00,f1,e0,\
-
+# 01,00,1d,00,\ esc <- lctl
+# 38,00,f1,e0,\ lalt <- hanja
+# esc <- hanja
 
 # esc <- lctl
 # lctl <- capsLock
