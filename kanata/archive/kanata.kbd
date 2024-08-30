@@ -13,61 +13,31 @@
 )
 
 (defalias
-  mov (layer-while-held mov)
-	nav (layer-while-held nav)
-  mouse (layer-while-held mouse)
+	spc-nav (tap-hold $tt $ht spc (layer-while-held nav))
+  esc-ctl (tap-hold $tt $ht esc ctl)
 )
 (defalias
 	qt-alt (tap-hold $tt $ht ' alt)
   sem-sft (tap-hold $tt $ht ; sft)
   a-sft (tap-hold $tt $ht a sft)
-  f-sft (tap-hold $tt $ht f sft)
-  j-sft (tap-hold $tt $ht j sft)
-  cf-sft (tap-hold $tt $ht C-f sft)
-  lft-hom (tap-hold $tt $ht left home)
-  rgt-end (tap-hold $tt $ht right end)
-  bspc-c (tap-hold $tt $ht bspc C-bspc)
-  del-c (tap-hold $tt $ht del C-del)
-  a-mov (tap-hold $tt $ht a @mov)
 )
-
-
-;; chord/combo
-(defcfg concurrent-tap-hold yes)
-(defchordsv2-experimental
-  ;; (d f) sft 50 all-released ()
-  ;; (j k) sft 50 all-released ()
-  ;; (f j) sft 50 all-released ()
-  (spc ;) ; 50 first-release ()
-  (spc ') ' 50 first-release ()
-  (j k) home 50 first-release ()
-  (j l) esc 50 first-release ()
-  (k l) end 50 first-release ()
-  (d f) @mov 50 all-released ()
-  (f j) spc 50 all-released ()
-  ;; (d f) sft 50 all-released ()
-  ;; (j k) sft 50 all-released ()
+(defalias
+  mouse (layer-while-held mouse)
 )
 
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  ctl       a         s         d         @f-sft    g         h         @j-sft    k         l         bspc      del       ret
+  @esc-ctl  a         s         d         f         g         h         j         k         l         ;         '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
-  ctl       met       alt                           spc                                     ralt      rmet      rctl
+  ctl       met       alt                           @spc-nav                                ralt      rmet      rctl
 )
-(deflayer mov
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         C-y       C-z       C-left    C-right   S-tab     C-M-left  C-M-right \
-  caps      a         s         d         f         g         left      down      up        right     C-bspc    C-del     ret
-  sft       z         x         c         v         b         tab       ret       S-tab     tab       C-/       rsft   
-  ctl       met       alt                           sft                                     ralt      rmet      rctl
-)
+
  
 (deflayer nav 
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       bck       fwd       C-S-tab   C-tab     C-S-t     _         C-bspc    bspc      del       C-del     home      end       \
-  ctl       sft       alt       ctl       sft       esc       left      sft       up        rght      sft       _         ret 
+  @esc-ctl  @mouse    alt       ctl       sft       esc       left      down      up        rght      _         _         ret 
   sft       C-z       C-y       C-c       C-v       _         _         _         C-left    C-rght    _         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
