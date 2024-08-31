@@ -8,62 +8,135 @@
 
 
 (defvar
-  tt 200 ;; tab timeout
-  ht 200 ;; hold timeout
+  tt 250 ;; tab timeout
+  ht 250 ;; hold timeout
+  ct 50 ;; chord
+  st 200 ;; shift timeout
+  lt 300 ;; layer timeout
 )
 
 (defalias
-  mov (layer-while-held mov)
-	nav (layer-while-held nav)
-  mouse (layer-while-held mouse)
+  mov (layer-toggle mov)
+  digit (layer-toggle digit)
+  symbol (layer-toggle symbol)
+  bracket (layer-toggle bracket)
+	nav (layer-toggle nav)
+  mouse (layer-toggle mouse)
 )
 (defalias
-	qt-alt (tap-hold $tt $ht ' alt)
-  sem-sft (tap-hold $tt $ht ; sft)
-  a-sft (tap-hold $tt $ht a sft)
-  f-sft (tap-hold $tt $ht f sft)
-  j-sft (tap-hold $tt $ht j sft)
-  cf-sft (tap-hold $tt $ht C-f sft)
+  ;; shift
+  ;-sft (tap-hold $st $st ; sft)
+  a-sft (tap-hold $st $st a sft)
+  f-sft (tap-hold $st $st f sft)
+  j-sft (tap-hold $st $st j sft)
+  cf-sft (tap-hold $st $st C-f sft)
+
+  ;; home/end
   lft-hom (tap-hold $tt $ht left home)
   rgt-end (tap-hold $tt $ht right end)
+
+  ;; bspc
   bspc-c (tap-hold $tt $ht bspc C-bspc)
+  bspc-; (tap-hold $tt $ht bspc ;)
+
+  ;; del
   del-c (tap-hold $tt $ht del C-del)
-  a-mov (tap-hold $tt $ht a @mov)
+  del-' (tap-hold $tt $ht del ')
+
+  ;; layer 
+  a-mov (tap-hold $lt $lt a @mov)
+  z-mov (tap-hold $lt $lt z @mov)
+  f-mov (tap-hold $lt $lt f @mov)
+  '-dgt (tap-hold $lt $lt ' @digit)
 )
 
 
 ;; chord/combo
 (defcfg concurrent-tap-hold yes)
 (defchordsv2-experimental
-  ;; (d f) sft 50 all-released ()
-  ;; (j k) sft 50 all-released ()
-  ;; (f j) sft 50 all-released ()
-  (spc ;) ; 50 first-release ()
-  (spc ') ' 50 first-release ()
-  (j k) home 50 first-release ()
-  (j l) esc 50 first-release ()
-  (k l) end 50 first-release ()
-  (d f) @mov 50 all-released ()
-  (f j) spc 50 all-released ()
-  ;; (d f) sft 50 all-released ()
-  ;; (j k) sft 50 all-released ()
+  ;; capslock
+  ;; (q w e r) caps $ct first-release ()
+
+  (spc ;) ; $ct first-release ()
+  (spc ') ' $ct first-release ()
+
+  ;; shift
+  ;; (d f) sft $ct first-release ()
+  ;; (j k) sft $ct first-release ()
+
+  ;; special keys
+  (j k) home $ct first-release ()
+  (j l) esc $ct first-release ()
+  (k l) end $ct first-release ()
+  ;; (f j) spc $ct first-release ()
+
+  ;; layers
+  (f spc) @mov $ct all-released ()
+  (j spc) @mov $ct all-released ()
+  (d spc) @digit $ct all-released ()
+  (k spc) @digit $ct all-released ()
+  (s spc) @symbol $ct all-released ()
+  (l spc) @symbol $ct all-released ()
+
+  ;; symbols
+  ;; (z i) S-9 $ct first-release ()
+  ;; (z o) S-0 $ct first-release ()
+  ;; (z h) -   $ct first-release ()
+  ;; (z j) S-- $ct first-release ()
+  ;; (z k) =   $ct first-release ()
+  ;; (z l) S-= $ct first-release ()
+  ;; (z m) [   $ct first-release ()
+  ;; (z ,) ]   $ct first-release ()
+  ;; (z .) {   $ct first-release ()
+  ;; (z /) }   $ct first-release ()
 )
+
 
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  ctl       a         s         d         @f-sft    g         h         @j-sft    k         l         bspc      del       ret
+  ctl       @a-sft    s         d         @f-mov    g         h         j         k         l         @;-sft    '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
   ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
 (deflayer mov
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         C-y       C-z       C-left    C-right   S-tab     C-M-left  C-M-right \
-  caps      a         s         d         f         g         left      down      up        right     C-bspc    C-del     ret
-  sft       z         x         c         v         b         tab       ret       S-tab     tab       C-/       rsft   
-  ctl       met       alt                           sft                                     ralt      rmet      rctl
+  caps      1         2         3         4         5         6         7         8         9         0         -         =         bspc 
+  tab       [         ]         S-9       S-0       t         C-y       C-z       C-left    C-right   S-tab     C-M-left  C-M-right \
+  ctl       S-=       =         S--       -         g         left      down      up        right     bspc      del       ret
+  sft       S-[       S-]       left      right     b         S-ret     ret       C-bspc    C-del     tab       rsft   
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
- 
+(deflayer digit
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         7         8         9         t         C-y       C-z       C-left    C-right   S-tab     C-M-left  C-M-right \
+  ctl       grv       4         5         6         0         left      down      up        right     bspc      del       ret
+  sft       0         1         2         3         b         S-ret     ret       C-bspc    C-del     tab       rsft   
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer symbol
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         S-7       S-8       S-9       t         C-y       C-z       C-left    C-right   S-tab     C-M-left  C-M-right \
+  ctl       S-grv     S-4       S-5       S-6       S-0       left      down      up        right     bspc      del       ret
+  sft       S-0       S-1       S-2       S-3       b         S-ret     ret       C-bspc    C-del     tab       rsft   
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer bracket
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer intact
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+
+
+
 (deflayer nav 
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       bck       fwd       C-S-tab   C-tab     C-S-t     _         C-bspc    bspc      del       C-del     home      end       \
