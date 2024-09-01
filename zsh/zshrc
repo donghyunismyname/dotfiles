@@ -112,10 +112,10 @@ alias tmux="tmux -u"
 alias python=python3
 alias pip=pip3
 
-alias e="emacsclient -t"
-alias ec="emacsclient -c"
-alias ed="emacs --daemon"
-alias edkill="emacsclient -e \"(kill-emacs)\""
+# alias e="emacsclient -t"
+# alias ec="emacsclient -c"
+# alias ed="emacs --daemon"
+# alias edkill="emacsclient -e \"(kill-emacs)\""
 
 alias gl="git log --graph --all"
 alias gs="git status"
@@ -152,8 +152,8 @@ alias rm="move_to_trash"
 
 # bindkey
 bindkey '^U' reverse-menu-complete
-bindkey '^Q' backward-word
-bindkey '^W' forward-word
+# bindkey '^Q' backward-word
+# bindkey '^W' forward-word
 
 
 
