@@ -1,0 +1,261 @@
+(defcfg 
+  concurrent-tap-hold yes  ;; required by defchordsv2-experiment
+  log-layer-changes no     ;; performance reasons
+)
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc                 ralt rmet rctl
+)
+
+
+(defvar
+  tt 250 ;; tab timeout
+  ht 250 ;; hold timeout
+  ct 100 ;; chord
+  st 200 ;; shift timeout
+  lt 400 ;; layer timeout
+)
+
+(defalias
+  mov (layer-toggle mov-simple)
+  digit (layer-toggle digit)
+  symbol (layer-toggle symbol)
+  bracket (layer-toggle bracket)
+	nav (layer-toggle nav)
+  mouse (layer-toggle mouse)
+)
+(defalias
+  ;; shift
+  ;-sft (tap-hold $st $st ; sft)
+  a-sft (tap-hold $st $st a sft)
+  f-sft (tap-hold $st $st f sft)
+  j-sft (tap-hold $st $st j sft)
+  cf-sft (tap-hold $st $st C-f sft)
+
+  ;; home/end
+  lft-hom (tap-hold $tt $ht left home)
+  rgt-end (tap-hold $tt $ht right end)
+
+  ;; bspc
+  bspc-c (tap-hold $tt $ht bspc C-bspc)
+  bspc-; (tap-hold $tt $ht bspc ;)
+
+  ;; del
+  del-c (tap-hold $tt $ht del C-del)
+  del-' (tap-hold $tt $ht del ')
+
+  ;; layer 
+  a-mov (tap-hold $lt $lt a @mov)
+  z-mov (tap-hold $lt $lt z @mov)
+  f-mov (tap-hold $lt $lt f @mov)
+  '-dgt (tap-hold $lt $lt ' @digit)
+  k-dgt (tap-hold $lt $lt k @digit)
+  l-sym (tap-hold $lt $lt l @symbol)
+)
+
+
+;; chord/combo
+(defchordsv2-experimental
+  ;; capslock
+  ;; (q w e r) caps $ct first-release ()
+
+  ;; shift
+  ;; (d f) sft $ct first-release ()
+  ;; (j k) sft $ct first-release ()
+  (spc f j) sft $ct all-released ()
+
+  ;; special keys
+  (spc j i) home $ct first-release ()
+  (spc i o) end $ct first-release ()
+  (spc j o) ret $ct first-release ()
+
+  (spc j k) bspc $ct first-release ()
+  (spc k l) del  $ct first-release ()
+  (spc j l) esc $ct first-release ()
+
+  ;; special keys left
+  (spc w e) =   $ct first-release ()
+  (spc e f) S-= $ct first-release ()
+  (spc w f) tab $ct first-release ()
+
+  (spc s d) -   $ct first-release ()
+  (spc d f) S-- $ct first-release ()
+
+
+  ;; layers
+  (spc s f) @mov $ct all-released ()
+  ;; (f spc) @mov $ct all-released ()
+  ;; (j spc) @mov $ct all-released ()
+  ;; (d spc) @digit $ct all-released ()
+  ;; (k spc) @digit $ct all-released ()
+  ;; (s spc) @symbol $ct all-released ()
+  ;; (l spc) @symbol $ct all-released ()
+
+  ;; symbols
+  ;; (z i) S-9 $ct first-release ()
+  ;; (z o) S-0 $ct first-release ()
+  ;; (z h) -   $ct first-release ()
+  ;; (z j) S-- $ct first-release ()
+  ;; (z k) =   $ct first-release ()
+  ;; (z l) S-= $ct first-release ()
+  ;; (z m) [   $ct first-release ()
+  ;; (z ,) ]   $ct first-release ()
+  ;; (z .) {   $ct first-release ()
+  ;; (z /) }   $ct first-release ()
+
+  ;; (spc j) -   $ct first-release ()
+  ;; (spc k) S-- $ct first-release ()
+  ;; (spc l) =   $ct first-release ()
+  ;; (spc ;) S-= $ct first-release ()
+
+  ;; (spc a) ;   $ct first-release ()
+  ;; (spc s) S-; $ct first-release ()
+  ;; (spc d) '   $ct first-release ()
+  ;; (spc f) S-' $ct first-release ()
+  
+  ;; (spc i) S-9 $ct first-release ()
+  ;; (spc o) S-0 $ct first-release ()
+
+  ;; (spc q) S-[ $ct first-release ()
+  ;; (spc w) S-] $ct first-release ()
+  ;; (spc e) [   $ct first-release ()
+  ;; (spc r) ]   $ct first-release ()
+
+  ;; (spc c) \   $ct first-release ()
+  ;; (spc v) S-\ $ct first-release ()
+)
+
+
+(deflayer base
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         @f-sft    g         h         @j-sft    @k-dgt    @l-sym    ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer mov
+  caps      1         2         3         4         5         6         7         8         9         0         -         =         bspc 
+  tab       [         ]         S-9       S-0       t         C-y       C-z       C-left    C-right   _         C-M-left  C-M-right \
+  ctl       S-=       =         S--       -         g         left      down      up        right     bspc      del       ret
+  sft       S-[       S-]       left      right     b         tab       ret       C-bspc    C-del     _         rsft
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer mov-simple
+  caps      1         2         3         4         5         6         7         8         9         0         -         =         bspc 
+  tab       _         _         _         _         t         C-y       C-z       C-left    C-right   _         C-M-left  C-M-right \
+  ctl       _         _         _         sft       g         left      down      up        right     bspc      del       ret
+  sft       _         _         _         _         b         tab       ret       C-bspc    C-del     _         rsft   
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer digit
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         7         8         9         t         y         u         i         up        p         [         ]         \
+  ctl       grv       4         5         6         0         h         bspc      k         del       C-del     '         ret
+  sft       0         1         2         3         b         n         down      ,         .         /         rsft 
+  ctl       met       alt                           C-bspc                                  ralt      rmet      rctl
+)
+(deflayer symbol
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         S-7       S-8       S-9       t         y         u         i         o         p         [         ]         \
+  ctl       S-grv     S-4       S-5       S-6       S-0       h         j         k         l         ;         '         ret
+  sft       S-0       S-1       S-2       S-3       b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer bracket
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer intact
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+
+
+
+(deflayer nav 
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       bck       fwd       C-S-tab   C-tab     C-S-t     _         C-bspc    bspc      del       C-del     home      end       \
+  ctl       sft       alt       ctl       sft       esc       left      sft       up        rght      sft       _         ret 
+  sft       C-z       C-y       C-c       C-v       _         _         _         C-left    C-rght    _         rsft
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+
+(deflayer mouse
+  _    _    _    _    _    _    _    _    _    _     _    _    _    _
+  _    _    _    @ma↑ _    _    _    _    @mwu _     _    _    _    _
+  _    _    @ma← @ma↓ @ma→ _    _    mlft @mwd mrgt  _    _    _
+  _    _    _    _    _    _    _    _    _    _     _    _
+  _    _    _    @fms _    _    _
+)
+
+;; (deflayer mouse
+;;   _    @mwu @mwd @mwl @mwr _    _    _    _    _    @ma↑ _    _    _
+;;   _    pgup bck  _    fwd  _    _    _    _    @ma← @ma↓ @ma→ _    _
+;;   _    pgdn mlft _    mrgt mmid _    mbck mfwd _    @ms↑ _    _
+;;   @fms _    mltp _    mrtp mmtp _    mbtp mftp @ms← @ms↓ @ms→
+;;   _    _    _              _              _    _    _
+;; )
+
+
+(defalias
+  ;; Mouse wheel actions. The first number is the interval in milliseconds
+  ;; between scroll actions. The second number is the distance in some arbitrary
+  ;; unit. Play with the parameters to see what feels correct. Both numbers
+  ;; must be in the range 1-65535
+  ;;
+  ;; In both Windows and Linux, 120 distance units is equivalent to a single
+  ;; notch movement on a physical wheel. In Linux, not all desktop environments
+  ;; support the REL_WHEEL_HI_RES event so if you experience issues with `mwheel`
+  ;; actions in Linux, using a distance value that is multiple of 120 may help.
+  mwu (mwheel-up 50 120)
+  mwd (mwheel-down 50 120)
+
+  ;; Horizontal mouse wheel actions. Similar story to vertical mouse wheel.
+  mwl (mwheel-left 50 120)
+  mwr (mwheel-right 50 120)
+
+  ;; Mouse movement actions.The first number is the interval in milliseconds
+  ;; between mouse actions. The second number is the distance traveled per interval
+  ;; in pixels.
+
+  ms↑ (movemouse-up 5 1)
+  ms← (movemouse-left 5 1)
+  ms↓ (movemouse-down 5 1)
+  ms→ (movemouse-right 5 1)
+
+  ;; Mouse movement actions with linear acceleration. The first number is the
+  ;; interval in milliseconds between mouse actions. The second number is the time
+  ;; in milliseconds for the distance to linearly ramp up from the minimum distance
+  ;; to the maximum distance. The third number is the minimum distance traveled
+  ;; per interval in pixels. The fourth number is the maximum distance traveled
+  ;; per interval in pixels.
+
+  ma↑ (movemouse-accel-up 5 500 1 3)
+  ma← (movemouse-accel-left 5 500 1 3)
+  ma↓ (movemouse-accel-down 5 500 1 3)
+  ma→ (movemouse-accel-right 5 500 1 3)
+
+  ;; setmouse places the cursor at a specific pixel x-y position. This
+  ;; example puts it in the middle of the screen. The coordinates go from 0,0
+  ;; which is the upper-left corner of the screen to 65535,65535 which is the
+  ;; lower-right corner of the screen. If you have multiple monitors, they are
+  ;; treated as one giant screen, which may make it a bit confusing for how to
+  ;; set up the pixels. You will need to experiment.
+  sm (setmouse 32228 32228)
+
+  ;; movemouse-speed takes a percentage by which it then scales all of the
+  ;; mouse movements while held. You can have as many of these active at a
+  ;; given time as you would like, but be warned that some values, such as 33
+  ;; may not have correct pixel distance representations.
+  fms (movemouse-speed 500)
+)
