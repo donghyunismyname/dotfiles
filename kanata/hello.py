@@ -5,4 +5,7 @@ for i,a in enumerate(arr):
     
 arr[0] += arr[2] + arr[3] + arr[4]
     
-    
+def main() 
+
+
+

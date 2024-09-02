@@ -59,84 +59,13 @@
 )
 
 
-;; chord/combo
-;; (defchordsv2-experimental
-;;   (ctl spc) @capspc 100 all-released ()
-
-;;   ;; shift
-;;   ;; (d f) sft $ct first-release ()
-;;   ;; (j k) sft $ct first-release ()
-;;   ;; (spc f j) sft $ct all-released ()
-
-;;   ;; special keys left
-;;   (w e) =   $ct first-release (ddd nav cap)
-;;   (e r) S-= $ct first-release (ddd nav cap)
-
-;;   (s d) -   $ct first-release (ddd nav cap)
-;;   (d f) S-- $ct first-release (ddd nav cap)
-;;   (s f) esc $ct first-release (ddd nav cap)
-
-;;   (w f) tab $ct first-release (ddd nav cap)
-
-;;   ;; special keys right
-;;   (u i) home $ct first-release (ddd nav cap)
-;;   (i o) end $ct first-release (ddd nav cap)
-
-;;   (j k) (multi (macro bspc) (layer-toggle ddd)) $ct all-released (ddd nav cap)
-;;   (k l) (multi (macro del) (layer-toggle ddd))  $ct all-released (ddd nav cap)
-;;   (j l) esc $ct first-release (ddd nav cap)
-
-;;   (j o) ret $ct first-release (ddd nav cap)
-
-
-;;   ;; layers
-;;   ;; (f spc) @mov $ct all-released ()
-;;   ;; (j spc) @mov $ct all-released ()
-;;   ;; (d spc) @digit $ct all-released ()
-;;   ;; (k spc) @digit $ct all-released ()
-;;   ;; (s spc) @symbol $ct all-released ()
-;;   ;; (l spc) @symbol $ct all-released ()
-
-;;   ;; symbols
-;;   ;; (z i) S-9 $ct first-release ()
-;;   ;; (z o) S-0 $ct first-release ()
-;;   ;; (z h) -   $ct first-release ()
-;;   ;; (z j) S-- $ct first-release ()
-;;   ;; (z k) =   $ct first-release ()
-;;   ;; (z l) S-= $ct first-release ()
-;;   ;; (z m) [   $ct first-release ()
-;;   ;; (z ,) ]   $ct first-release ()
-;;   ;; (z .) {   $ct first-release ()
-;;   ;; (z /) }   $ct first-release ()
-
-;;   ;; (spc j) -   $ct first-release ()
-;;   ;; (spc k) S-- $ct first-release ()
-;;   ;; (spc l) =   $ct first-release ()
-;;   ;; (spc ;) S-= $ct first-release ()
-
-;;   ;; (spc a) ;   $ct first-release ()
-;;   ;; (spc s) S-; $ct first-release ()
-;;   ;; (spc d) '   $ct first-release ()
-;;   ;; (spc f) S-' $ct first-release ()
-  
-;;   ;; (spc i) S-9 $ct first-release ()
-;;   ;; (spc o) S-0 $ct first-release ()
-
-;;   ;; (spc q) S-[ $ct first-release ()
-;;   ;; (spc w) S-] $ct first-release ()
-;;   ;; (spc e) [   $ct first-release ()
-;;   ;; (spc r) ]   $ct first-release ()
-
-;;   ;; (spc c) \   $ct first-release ()
-;;   ;; (spc v) S-\ $ct first-release ()
-;; )
 
 
 (deflayer base
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  @cap      a         s         d         f         g         h         j         @k-lay    l         ;         '         ret
+  ctl       a         s         d         @f-sft    g         h         @j-sft    @k-lay    l         ;         '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
-  @cap      met       @lalt                         @spc                                    ralt       rmet      rctl
+  ctl       met       alt                         @spc                                    ralt       rmet      rctl
 )
 
 (deflayer ddd
@@ -151,7 +80,6 @@
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
   ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
-
 
 
 (deflayer nav 
