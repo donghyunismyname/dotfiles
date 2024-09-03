@@ -2,6 +2,7 @@
   concurrent-tap-hold yes  ;; required by defchordsv2-experiment
   log-layer-changes no     ;; performance reasons
   chords-v2-min-idle-experimental 200
+  sequence-input-mode visible-backspaced
 )
 (defsrc
   ;; grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
@@ -17,7 +18,7 @@
 )
 
 (defvar
-  tt 300 ;; tab timeout
+  tt 300 ;; tap timeout (repeat)
   ct 100 ;; chord timeout
   ost 2000 ;; one-shot timeout
 
@@ -32,13 +33,14 @@
   cap (multi ctl (layer-toggle cap))
   capspc (layer-toggle nav)
 )
+
 (defalias
   ;; shift
   ;-sft (tap-hold $tt $st ; sft)
   a-sft (tap-hold $tt $st a sft)
+  cf-sft (tap-hold $tt $st C-f sft)
   f-sft (tap-hold $tt $st f sft)
   j-sft (tap-hold $tt $st j sft)
-  cf-sft (tap-hold $tt $st C-f sft)
 
   ;; home
   l-hom (tap-hold $tt $ht left home)
@@ -52,15 +54,24 @@
 
   ;; layer 
   k-lay (tap-hold $tt $lt k @ddd)
+  k-mul (multi k (layer-toggle pdd))
+  ;; k-seq (tap-hold-press $tt $lt k sldr)
+  k-seq sldr 
 
   ;; alt
   lalt (tap-hold $tt $ht (one-shot $ost sft) alt)
   spc (tap-hold 0 500 spc sft)
 )
 
+(defseq
+  aaa (a a a)
+)
+(defvirtualkeys
+  aaa (macro h a p p y)
+)
 
 ;; chord/combo
-;; (defchordsv2-experimental
+(defchordsv2-experimental
 ;;   (ctl spc) @capspc 100 all-released ()
 
 ;;   ;; shift
@@ -78,15 +89,15 @@
 
 ;;   (w f) tab $ct first-release (ddd nav cap)
 
-;;   ;; special keys right
-;;   (u i) home $ct first-release (ddd nav cap)
-;;   (i o) end $ct first-release (ddd nav cap)
+  ;; special keys right
+  (u i) home $ct first-release ()
+  (i o) end $ct first-release ()
 
 ;;   (j k) (multi (macro bspc) (layer-toggle ddd)) $ct all-released (ddd nav cap)
 ;;   (k l) (multi (macro del) (layer-toggle ddd))  $ct all-released (ddd nav cap)
-;;   (j l) esc $ct first-release (ddd nav cap)
-
-;;   (j o) ret $ct first-release (ddd nav cap)
+  (j l) esc $ct first-release ()
+  (j i) tab $ct first-release ()
+  (j o) ret $ct first-release ()
 
 
 ;;   ;; layers
@@ -127,23 +138,34 @@
 ;;   ;; (spc e) [   $ct first-release ()
 ;;   ;; (spc r) ]   $ct first-release ()
 
-;;   ;; (spc c) \   $ct first-release ()
+
 ;;   ;; (spc v) S-\ $ct first-release ()
-;; )
+)
 
 
 (deflayer base
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  @cap      a         s         d         f         g         h         j         @k-lay    l         ;         '         ret
+  @cap      a         s         d         @f-sft    g         h         @j-sft    @k-lay    l         ;         '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
-  @cap      met       @lalt                         @spc                                    ralt       rmet      rctl
+  @cap      met       alt                           spc                                     ralt       rmet      rctl
 )
 
 (deflayer ddd
-  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  ctl       a         s         d         f         g         h         bspc      k         del       ;         '         ret
-  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
-  ctl       met       alt                           spc                                     ralt      rmet      rctl
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         bspc      _         del       _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         _         _         _         _
+)
+
+(defalias
+  pddj (multi (layer-switch ddd) (macro bspc bspc))
+  pddl (multi (layer-switch ddd) (macro bspc del))
+)
+(deflayer pdd
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         @pddj     _         @pddl     _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         _         _         _         _
 )
 (deflayer intact
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
@@ -155,9 +177,9 @@
 
 
 (deflayer nav 
-  tab       [         ]         S-9       S-0       t         C-y       C-z       C-left    C-right   _         C-M-left  C-M-right \
-  ctl       S-=       =         S--       sft       g         left      down      up        right     bspc      del       ret
-  sft       S-[       S-]       left      right     b         tab       ret       C-bspc    C-del     _         rsft
+  tab       _         _         _         _         t         C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
+  ctl       _         _         _         sft       g         left      down      up        right     bspc      del       ret
+  sft       _         _         _         _         b         tab       ret       C-bspc    C-del     esc       rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
 
