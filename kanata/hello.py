@@ -14,6 +14,19 @@ for i in range(100):
     print('hello world destiny')
 
 
+for i in range(8787):
+    print('hi hi toku')
+    
+    
+
+    
+    
+
+
+
+    
+
+
 
 
 if __name__ == '__main__':
