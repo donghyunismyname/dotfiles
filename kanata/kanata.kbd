@@ -54,19 +54,19 @@
 )
 (defalias
   ; (tap-hold-press-timeout 0 1000 ; (layer-toggle nav) ;)
-  spc (tap-hold-press-timeout $tt $ht spc spc sft)
+  spc (tap-hold-press-timeout $tt 500 spc spc sft)
 )
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  @cap      a         s         d         @f-sft    g         h         @j-sft    @kkk      l         @;        '         ret
+  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
+  @cap      a         s         d         @f-sft    g         h         @jjj      @kkk      @lll      @;        '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
-  @cap      met       alt                           spc                           ralt      rmet      rctl
+  @cap      met       alt                           @spc                          ralt      rmet      rctl
 )
 (deflayer nav 
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       S-\       \         S-9       S-0       S-grv     C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
-  ctl       S-=       =         S--       -         grv       left      down      up        right     bspc      del       ret
+  ctl       S-=       -         S--       =         grv       left      down      up        right     bspc      del       ret
   sft       S-[       S-]       [         ]         sft       tab       ret       C-bspc    C-del     esc       rsft
   ctl       met       alt                           (macro ; spc)                           ralt      rmet      rctl
 )
@@ -151,9 +151,40 @@
   )
   (defalias $name (tap-hold-press-timeout 0 150 $tap (layer-toggle $name) $hold))
 )
-(t! tatak kkk k k j bspc l del nop0 XX nop0 XX)
+
 (t! tatak fff f f d (multi (release-layer fff) (one-shot $ost sft)) nop0 XX nop0 XX nop0 XX)
-(t! tatak jjj j j k (multi (release-layer jjj) (one-shot $ost sft)) nop0 XX nop0 XX nop0 XX)
+
+(t! tatak jjj j sft 
+  i tab 
+  o ret 
+  k left
+  l right
+)
+(t! tatak iii i i
+  o end
+  j S-tab
+  nop0 XX
+  nop0 XX
+)
+(t! tatak ooo o o
+  i home
+  j esc
+  nop0 XX
+  nop0 XX
+)
+(t! tatak kkk k k 
+  j bspc 
+  l del 
+  nop0 XX 
+  nop0 XX
+)
+(t! tatak lll l l
+  j down
+  k up
+  nop0 XX
+  nop0 XX
+)
+
 
 
 
@@ -186,14 +217,14 @@
 ;;   (w f) tab $ct first-release (ddd nav cap)
 
   ;; special keys right
-  (u i) home $ct first-release ()
-  (i o) end $ct first-release ()
+  ;; (u i) home $ct first-release ()
+  ;; (i o) end $ct first-release ()
 
 ;;   (j k) (multi (macro bspc) (layer-toggle ddd)) $ct all-released (ddd nav cap)
 ;;   (k l) (multi (macro del) (layer-toggle ddd))  $ct all-released (ddd nav cap)
-  (j l) esc $ct all-released ()
-  (j i) tab $ct first-release ()
-  (j o) ret $ct first-release ()
+  ;; (j l) esc $ct all-released ()
+  ;; (j i) tab $ct first-release ()
+  ;; (j o) ret $ct first-release ()
 
   ;; (k j) (switch (k) 1 break (j) 2 break) 200 first-release ()
 
