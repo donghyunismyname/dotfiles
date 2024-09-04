@@ -33,7 +33,7 @@
 
 (defalias
 	nav (layer-toggle nav)
-  cap (multi ctl (layer-toggle cap))
+  cap (tap-hold-press 0 $ht esc (multi ctl (layer-toggle cap)))
   capspc (layer-toggle nav)
 )
 
@@ -41,8 +41,8 @@
   ;; shift
   ;; ;-sft (tap-hold $tt $st ; sft)
   ;; a-sft (tap-hold $tt $st a sft)
-  f-sft (tap-hold 0 200 f (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft f))
-  j-sft (tap-hold 0 200 j (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft j))
+  fsf (tap-hold 0 200 f (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft f))
+  jsf (tap-hold 0 200 j (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft j))
 
   ;; home
   ;; l-hom (tap-hold $tt $ht left home)
@@ -64,7 +64,7 @@
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
-  @cap      a         s         @ddd      @f-sft    g         h         @j-sft    @kkk      @lll      @;        '         ret
+  @cap      a         s         @ddd      @fsf      g         h         @jsf      @kkk      @lll      @;        '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
   @cap      met       alt                           @spc                          ralt      rmet      rctl
 )
@@ -73,7 +73,7 @@
   tab       S-\       S-9       S-0       \         grv       C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
   ctl       S-=       -         S--       =         sft       left      down      up        right     bspc      del       ret
   sft       S-[       S-]       [         ]         S-grv     tab       ret       C-bspc    C-del     esc       rsft
-  ctl       met       alt                           (macro ; spc)                           ralt      rmet      rctl
+  ctl       met       alt       (multi (release-layer nav) (macro ; spc))         ralt      rmet      rctl
 )
 (deflayer qot
   _         _         _         _         _         _         _         _         _         _         _         _         _         _
@@ -177,6 +177,18 @@
   nop0 XX
 )
 
+(t! tatak 0 jjj j j
+  k (one-shot 2000 sft)
+  nop0 XX
+  nop0 XX
+  nop0 XX
+)
+(t! tatak 0 fff f f
+  d (one-shot 2000 sft)
+  nop0 XX
+  nop0 XX
+  nop0 XX
+)
 
 (defvar
   idle 200
@@ -194,15 +206,15 @@
   nop0 XX
 )
 (t! tatak $idle kkk k k
-  d ctl
-  f sft
+  f ctl
+  d sft
   j left
   l right
   ;; j (multi (release-key k) (one-shot 2000 sft))
   ;; l (switch ((key-history right 1)) right break ((key-timing 1 lt $idle)) (multi (release-layer kkk) (macro k l)) break () right break)
 )
 (t! tatak $idle lll l l
-  d ctl
+  f ctl
   j bspc
   k del
   nop0 XX
@@ -221,10 +233,10 @@
 ;;   (ctl spc) @capspc 100 all-released ()
 
 ;;   ;; shift
-;;   ;; (d f) sft $ct first-release ()
-;;   ;; (j k) sft $ct first-release ()
+;; (d f) sft $ct first-release ()
+;; (j k) sft $ct first-release ()
 ;;   ;; (spc f j) sft $ct all-released ()
-
+  
 ;;   ;; special keys left
 ;;   (w e) =   $ct first-release (ddd nav cap)
 ;;   (e r) S-= $ct first-release (ddd nav cap)
