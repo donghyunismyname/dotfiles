@@ -8,12 +8,13 @@ arr[0] += arr[2] + arr[3] + arr[4]
 def main():
     print(arr)
     
-
-
-
+    
+    
+for i in range(100):
+    print('hello world destiny')
 
 
 
 
 if __name__ == '__main__':
-    main()mworld mworld vamworldviouvpencielvpencial
+    main()

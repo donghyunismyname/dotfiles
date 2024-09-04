@@ -6,6 +6,8 @@
   ;; sequence-input-mode visible-backspaced
   ;; sequence-input-mode hidden-delay-type
   ;; sequence-timeout 2000
+  ;; If your environment is particularly buggy, might need to delay even more
+  ;; rapid-event-delay 20
 )
 (defsrc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
@@ -37,38 +39,48 @@
 
 (defalias
   ;; shift
-  ;-sft (tap-hold $tt $st ; sft)
-  a-sft (tap-hold $tt $st a sft)
-  f-sft (tap-hold 0 200 f (tap-hold-press-timeout 0 300 (one-shot 500 sft) sft f))
-  j-sft (tap-hold 0 200 j (tap-hold-press-timeout 0 300 (one-shot 500 sft) sft j))
+  ;; ;-sft (tap-hold $tt $st ; sft)
+  ;; a-sft (tap-hold $tt $st a sft)
+  f-sft (tap-hold 0 200 f (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft f))
+  j-sft (tap-hold 0 200 j (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft j))
 
   ;; home
-  l-hom (tap-hold $tt $ht left home)
-  cl-hom (tap-hold $tt $ht C-left home)
-  i-hom (tap-hold $tt $ht i home)
+  ;; l-hom (tap-hold $tt $ht left home)
+  ;; cl-hom (tap-hold $tt $ht C-left home)
+  ;; i-hom (tap-hold $tt $ht i home)
 
   ;; end
-  r-end (tap-hold $tt $ht right end)
-  cr-end (tap-hold $tt $ht C-right end)
-  o-end (tap-hold $tt $ht o end)
+  ;; r-end (tap-hold $tt $ht right end)
+  ;; cr-end (tap-hold $tt $ht C-right end)
+  ;; o-end (tap-hold $tt $ht o end)
 )
 (defalias
   ; (tap-hold-press-timeout 0 1000 ; (layer-toggle nav) ;)
+  ' (tap-hold-press-timeout 0 1000 ' (layer-toggle qot) ')
   spc (tap-hold-press-timeout $tt 500 spc spc sft)
+  u (tap-dance 300 (u y))
+  v (tap-dance 300 (v b))
 )
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
-  @cap      a         s         d         @f-sft    g         h         @jjj      @kkk      @lll      @;        '         ret
+  @cap      a         s         @ddd      @f-sft    g         h         @j-sft    @kkk      @lll      @;        '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
   @cap      met       alt                           @spc                          ralt      rmet      rctl
 )
 (deflayer nav 
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       S-\       \         S-9       S-0       S-grv     C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
-  ctl       S-=       -         S--       =         grv       left      down      up        right     bspc      del       ret
-  sft       S-[       S-]       [         ]         sft       tab       ret       C-bspc    C-del     esc       rsft
+  grv       S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0         -         =         bspc
+  tab       S-\       S-9       S-0       \         grv       C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
+  ctl       S-=       -         S--       =         sft       left      down      up        right     bspc      del       ret
+  sft       S-[       S-]       [         ]         S-grv     tab       ret       C-bspc    C-del     esc       rsft
   ctl       met       alt                           (macro ; spc)                           ralt      rmet      rctl
+)
+(deflayer qot
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         sft       ctl       alt       '         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         _         _         _         _
 )
 (deflayer cap
   _         _         _         _         _         _         _         _         _         _         _         _         _         _
@@ -90,12 +102,13 @@
   9 9
   0 0
 )
+;; recent idle state too short -> tab
 ;; tab -> $tab
 ;; hold timeout -> $hold
 ;; while waitng:
 ;;   press $k? while holding $key -> hold action $a?
 ;;   press other key while holding $key -> release layer with tab action
-(deftemplate tatak (name tap hold k1 a1 k2 a2 k3 a3 k4 a4)
+(deftemplate tatak (idle name tap hold k1 a1 k2 a2 k3 a3 k4 a4)
   (deflayer $name
     (multi (if-not-in-list grv  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list grv   ($k1 $k2 $k3 $k4) (macro $tap grv  )) (if-equal grv  $k1 $a1) (if-equal grv  $k2 $a2) (if-equal grv   $k3 $a3) (if-equal grv   $k4 $a4))
     (multi (if-not-in-list @1   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @1    ($k1 $k2 $k3 $k4) (macro $tap @1   )) (if-equal @1   $k1 $a1) (if-equal @1   $k2 $a2) (if-equal @1    $k3 $a3) (if-equal @1    $k4 $a4))
@@ -149,45 +162,51 @@
     (multi (if-not-in-list /    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list /     ($k1 $k2 $k3 $k4) (macro $tap /    )) (if-equal /    $k1 $a1) (if-equal /    $k2 $a2) (if-equal /     $k3 $a3) (if-equal /     $k4 $a4)) _ _ _ _
     (multi (if-not-in-list spc  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list spc   ($k1 $k2 $k3 $k4) (macro $tap spc  )) (if-equal spc  $k1 a1) (if-equal spc   $k2 $a2) (if-equal spc   $k3 $a3) (if-equal spc   $k4 $a4)) _ _ _
   )
-  (defalias $name (tap-hold-press-timeout 0 150 $tap (layer-toggle $name) $hold))
+  (defalias $name 
+    (switch
+      ((key-timing 1 less-than $idle)) $tap break
+      () (tap-hold-press-timeout 0 200 $tap (layer-toggle $name) $hold) break
+    )
+  )
 )
 
-(t! tatak fff f f d (multi (release-layer fff) (one-shot $ost sft)) nop0 XX nop0 XX nop0 XX)
-
-(t! tatak jjj j sft 
-  i tab 
-  o ret 
-  k left
-  l right
+(t! tatak $idle ddd d d
+  f esc
+  nop0 XX
+  nop0 XX
+  nop0 XX
 )
-(t! tatak iii i i
+
+
+(defvar
+  idle 200
+)
+(t! tatak $idle iii i i
   o end
-  j S-tab
+  j tab
   nop0 XX
   nop0 XX
 )
-(t! tatak ooo o o
+(t! tatak $idle ooo o o
   i home
-  j esc
+  j ret
   nop0 XX
   nop0 XX
 )
-(t! tatak kkk k k 
-  j bspc 
-  l del 
-  nop0 XX 
+(t! tatak $idle kkk k k
+  d ctl
+  f sft
+  j left
+  l right
+  ;; j (multi (release-key k) (one-shot 2000 sft))
+  ;; l (switch ((key-history right 1)) right break ((key-timing 1 lt $idle)) (multi (release-layer kkk) (macro k l)) break () right break)
+)
+(t! tatak $idle lll l l
+  d ctl
+  j bspc
+  k del
   nop0 XX
 )
-(t! tatak lll l l
-  j down
-  k up
-  nop0 XX
-  nop0 XX
-)
-
-
-
-
 
 
 
