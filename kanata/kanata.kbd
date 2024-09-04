@@ -14,7 +14,6 @@
   lsft z    x    c    v    b    n    m    ,    .    /    rsft
   lctl lmet lalt           spc                 ralt rmet rctl
 )
-
 (defoverrides
   (ctl ;) (bspc)
   (ctl ') (del)
@@ -40,9 +39,8 @@
   ;; shift
   ;-sft (tap-hold $tt $st ; sft)
   a-sft (tap-hold $tt $st a sft)
-  cf-sft (tap-hold $tt $st C-f sft)
-  f-sft (tap-hold $tt $st f sft)
-  j-sft (multi nop0 (tap-hold $tt $st j sft))
+  f-sft (tap-hold 0 200 f (tap-hold-press-timeout 0 300 (one-shot 500 sft) sft f))
+  j-sft (tap-hold 0 200 j (tap-hold-press-timeout 0 300 (one-shot 500 sft) sft j))
 
   ;; home
   l-hom (tap-hold $tt $ht left home)
@@ -53,37 +51,31 @@
   r-end (tap-hold $tt $ht right end)
   cr-end (tap-hold $tt $ht C-right end)
   o-end (tap-hold $tt $ht o end)
-
-  ;; layer 
-  ;; k-ddd (tap-hold-press $tt $lt k (switch (q w e r) 1 break () 2 break))
-  ;; k-ddd (tap-hold-except-keys $tt $lt (fork 1 2 (q w e r)) k (a s d))
-  ;; k-ddd (tap-hold-press $tt 1000 k (fork k @ddd (j l)))
-  ;; k-ddd (tap-hold-press-timeout 0 $ht k (multi (layer-toggle ddd) (macro 10 sldr 10 k)) k)
-
-  ;; alt
-  ;; lalt (tap-hold $tt $ht (one-shot $ost sft) alt)
-  ;; spc (tap-hold 0 500 spc sft)
 )
-
-
-;; (deftemplate seq (vk-name input-keys output-action)
-;;   (defvirtualkeys $vk-name $output-action)
-;;   (defseq $vk-name $input-keys)
-;; )
-;; (t! seq aaa (a a a a) (macro h a p p y))
-;; (t! seq ddd (k nop0) (macro bspc bspc bspc))
-
-
 (defalias
-  ; (tap-hold-press-timeout 0 $ht ; (layer-toggle nav) ;)
+  ; (tap-hold-press-timeout 0 1000 ; (layer-toggle nav) ;)
   spc (tap-hold-press-timeout $tt $ht spc spc sft)
 )
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  @cap      a         s         d         @fff      g         h         @jjj      @kkk      l         @;        '         ret
+  @cap      a         s         d         @f-sft    g         h         @j-sft    @kkk      l         @;        '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft 
   @cap      met       alt                           spc                           ralt      rmet      rctl
+)
+(deflayer nav 
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       S-\       \         S-9       S-0       S-grv     C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
+  ctl       S-=       =         S--       -         grv       left      down      up        right     bspc      del       ret
+  sft       S-[       S-]       [         ]         sft       tab       ret       C-bspc    C-del     esc       rsft
+  ctl       met       alt                           (macro ; spc)                           ralt      rmet      rctl
+)
+(deflayer cap
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         @capspc   _         _         _
 )
 
 (defalias
@@ -98,101 +90,80 @@
   9 9
   0 0
 )
-(deftemplate tatak (name key k1 a1 k2 a2 k3 a3 k4 a4)
+;; tab -> $tab
+;; hold timeout -> $hold
+;; while waitng:
+;;   press $k? while holding $key -> hold action $a?
+;;   press other key while holding $key -> release layer with tab action
+(deftemplate tatak (name tap hold k1 a1 k2 a2 k3 a3 k4 a4)
   (deflayer $name
-    (multi (if-not-in-list grv  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal grv  $k1 $a1) (if-equal grv  $k2 $a2) (if-equal grv   $k3 $a3) (if-equal grv   $k4 $a4) (if-not-in-list grv   ($k1 $k2 $k3 $k4) (macro $key grv  )))
-    (multi (if-not-in-list @1   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @1   $k1 $a1) (if-equal @1   $k2 $a2) (if-equal @1    $k3 $a3) (if-equal @1    $k4 $a4) (if-not-in-list @1    ($k1 $k2 $k3 $k4) (macro $key @1   )))
-    (multi (if-not-in-list @2   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @2   $k1 $a1) (if-equal @2   $k2 $a2) (if-equal @2    $k3 $a3) (if-equal @2    $k4 $a4) (if-not-in-list @2    ($k1 $k2 $k3 $k4) (macro $key @2   )))
-    (multi (if-not-in-list @3   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @3   $k1 $a1) (if-equal @3   $k2 $a2) (if-equal @3    $k3 $a3) (if-equal @3    $k4 $a4) (if-not-in-list @3    ($k1 $k2 $k3 $k4) (macro $key @3   )))
-    (multi (if-not-in-list @4   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @4   $k1 $a1) (if-equal @4   $k2 $a2) (if-equal @4    $k3 $a3) (if-equal @4    $k4 $a4) (if-not-in-list @4    ($k1 $k2 $k3 $k4) (macro $key @4   )))
-    (multi (if-not-in-list @5   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @5   $k1 $a1) (if-equal @5   $k2 $a2) (if-equal @5    $k3 $a3) (if-equal @5    $k4 $a4) (if-not-in-list @5    ($k1 $k2 $k3 $k4) (macro $key @5   )))
-    (multi (if-not-in-list @6   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @6   $k1 $a1) (if-equal @6   $k2 $a2) (if-equal @6    $k3 $a3) (if-equal @6    $k4 $a4) (if-not-in-list @6    ($k1 $k2 $k3 $k4) (macro $key @6   )))
-    (multi (if-not-in-list @7   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @7   $k1 $a1) (if-equal @7   $k2 $a2) (if-equal @7    $k3 $a3) (if-equal @7    $k4 $a4) (if-not-in-list @7    ($k1 $k2 $k3 $k4) (macro $key @7   )))
-    (multi (if-not-in-list @8   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @8   $k1 $a1) (if-equal @8   $k2 $a2) (if-equal @8    $k3 $a3) (if-equal @8    $k4 $a4) (if-not-in-list @8    ($k1 $k2 $k3 $k4) (macro $key @8   )))
-    (multi (if-not-in-list @9   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @9   $k1 $a1) (if-equal @9   $k2 $a2) (if-equal @9    $k3 $a3) (if-equal @9    $k4 $a4) (if-not-in-list @9    ($k1 $k2 $k3 $k4) (macro $key @9   )))
-    (multi (if-not-in-list @0   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal @0   $k1 $a1) (if-equal @0   $k2 $a2) (if-equal @0    $k3 $a3) (if-equal @0    $k4 $a4) (if-not-in-list @0    ($k1 $k2 $k3 $k4) (macro $key @0   )))
-    (multi (if-not-in-list -    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal -    $k1 $a1) (if-equal -    $k2 $a2) (if-equal -     $k3 $a3) (if-equal -     $k4 $a4) (if-not-in-list -     ($k1 $k2 $k3 $k4) (macro $key -    )))
-    (multi (if-not-in-list =    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal =    $k1 $a1) (if-equal =    $k2 $a2) (if-equal =     $k3 $a3) (if-equal =     $k4 $a4) (if-not-in-list =     ($k1 $k2 $k3 $k4) (macro $key =    )))
-    (multi (if-not-in-list bspc ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal bspc $k1 $a1) (if-equal bspc $k2 $a2) (if-equal bspc  $k3 $a3) (if-equal bspc  $k4 $a4) (if-not-in-list bspc  ($k1 $k2 $k3 $k4) (macro $key bspc )))
-    (multi (if-not-in-list tab  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal tab  $k1 $a1) (if-equal tab  $k2 $a2) (if-equal tab   $k3 $a3) (if-equal tab   $k4 $a4) (if-not-in-list tab   ($k1 $k2 $k3 $k4) (macro $key tab  )))
-    (multi (if-not-in-list q    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal q    $k1 $a1) (if-equal q    $k2 $a2) (if-equal q     $k3 $a3) (if-equal q     $k4 $a4) (if-not-in-list q     ($k1 $k2 $k3 $k4) (macro $key q    )))
-    (multi (if-not-in-list w    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal w    $k1 $a1) (if-equal w    $k2 $a2) (if-equal w     $k3 $a3) (if-equal w     $k4 $a4) (if-not-in-list w     ($k1 $k2 $k3 $k4) (macro $key w    )))
-    (multi (if-not-in-list e    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal e    $k1 $a1) (if-equal e    $k2 $a2) (if-equal e     $k3 $a3) (if-equal e     $k4 $a4) (if-not-in-list e     ($k1 $k2 $k3 $k4) (macro $key e    )))
-    (multi (if-not-in-list r    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal r    $k1 $a1) (if-equal r    $k2 $a2) (if-equal r     $k3 $a3) (if-equal r     $k4 $a4) (if-not-in-list r     ($k1 $k2 $k3 $k4) (macro $key r    )))
-    (multi (if-not-in-list t    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal t    $k1 $a1) (if-equal t    $k2 $a2) (if-equal t     $k3 $a3) (if-equal t     $k4 $a4) (if-not-in-list t     ($k1 $k2 $k3 $k4) (macro $key t    )))
-    (multi (if-not-in-list y    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal y    $k1 $a1) (if-equal y    $k2 $a2) (if-equal y     $k3 $a3) (if-equal y     $k4 $a4) (if-not-in-list y     ($k1 $k2 $k3 $k4) (macro $key y    )))
-    (multi (if-not-in-list u    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal u    $k1 $a1) (if-equal u    $k2 $a2) (if-equal u     $k3 $a3) (if-equal u     $k4 $a4) (if-not-in-list u     ($k1 $k2 $k3 $k4) (macro $key u    )))
-    (multi (if-not-in-list i    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal i    $k1 $a1) (if-equal i    $k2 $a2) (if-equal i     $k3 $a3) (if-equal i     $k4 $a4) (if-not-in-list i     ($k1 $k2 $k3 $k4) (macro $key i    )))
-    (multi (if-not-in-list o    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal o    $k1 $a1) (if-equal o    $k2 $a2) (if-equal o     $k3 $a3) (if-equal o     $k4 $a4) (if-not-in-list o     ($k1 $k2 $k3 $k4) (macro $key o    )))
-    (multi (if-not-in-list p    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal p    $k1 $a1) (if-equal p    $k2 $a2) (if-equal p     $k3 $a3) (if-equal p     $k4 $a4) (if-not-in-list p     ($k1 $k2 $k3 $k4) (macro $key p    )))
-    (multi (if-not-in-list [    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal [    $k1 $a1) (if-equal [    $k2 $a2) (if-equal [     $k3 $a3) (if-equal [     $k4 $a4) (if-not-in-list [     ($k1 $k2 $k3 $k4) (macro $key [    )))
-    (multi (if-not-in-list ]    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal ]    $k1 $a1) (if-equal ]    $k2 $a2) (if-equal ]     $k3 $a3) (if-equal ]     $k4 $a4) (if-not-in-list ]     ($k1 $k2 $k3 $k4) (macro $key ]    )))
-    (multi (if-not-in-list \    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal \    $k1 $a1) (if-equal \    $k2 $a2) (if-equal \     $k3 $a3) (if-equal \     $k4 $a4) (if-not-in-list \     ($k1 $k2 $k3 $k4) (macro $key \    ))) _
-    (multi (if-not-in-list a    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal a    $k1 $a1) (if-equal a    $k2 $a2) (if-equal a     $k3 $a3) (if-equal a     $k4 $a4) (if-not-in-list a     ($k1 $k2 $k3 $k4) (macro $key a    )))
-    (multi (if-not-in-list s    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal s    $k1 $a1) (if-equal s    $k2 $a2) (if-equal s     $k3 $a3) (if-equal s     $k4 $a4) (if-not-in-list s     ($k1 $k2 $k3 $k4) (macro $key s    )))
-    (multi (if-not-in-list d    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal d    $k1 $a1) (if-equal d    $k2 $a2) (if-equal d     $k3 $a3) (if-equal d     $k4 $a4) (if-not-in-list d     ($k1 $k2 $k3 $k4) (macro $key d    )))
-    (multi (if-not-in-list f    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal f    $k1 $a1) (if-equal f    $k2 $a2) (if-equal f     $k3 $a3) (if-equal f     $k4 $a4) (if-not-in-list f     ($k1 $k2 $k3 $k4) (macro $key f    )))
-    (multi (if-not-in-list g    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal g    $k1 $a1) (if-equal g    $k2 $a2) (if-equal g     $k3 $a3) (if-equal g     $k4 $a4) (if-not-in-list g     ($k1 $k2 $k3 $k4) (macro $key g    )))
-    (multi (if-not-in-list h    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal h    $k1 $a1) (if-equal h    $k2 $a2) (if-equal h     $k3 $a3) (if-equal h     $k4 $a4) (if-not-in-list h     ($k1 $k2 $k3 $k4) (macro $key h    )))
-    (multi (if-not-in-list j    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal j    $k1 $a1) (if-equal j    $k2 $a2) (if-equal j     $k3 $a3) (if-equal j     $k4 $a4) (if-not-in-list j     ($k1 $k2 $k3 $k4) (macro $key j    )))
-    (multi (if-not-in-list k    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal k    $k1 $a1) (if-equal k    $k2 $a2) (if-equal k     $k3 $a3) (if-equal k     $k4 $a4) (if-not-in-list k     ($k1 $k2 $k3 $k4) (macro $key k    )))
-    (multi (if-not-in-list l    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal l    $k1 $a1) (if-equal l    $k2 $a2) (if-equal l     $k3 $a3) (if-equal l     $k4 $a4) (if-not-in-list l     ($k1 $k2 $k3 $k4) (macro $key l    )))
-    (multi (if-not-in-list ;    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal ;    $k1 $a1) (if-equal ;    $k2 $a2) (if-equal ;     $k3 $a3) (if-equal ;     $k4 $a4) (if-not-in-list ;     ($k1 $k2 $k3 $k4) (macro $key ;    )))
-    (multi (if-not-in-list '    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal '    $k1 $a1) (if-equal '    $k2 $a2) (if-equal '     $k3 $a3) (if-equal '     $k4 $a4) (if-not-in-list '     ($k1 $k2 $k3 $k4) (macro $key '    )))
-    (multi (if-not-in-list ret  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal ret  $k1 $a1) (if-equal ret  $k2 $a2) (if-equal ret   $k3 $a3) (if-equal ret   $k4 $a4) (if-not-in-list ret   ($k1 $k2 $k3 $k4) (macro $key ret  ))) _
-    (multi (if-not-in-list z    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal z    $k1 $a1) (if-equal z    $k2 $a2) (if-equal z     $k3 $a3) (if-equal z     $k4 $a4) (if-not-in-list z     ($k1 $k2 $k3 $k4) (macro $key z    )))
-    (multi (if-not-in-list x    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal x    $k1 $a1) (if-equal x    $k2 $a2) (if-equal x     $k3 $a3) (if-equal x     $k4 $a4) (if-not-in-list x     ($k1 $k2 $k3 $k4) (macro $key x    )))
-    (multi (if-not-in-list c    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal c    $k1 $a1) (if-equal c    $k2 $a2) (if-equal c     $k3 $a3) (if-equal c     $k4 $a4) (if-not-in-list c     ($k1 $k2 $k3 $k4) (macro $key c    )))
-    (multi (if-not-in-list v    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal v    $k1 $a1) (if-equal v    $k2 $a2) (if-equal v     $k3 $a3) (if-equal v     $k4 $a4) (if-not-in-list v     ($k1 $k2 $k3 $k4) (macro $key v    )))
-    (multi (if-not-in-list b    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal b    $k1 $a1) (if-equal b    $k2 $a2) (if-equal b     $k3 $a3) (if-equal b     $k4 $a4) (if-not-in-list b     ($k1 $k2 $k3 $k4) (macro $key b    )))
-    (multi (if-not-in-list n    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal n    $k1 $a1) (if-equal n    $k2 $a2) (if-equal n     $k3 $a3) (if-equal n     $k4 $a4) (if-not-in-list n     ($k1 $k2 $k3 $k4) (macro $key n    )))
-    (multi (if-not-in-list m    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal m    $k1 $a1) (if-equal m    $k2 $a2) (if-equal m     $k3 $a3) (if-equal m     $k4 $a4) (if-not-in-list m     ($k1 $k2 $k3 $k4) (macro $key m    )))
-    (multi (if-not-in-list ,    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal ,    $k1 $a1) (if-equal ,    $k2 $a2) (if-equal ,     $k3 $a3) (if-equal ,     $k4 $a4) (if-not-in-list ,     ($k1 $k2 $k3 $k4) (macro $key ,    )))
-    (multi (if-not-in-list .    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal .    $k1 $a1) (if-equal .    $k2 $a2) (if-equal .     $k3 $a3) (if-equal .     $k4 $a4) (if-not-in-list .     ($k1 $k2 $k3 $k4) (macro $key .    )))
-    (multi (if-not-in-list /    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal /    $k1 $a1) (if-equal /    $k2 $a2) (if-equal /     $k3 $a3) (if-equal /     $k4 $a4) (if-not-in-list /     ($k1 $k2 $k3 $k4) (macro $key /    ))) _ _ _ _
-    (multi (if-not-in-list spc  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-equal spc  $k1 a1) (if-equal spc   $k2 $a2) (if-equal spc   $k3 $a3) (if-equal spc   $k4 $a4) (if-not-in-list spc   ($k1 $k2 $k3 $k4) (macro $key spc  ))) _ _ _
+    (multi (if-not-in-list grv  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list grv   ($k1 $k2 $k3 $k4) (macro $tap grv  )) (if-equal grv  $k1 $a1) (if-equal grv  $k2 $a2) (if-equal grv   $k3 $a3) (if-equal grv   $k4 $a4))
+    (multi (if-not-in-list @1   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @1    ($k1 $k2 $k3 $k4) (macro $tap @1   )) (if-equal @1   $k1 $a1) (if-equal @1   $k2 $a2) (if-equal @1    $k3 $a3) (if-equal @1    $k4 $a4))
+    (multi (if-not-in-list @2   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @2    ($k1 $k2 $k3 $k4) (macro $tap @2   )) (if-equal @2   $k1 $a1) (if-equal @2   $k2 $a2) (if-equal @2    $k3 $a3) (if-equal @2    $k4 $a4))
+    (multi (if-not-in-list @3   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @3    ($k1 $k2 $k3 $k4) (macro $tap @3   )) (if-equal @3   $k1 $a1) (if-equal @3   $k2 $a2) (if-equal @3    $k3 $a3) (if-equal @3    $k4 $a4))
+    (multi (if-not-in-list @4   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @4    ($k1 $k2 $k3 $k4) (macro $tap @4   )) (if-equal @4   $k1 $a1) (if-equal @4   $k2 $a2) (if-equal @4    $k3 $a3) (if-equal @4    $k4 $a4))
+    (multi (if-not-in-list @5   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @5    ($k1 $k2 $k3 $k4) (macro $tap @5   )) (if-equal @5   $k1 $a1) (if-equal @5   $k2 $a2) (if-equal @5    $k3 $a3) (if-equal @5    $k4 $a4))
+    (multi (if-not-in-list @6   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @6    ($k1 $k2 $k3 $k4) (macro $tap @6   )) (if-equal @6   $k1 $a1) (if-equal @6   $k2 $a2) (if-equal @6    $k3 $a3) (if-equal @6    $k4 $a4))
+    (multi (if-not-in-list @7   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @7    ($k1 $k2 $k3 $k4) (macro $tap @7   )) (if-equal @7   $k1 $a1) (if-equal @7   $k2 $a2) (if-equal @7    $k3 $a3) (if-equal @7    $k4 $a4))
+    (multi (if-not-in-list @8   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @8    ($k1 $k2 $k3 $k4) (macro $tap @8   )) (if-equal @8   $k1 $a1) (if-equal @8   $k2 $a2) (if-equal @8    $k3 $a3) (if-equal @8    $k4 $a4))
+    (multi (if-not-in-list @9   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @9    ($k1 $k2 $k3 $k4) (macro $tap @9   )) (if-equal @9   $k1 $a1) (if-equal @9   $k2 $a2) (if-equal @9    $k3 $a3) (if-equal @9    $k4 $a4))
+    (multi (if-not-in-list @0   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @0    ($k1 $k2 $k3 $k4) (macro $tap @0   )) (if-equal @0   $k1 $a1) (if-equal @0   $k2 $a2) (if-equal @0    $k3 $a3) (if-equal @0    $k4 $a4))
+    (multi (if-not-in-list -    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list -     ($k1 $k2 $k3 $k4) (macro $tap -    )) (if-equal -    $k1 $a1) (if-equal -    $k2 $a2) (if-equal -     $k3 $a3) (if-equal -     $k4 $a4))
+    (multi (if-not-in-list =    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list =     ($k1 $k2 $k3 $k4) (macro $tap =    )) (if-equal =    $k1 $a1) (if-equal =    $k2 $a2) (if-equal =     $k3 $a3) (if-equal =     $k4 $a4))
+    (multi (if-not-in-list bspc ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list bspc  ($k1 $k2 $k3 $k4) (macro $tap bspc )) (if-equal bspc $k1 $a1) (if-equal bspc $k2 $a2) (if-equal bspc  $k3 $a3) (if-equal bspc  $k4 $a4))
+    (multi (if-not-in-list tab  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list tab   ($k1 $k2 $k3 $k4) (macro $tap tab  )) (if-equal tab  $k1 $a1) (if-equal tab  $k2 $a2) (if-equal tab   $k3 $a3) (if-equal tab   $k4 $a4))
+    (multi (if-not-in-list q    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list q     ($k1 $k2 $k3 $k4) (macro $tap q    )) (if-equal q    $k1 $a1) (if-equal q    $k2 $a2) (if-equal q     $k3 $a3) (if-equal q     $k4 $a4))
+    (multi (if-not-in-list w    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list w     ($k1 $k2 $k3 $k4) (macro $tap w    )) (if-equal w    $k1 $a1) (if-equal w    $k2 $a2) (if-equal w     $k3 $a3) (if-equal w     $k4 $a4))
+    (multi (if-not-in-list e    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list e     ($k1 $k2 $k3 $k4) (macro $tap e    )) (if-equal e    $k1 $a1) (if-equal e    $k2 $a2) (if-equal e     $k3 $a3) (if-equal e     $k4 $a4))
+    (multi (if-not-in-list r    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list r     ($k1 $k2 $k3 $k4) (macro $tap r    )) (if-equal r    $k1 $a1) (if-equal r    $k2 $a2) (if-equal r     $k3 $a3) (if-equal r     $k4 $a4))
+    (multi (if-not-in-list t    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list t     ($k1 $k2 $k3 $k4) (macro $tap t    )) (if-equal t    $k1 $a1) (if-equal t    $k2 $a2) (if-equal t     $k3 $a3) (if-equal t     $k4 $a4))
+    (multi (if-not-in-list y    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list y     ($k1 $k2 $k3 $k4) (macro $tap y    )) (if-equal y    $k1 $a1) (if-equal y    $k2 $a2) (if-equal y     $k3 $a3) (if-equal y     $k4 $a4))
+    (multi (if-not-in-list u    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list u     ($k1 $k2 $k3 $k4) (macro $tap u    )) (if-equal u    $k1 $a1) (if-equal u    $k2 $a2) (if-equal u     $k3 $a3) (if-equal u     $k4 $a4))
+    (multi (if-not-in-list i    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list i     ($k1 $k2 $k3 $k4) (macro $tap i    )) (if-equal i    $k1 $a1) (if-equal i    $k2 $a2) (if-equal i     $k3 $a3) (if-equal i     $k4 $a4))
+    (multi (if-not-in-list o    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list o     ($k1 $k2 $k3 $k4) (macro $tap o    )) (if-equal o    $k1 $a1) (if-equal o    $k2 $a2) (if-equal o     $k3 $a3) (if-equal o     $k4 $a4))
+    (multi (if-not-in-list p    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list p     ($k1 $k2 $k3 $k4) (macro $tap p    )) (if-equal p    $k1 $a1) (if-equal p    $k2 $a2) (if-equal p     $k3 $a3) (if-equal p     $k4 $a4))
+    (multi (if-not-in-list [    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list [     ($k1 $k2 $k3 $k4) (macro $tap [    )) (if-equal [    $k1 $a1) (if-equal [    $k2 $a2) (if-equal [     $k3 $a3) (if-equal [     $k4 $a4))
+    (multi (if-not-in-list ]    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ]     ($k1 $k2 $k3 $k4) (macro $tap ]    )) (if-equal ]    $k1 $a1) (if-equal ]    $k2 $a2) (if-equal ]     $k3 $a3) (if-equal ]     $k4 $a4))
+    (multi (if-not-in-list \    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list \     ($k1 $k2 $k3 $k4) (macro $tap \    )) (if-equal \    $k1 $a1) (if-equal \    $k2 $a2) (if-equal \     $k3 $a3) (if-equal \     $k4 $a4)) _
+    (multi (if-not-in-list a    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list a     ($k1 $k2 $k3 $k4) (macro $tap a    )) (if-equal a    $k1 $a1) (if-equal a    $k2 $a2) (if-equal a     $k3 $a3) (if-equal a     $k4 $a4))
+    (multi (if-not-in-list s    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list s     ($k1 $k2 $k3 $k4) (macro $tap s    )) (if-equal s    $k1 $a1) (if-equal s    $k2 $a2) (if-equal s     $k3 $a3) (if-equal s     $k4 $a4))
+    (multi (if-not-in-list d    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list d     ($k1 $k2 $k3 $k4) (macro $tap d    )) (if-equal d    $k1 $a1) (if-equal d    $k2 $a2) (if-equal d     $k3 $a3) (if-equal d     $k4 $a4))
+    (multi (if-not-in-list f    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list f     ($k1 $k2 $k3 $k4) (macro $tap f    )) (if-equal f    $k1 $a1) (if-equal f    $k2 $a2) (if-equal f     $k3 $a3) (if-equal f     $k4 $a4))
+    (multi (if-not-in-list g    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list g     ($k1 $k2 $k3 $k4) (macro $tap g    )) (if-equal g    $k1 $a1) (if-equal g    $k2 $a2) (if-equal g     $k3 $a3) (if-equal g     $k4 $a4))
+    (multi (if-not-in-list h    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list h     ($k1 $k2 $k3 $k4) (macro $tap h    )) (if-equal h    $k1 $a1) (if-equal h    $k2 $a2) (if-equal h     $k3 $a3) (if-equal h     $k4 $a4))
+    (multi (if-not-in-list j    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list j     ($k1 $k2 $k3 $k4) (macro $tap j    )) (if-equal j    $k1 $a1) (if-equal j    $k2 $a2) (if-equal j     $k3 $a3) (if-equal j     $k4 $a4))
+    (multi (if-not-in-list k    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list k     ($k1 $k2 $k3 $k4) (macro $tap k    )) (if-equal k    $k1 $a1) (if-equal k    $k2 $a2) (if-equal k     $k3 $a3) (if-equal k     $k4 $a4))
+    (multi (if-not-in-list l    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list l     ($k1 $k2 $k3 $k4) (macro $tap l    )) (if-equal l    $k1 $a1) (if-equal l    $k2 $a2) (if-equal l     $k3 $a3) (if-equal l     $k4 $a4))
+    (multi (if-not-in-list ;    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ;     ($k1 $k2 $k3 $k4) (macro $tap ;    )) (if-equal ;    $k1 $a1) (if-equal ;    $k2 $a2) (if-equal ;     $k3 $a3) (if-equal ;     $k4 $a4))
+    (multi (if-not-in-list '    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list '     ($k1 $k2 $k3 $k4) (macro $tap '    )) (if-equal '    $k1 $a1) (if-equal '    $k2 $a2) (if-equal '     $k3 $a3) (if-equal '     $k4 $a4))
+    (multi (if-not-in-list ret  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ret   ($k1 $k2 $k3 $k4) (macro $tap ret  )) (if-equal ret  $k1 $a1) (if-equal ret  $k2 $a2) (if-equal ret   $k3 $a3) (if-equal ret   $k4 $a4)) _
+    (multi (if-not-in-list z    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list z     ($k1 $k2 $k3 $k4) (macro $tap z    )) (if-equal z    $k1 $a1) (if-equal z    $k2 $a2) (if-equal z     $k3 $a3) (if-equal z     $k4 $a4))
+    (multi (if-not-in-list x    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list x     ($k1 $k2 $k3 $k4) (macro $tap x    )) (if-equal x    $k1 $a1) (if-equal x    $k2 $a2) (if-equal x     $k3 $a3) (if-equal x     $k4 $a4))
+    (multi (if-not-in-list c    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list c     ($k1 $k2 $k3 $k4) (macro $tap c    )) (if-equal c    $k1 $a1) (if-equal c    $k2 $a2) (if-equal c     $k3 $a3) (if-equal c     $k4 $a4))
+    (multi (if-not-in-list v    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list v     ($k1 $k2 $k3 $k4) (macro $tap v    )) (if-equal v    $k1 $a1) (if-equal v    $k2 $a2) (if-equal v     $k3 $a3) (if-equal v     $k4 $a4))
+    (multi (if-not-in-list b    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list b     ($k1 $k2 $k3 $k4) (macro $tap b    )) (if-equal b    $k1 $a1) (if-equal b    $k2 $a2) (if-equal b     $k3 $a3) (if-equal b     $k4 $a4))
+    (multi (if-not-in-list n    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list n     ($k1 $k2 $k3 $k4) (macro $tap n    )) (if-equal n    $k1 $a1) (if-equal n    $k2 $a2) (if-equal n     $k3 $a3) (if-equal n     $k4 $a4))
+    (multi (if-not-in-list m    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list m     ($k1 $k2 $k3 $k4) (macro $tap m    )) (if-equal m    $k1 $a1) (if-equal m    $k2 $a2) (if-equal m     $k3 $a3) (if-equal m     $k4 $a4))
+    (multi (if-not-in-list ,    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ,     ($k1 $k2 $k3 $k4) (macro $tap ,    )) (if-equal ,    $k1 $a1) (if-equal ,    $k2 $a2) (if-equal ,     $k3 $a3) (if-equal ,     $k4 $a4))
+    (multi (if-not-in-list .    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list .     ($k1 $k2 $k3 $k4) (macro $tap .    )) (if-equal .    $k1 $a1) (if-equal .    $k2 $a2) (if-equal .     $k3 $a3) (if-equal .     $k4 $a4))
+    (multi (if-not-in-list /    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list /     ($k1 $k2 $k3 $k4) (macro $tap /    )) (if-equal /    $k1 $a1) (if-equal /    $k2 $a2) (if-equal /     $k3 $a3) (if-equal /     $k4 $a4)) _ _ _ _
+    (multi (if-not-in-list spc  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list spc   ($k1 $k2 $k3 $k4) (macro $tap spc  )) (if-equal spc  $k1 a1) (if-equal spc   $k2 $a2) (if-equal spc   $k3 $a3) (if-equal spc   $k4 $a4)) _ _ _
   )
-  (defalias $name (tap-hold-press-timeout 0 $ht $key (layer-toggle $name) $key))
+  (defalias $name (tap-hold-press-timeout 0 150 $tap (layer-toggle $name) $hold))
 )
-(t! tatak kkk k j bspc l del nop0 XX nop0 XX)
-(t! tatak fff f d (one-shot $ost sft) nop0 XX nop0 XX nop0 XX)
-(t! tatak jjj j k (one-shot $ost sft) nop0 XX nop0 XX nop0 XX)
+(t! tatak kkk k k j bspc l del nop0 XX nop0 XX)
+(t! tatak fff f f d (multi (release-layer fff) (one-shot $ost sft)) nop0 XX nop0 XX nop0 XX)
+(t! tatak jjj j j k (multi (release-layer jjj) (one-shot $ost sft)) nop0 XX nop0 XX nop0 XX)
 
 
 
 
-;; (deflayer pdd
-;;   _         _         _         _         _         _         _         _         _         _         _         _         _         _
-;;   _         _         _         _         _         _         _         _         _         _         _         _         _         _
-;;   _         _         _         _         _         _         _         @pddj     _         @pddl     _         _         _
-;;   _         _         _         _         _         _         _         _         _         _         _         _ 
-;;   _         _         _         _         _         _         _
-;; )
-(deflayer intact
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
-  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
-  ctl       met       alt                           spc                                     ralt      rmet      rctl
-)
 
 
 
-(deflayer nav 
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       S-\       \         S-9       S-0       S-grv     C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
-  ctl       S-=       =         S--       -         grv       left      down      up        right     bspc      del       ret
-  sft       S-[       S-]       [         ]         sft       tab       ret       C-bspc    C-del     esc       rsft
-  ctl       met       alt                           spc                                     ralt      rmet      rctl
-)
 
-(deflayer cap
-  _         _         _         _         _         _         _         _         _         _         _         _         _         _
-  _         _         _         _         _         _         _         _         _         _         _         _         _         _
-  _         _         _         _         _         _         _         _         _         _         _         _         _
-  _         _         _         _         _         _         _         _         _         _         _         _ 
-  _         _         _         @capspc   _         _         _
-)
+
+
 
 
 ;; chord/combo
@@ -267,4 +238,12 @@
 
 
 ;;   ;; (spc v) S-\ $ct first-release ()
+)
+
+(deflayer intact
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
