@@ -15,11 +15,11 @@ for i in range(100):
 
 
 for i in range(8787):
-    print('hi hi toku')
+    print('hi hi tokuaaaa aaaaaaaaaaaaaaaa aaaaaaaaaaaa')
     
     
-
-    
+  a
+   
     
 
 
@@ -31,3 +31,4 @@ for i in range(8787):
 
 if __name__ == '__main__':
     main()
+    
