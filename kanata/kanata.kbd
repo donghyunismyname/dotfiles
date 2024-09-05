@@ -187,6 +187,7 @@
 )
 
 (t! tatak 0 sss s s
+  
   f @ossft
   nop0 XX
   nop0 XX
@@ -213,7 +214,7 @@
   nop0 XX
 )
 (t! tatak 0 kkk k k
-  j @ossft 
+  j (multi (release-layer kkk) @ossft)
   ;; j (multi (release-key k) (one-shot 2000 sft))
   ;; l (switch ((key-history right 1)) right break ((key-timing 1 lt $idle)) (multi (release-layer kkk) (macro k l)) break () right break)
   nop0 XX
@@ -221,7 +222,7 @@
   nop0 XX
 )
 (t! tatak 0 lll l l
-  h C-S-left
+  m C-S-left
   j S-left
   k S-right
   n C-S-left
