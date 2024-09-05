@@ -187,7 +187,6 @@
 )
 
 (t! tatak 0 sss s s
-  
   f @ossft
   nop0 XX
   nop0 XX
@@ -200,7 +199,7 @@
   nop0 XX
 )
 (t! tatak 0 fff f f
-  d (one-shot 2000 sft)
+  d @ossft
   nop0 XX
   nop0 XX
   nop0 XX
@@ -208,8 +207,8 @@
 
 
 (t! tatak 0 jjj j j
-  k esc
   l ret
+  nop0 XX
   nop0 XX
   nop0 XX
 )
@@ -235,7 +234,7 @@
 )
 (t! tatak $idle ooo o o
   i home
-  j bspc
+  j C-bspc
   nop0 XX
   nop0 XX
 )
