@@ -1,4 +1,4 @@
-(defcfg 
+(defcfg
   process-unmapped-keys no ;; kor/eng key erros if yes
   concurrent-tap-hold yes  ;; required by defchordsv2-experiment
   log-layer-changes no     ;; performance reasons
@@ -19,7 +19,10 @@
 (defoverrides
   (ctl ;) (bspc)
   (ctl ') (del)
+  (ctl q) (ctl y)
 )
+
+
 
 (defvar
   tt 300 ;; tap timeout (repeat)
@@ -29,51 +32,71 @@
   ht 300 ;; hold timeout
   st 200 ;; shift timeout
   lt 300 ;; layer timeout
+
+	keyl (q w e r t a s d f g z x c v b)
+	keyr (y u i o p h j k l ; n m , . / [ ] ')
 )
 
-(defalias 
-  ;; utils  
+(deftemplate switch-idle (t a1 a2)
+  (switch
+	  ((key-timing 1 less-than $t)) $a1 break
+    () $a2 break
+	)
+)
+
+(defalias
+  ;; utils
   ossft (one-shot 2000 sft)
   lndw (macro end ret)
   lnup (macro home ret)
-
+	
   ;; shift
-  fsf (tap-hold 0 200 f (tap-hold-press-timeout 0 800 @ossft sft f))
-  jsf (tap-hold 0 200 j (tap-hold-press-timeout 0 800 @ossft sft j))
+  fsf (t! switch-idle 200 f (tap-hold-except-keys 0 200 f (tap-hold-press-timeout 0 800 @ossft sft f) $keyl))
+	jsf (t! switch-idle 200 j (tap-hold-except-keys 0 200 j (tap-hold-press-timeout 0 800 @ossft sft j) $keyr))
   spc (tap-hold-press-timeout $tt 500 spc spc sft)
 
   ;; layers
-  cap (tap-hold-press 0 $ht esc (multi ctl (layer-toggle cap)))  
+  cap (tap-hold-press 0 $ht esc (multi ctl (layer-toggle cap)))
   ; (tap-hold-press-timeout 0 1000 ; (layer-toggle sem) ;)
   , (tap-hold-press-timeout 0 1000 , (layer-toggle comma) ,)
+  . (tap-hold-press-timeout 0 1000 . (layer-toggle period) .)
+
+
 )
 
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
-  @cap      a         s         d         @fsf      g         h         @jsf      @kkk      @lll      @;        '         ret
-  sft       z         x         c         v         b         n         m         @,        .         /         rsft 
-  @cap      met       alt                           @spc                          ralt      rmet      rctl
+  @cap      a         @sss      @ddd      f         g         h         @jjj      @kkk      @lll      @;        '         ret
+  sft       z         x         c         v         b         n         m         @,        @.        /         rsft
+  @cap      met       alt                           spc                           ralt      rmet      rctl
 )
-(deflayer sem 
+(deflayer sem
   grv       S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0         -         =         bspc
   tab       S-\       S-9       S-0       \         S-grv     C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
   ctl       S-=       -         S--       =         grv       left      down      up        right     ;         del       ret
   sft       S-[       S-]       [         ]         S-tab     tab       ret       C-bspc    C-del     esc       rsft
   ctl       met       alt       (multi (release-layer sem) (macro ; spc))         ralt      rmet      rctl
 )
-(deflayer comma 
+(deflayer comma
   grv       S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0        -         =         bspc
   tab       home      bspc      up        del       end       _         _         _         _         _         _          _         _
   ctl       C-left    left      down      right     C-right   _         _         _         _         _         _         ret
-  sft       C-z       C-bspc    @lndw     C-del     S-tab     tab       sft       ,         right     _         rsft
+  sft       C-z       C-bspc    spc       C-del     S-tab     tab       C-S-left  ,         C-S-right  _        rsft
   ctl       met       alt       (multi (release-layer comma) (macro , spc))       ralt      rmet      rctl
+)
+(deflayer period
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       (unshift .) 7       8         9         S-=       _         _         _         _         _         _         _         _
+  ctl       0         4         5         6         S-8       _         _         _         _         _         _         ret
+  sft       spc       1         2         3         (unshift -) tab     sft       _         .         _         rsft
+  ctl       met       alt       (multi (release-layer period) (macro . spc))      ralt      rmet      rctl
 )
 (deflayer cap
   _         _         _         _         _         _         _         _         _         _         _         _         _         _
   _         _         _         _         _         _         _         _         _         _         _         _         _         _
   _         _         _         _         _         _         _         _         _         _         _         _         _
-  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         _         _         _         _         _         _         _         _         _
   _         _         _         (layer-toggle sem)                                _         _         _
 )
 
@@ -149,22 +172,28 @@
     (multi (if-not-in-list /    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list /     ($k1 $k2 $k3 $k4) (macro $tap /    )) (if-equal /    $k1 $a1) (if-equal /    $k2 $a2) (if-equal /     $k3 $a3) (if-equal /     $k4 $a4)) _ _ _ _
     (multi (if-not-in-list spc  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list spc   ($k1 $k2 $k3 $k4) (macro $tap spc  )) (if-equal spc  $k1 a1) (if-equal spc   $k2 $a2) (if-equal spc   $k3 $a3) (if-equal spc   $k4 $a4)) _ _ _
   )
-  (defalias $name 
+  (defalias $name
     (switch
+      (sft) $tap break
       ((key-timing 1 less-than $idle)) $tap break
       () (tap-hold-press-timeout 0 200 $tap (layer-toggle $name) $hold) break
     )
   )
 )
 
-(t! tatak $idle ddd d d
-  f esc
+
+(defvar
+  idle 200
+)
+
+(t! tatak 0 sss s s
+  f @ossft
   nop0 XX
   nop0 XX
   nop0 XX
 )
-(t! tatak 0 jjj j j
-  k (one-shot 2000 sft)
+(t! tatak 0 ddd d d
+  f @ossft
   nop0 XX
   nop0 XX
   nop0 XX
@@ -176,40 +205,39 @@
   nop0 XX
 )
 
-(defvar
-  idle 200
+
+(t! tatak 0 jjj j j
+  k esc
+  l ret
+  nop0 XX
+  nop0 XX
+)
+(t! tatak 0 kkk k k
+  j @ossft 
+  ;; j (multi (release-key k) (one-shot 2000 sft))
+  ;; l (switch ((key-history right 1)) right break ((key-timing 1 lt $idle)) (multi (release-layer kkk) (macro k l)) break () right break)
+  nop0 XX
+  nop0 XX
+  nop0 XX
+)
+(t! tatak 0 lll l l
+  h C-S-left
+  j S-left
+  k S-right
+  n C-S-left
 )
 (t! tatak $idle iii i i
   o end
-  j tab
+  j bspc
   nop0 XX
   nop0 XX
 )
 (t! tatak $idle ooo o o
   i home
-  j ret
-  nop0 XX
-  nop0 XX
-)
-(t! tatak $idle kkk k k
-  d ctl
-  h C-bspc
   j bspc
-  l del
-  ;; j (multi (release-key k) (one-shot 2000 sft))
-  ;; l (switch ((key-history right 1)) right break ((key-timing 1 lt $idle)) (multi (release-layer kkk) (macro k l)) break () right break)
-  ;; nop0 XX
-)
-(t! tatak 0 lll l l
-  j esc
-  k @ossft
   nop0 XX
   nop0 XX
 )
-
-
-
-
 
 
 
@@ -223,7 +251,7 @@
 ;; (d f) sft $ct first-release ()
 ;; (j k) sft $ct first-release ()
 ;;   ;; (spc f j) sft $ct all-released ()
-  
+
 ;;   ;; special keys left
 ;;   (w e) =   $ct first-release (ddd nav cap)
 ;;   (e r) S-= $ct first-release (ddd nav cap)
@@ -276,7 +304,7 @@
 ;;   ;; (spc s) S-; $ct first-release ()
 ;;   ;; (spc d) '   $ct first-release ()
 ;;   ;; (spc f) S-' $ct first-release ()
-  
+
 ;;   ;; (spc i) S-9 $ct first-release ()
 ;;   ;; (spc o) S-0 $ct first-release ()
 
@@ -293,6 +321,6 @@
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
   ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
-  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
 )
