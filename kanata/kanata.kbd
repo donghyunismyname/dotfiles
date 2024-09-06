@@ -14,7 +14,8 @@
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '    ret
   lsft z    x    c    v    b    n    m    ,    .    /    rsft
-  lctl lmet lalt           spc                 ralt rmet rctl
+  lctl lmet lalt spc                           ralt rmet rctl
+  ins  home pgup del  end  pgdn up   left down right
 )
 (defoverrides
   (ctl ;) (bspc)
@@ -58,7 +59,7 @@
   ;; layers
   caps (tap-hold-press 0 $ht bspc (multi ctl (layer-toggle capslock)))
   lsft (tap-hold-press 0 $ht esc lsft)
-  ; (tap-hold-press-timeout 0 1000 ; (layer-toggle sem) ;)
+  ; (tap-hold-press-timeout 0 1000 ; (layer-toggle semicolon) ;)
   , (tap-hold-press-timeout 0 1000 , (layer-toggle comma) ,)
   . (tap-hold-press-timeout 0 1000 . (layer-toggle period) .)
 
@@ -70,35 +71,48 @@
   tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
   @caps     a         @sss      @ddd      f         g         h         @jjj      @kkk      @lll      @;        '         ret
   @lsft     z         x         c         v         b         n         m         @,        @.        /         rsft
-  @caps     met       alt                           spc                           ralt      rmet      rctl
-)
-(deflayer sem
-  S-grv     S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0         -         =       bspc
-  _         S-\       S-9       S-0       \         S-grv     C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
-  _         S-=       -         S--       =         grv       left      down      up        right     ;         del       ret
-  _         S-[       S-]       [         ]         S-tab     tab       ret       C-bspc    C-del     esc       rsft
-  _         met       alt       (multi (release-layer sem) (macro ; spc))         ralt      rmet      rctl
-)
-(deflayer comma
-  S-grv     S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0        -         =        bspc
-  _         home      bspc      up        del       end       _         _         _         _         _         _          _        _
-  _         C-left    left      down      right     C-right   _         _         _         _         _         _         ret
-  _         C-z       C-bspc    spc       C-del     S-tab     tab       C-S-left  ,         C-S-right  _        rsft
-  _         met       alt       (multi (release-layer comma) (macro , spc))       ralt      rmet      rctl
-)
-(deflayer period
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  _         (unshift .) 7       8         9         S-=       _         _         _         _         _         _         _         _
-  _         0         4         5         6         S-8       _         _         _         _         _         _         ret
-  _         spc       1         2         3         (unshift -) tab     sft       _         .         _         rsft
-  _         met       alt       (multi (release-layer period) (macro . spc))      ralt      rmet      rctl
+  @caps     met       alt       spc                                                         ralt      rmet      rctl
+  _ _ _ _ _ _ _ _ _ _
 )
 (deflayer capslock
   _         _         _         _         _         _         _         _         _         _         _         _         _         _
   _         _         _         _         _         _         _         _         _         _         _         _         _         _
   _         _         _         _         _         _         _         _         _         _         _         _         _
   _         _         _         _         _         _         _         _         _         _         _         _
-  _         _         _         (layer-toggle sem)                                _         _         _
+  _         _         _         (layer-toggle nav)                                _         _         _
+  _ _ _ _ _ _ _ _ _ _
+)
+(deflayer nav
+  S-grv     S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0       _         _         _
+  _         _         _         _         _         _         C-y       C-z       home      end       _         _         _         _
+  _         _         _         ctl       sft       _         left      down      up        right     bspc      del       _ 
+  _         _         _         _         _         _         tab       ret       bspc      del       esc       _
+  _         _         _         (multi (release-layer nav) (macro ; spc))                   _         _         _
+  _ _ _ _ _ _ _ _ _ _
+)
+(deflayer semicolon
+  S-grv     S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0       _         _         _
+  _         S-\       S-9       S-0       \         S-grv     C-y       C-z       C-left    C-right   -         _         _         _
+  _         S-=       -         S--       =         grv       left      down      up        right     ;         del       _
+  _         S-[       S-]       [         ]         S-tab     tab       ret       C-bspc    C-del     esc       _
+  _         _         _         (multi (release-layer semicolon) (macro , spc))             _         _         _
+  _ _ _ _ _ _ _ _ _ _
+)
+(deflayer comma
+  grv       1         2         3         4         5         6         7         8         9         0         _         _         _
+  _         _         7         8         9         _         _         _         _         _         _         _         _         _
+  _         0         4         5         6         _         _         _         _         _         _         _         _
+  _         _         1         2         3         _         _         left      ,         right     _         _
+  _         _         _         (multi (release-layer comma) (macro , spc))                 _         _         _
+  _ _ _ _ _ _ _ _ _ _
+)
+(deflayer period
+  S-grv     S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0       _         _         _
+  _         _         S-7       S-8       S-9       _         _         _         _         _         _         _         _         _
+  _         S-0       S-4       S-5       S-6       _         _         _         _         _         _         _         _
+  _         _         S-1       S-2       S-3       _         _         left      right     .         _         _
+  _         _         _         (multi (release-layer period) (macro . spc))                _         _         _
+  _ _ _ _ _ _ _ _ _ _
 )
 
 (defalias
@@ -172,6 +186,7 @@
     (if-not-in-list .    ($k1 $k2 $k3 $k4) (fork .    (multi (release-layer $name) (macro $tap .    )) (nop9))) (if-in-list .    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal .    $k1 $a1) (if-equal .    $k2 $a2) (if-equal .     $k3 $a3) (if-equal .     $k4 $a4)))
     (if-not-in-list /    ($k1 $k2 $k3 $k4) (fork /    (multi (release-layer $name) (macro $tap /    )) (nop9))) (if-in-list /    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal /    $k1 $a1) (if-equal /    $k2 $a2) (if-equal /     $k3 $a3) (if-equal /     $k4 $a4))) _ _ _ _
     (if-not-in-list spc  ($k1 $k2 $k3 $k4) (fork spc  (multi (release-layer $name) (macro $tap spc  )) (nop9))) (if-in-list spc  ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal spc  $k1 a1) (if-equal spc   $k2 $a2) (if-equal spc   $k3 $a3) (if-equal spc   $k4 $a4))) _ _ _
+    _ _ _ _ _ _ _ _ _ _
   )
   (defalias $name
     (switch
@@ -235,7 +250,7 @@
 )
 (t! tatak $idle ooo o o
   i home
-  j del
+  j C-bspc
   nop0 XX
   nop0 XX
 )
@@ -324,4 +339,5 @@
   ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
+  _ _ _ _ _ _ _ _ _ _
 )
