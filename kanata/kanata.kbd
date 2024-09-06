@@ -28,17 +28,17 @@
 (defvar
   tt 300 ;; tap timeout (repeat)
   ct 100 ;; chord timeout
-  ost 2000 ;; one-shot timeout
 
-  ht 300 ;; hold timeout
   st 200 ;; shift timeout
-  lt 300 ;; layer timeout
+  mt 300 ;; modifier alternative function
+  lt 1000 ;; layer timeout
+  gt 200 ;; guard idle timeout
 
 	keyl (q w e r t a s d f g z x c v b)
 	keyr (y u i o p h j k l ; n m , . / [ ] ')
 )
 
-(deftemplate switch-idle (t a1 a2)
+(deftemplate guard-idle (t a1 a2)
   (switch
 	  ((key-timing 1 less-than $t)) $a1 break
     () $a2 break
@@ -52,19 +52,18 @@
   lnup (macro home ret)
 	
   ;; shift
-  fsf (t! switch-idle 200 f (tap-hold-except-keys 0 200 f (tap-hold-press-timeout 0 800 @ossft sft f) $keyl))
-	jsf (t! switch-idle 200 j (tap-hold-except-keys 0 200 j (tap-hold-press-timeout 0 800 @ossft sft j) $keyr))
-  spc (tap-hold-press-timeout $tt 500 spc spc sft)
+  fsf (t! guard-idle $gt f (tap-hold-except-keys 0 $st f (tap-hold-press-timeout 0 800 @ossft sft f) $keyl))
+	jsf (t! guard-idle $gt j (tap-hold-except-keys 0 $st j (tap-hold-press-timeout 0 800 @ossft sft j) $keyr))
 
   ;; modifiers
-  caps (tap-hold-press 0 $ht bspc (multi ctl (layer-toggle capslock)))
-  lsft (tap-hold-press 0 $ht esc lsft)
-  rsft (tap-hold-press 0 $ht (caps-word 2000) rsft)
+  caps (tap-hold-press 0 $mt bspc (multi ctl (layer-toggle capslock)))
+  lsft (tap-hold-press 0 $mt esc lsft)
+  rsft (tap-hold-press 0 $mt (caps-word 2000) rsft)
 
   ;; layers
-  ; (tap-hold-press-timeout 0 1000 ; (layer-toggle semicolon) ;)
-  , (tap-hold-press-timeout 0 1000 , (layer-toggle comma) ,)
-  . (tap-hold-press-timeout 0 1000 . (layer-toggle period) .)
+  ; (t! guard-idle $gt ; (tap-hold-press-timeout 0 $lt ; (layer-toggle semicolon) ;))
+  , (t! guard-idle $gt , (tap-hold-press-timeout 0 $lt , (layer-toggle comma) ,))
+  . (t! guard-idle $gt . (tap-hold-press-timeout 0 $lt . (layer-toggle period) .))
 )
 
 (deflayer base
