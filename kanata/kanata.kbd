@@ -64,11 +64,15 @@
   ; (t! guard-idle $gt ; (tap-hold-press-timeout 0 $lt ; (layer-toggle semicolon) ;))
   , (t! guard-idle $gt , (tap-hold-press-timeout 0 $lt , (layer-toggle comma) ,))
   . (t! guard-idle $gt . (tap-hold-press-timeout 0 $lt . (layer-toggle period) .))
+
+  ;; test
+  test (tap-hold-except-keys 0 200 1 (tap-hold-press-timeout 0 1000 2 3 grv) (j k l ;))
+  ls (layer-switch intact)
 )
 
 (deflayer base
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
+  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         @\
   @caps     a         @sss      @ddd      f         g         h         @jjj      @kkk      @lll      @;        '         ret
   @lsft     z         x         c         v         b         n         m         @,        @.        /         @rsft
   @caps     met       alt       spc                                                         ralt      rmet      rctl
@@ -260,7 +264,9 @@
 
 
 ;; chord/combo
-;; (defchordsv2-experimental
+(defchordsv2-experimental
+  (spc l rsft 1) (layer-switch base)   $ct first-release ()
+  (spc l rsft 2) (layer-switch intact) $ct first-release ()
 ;;   (ctl spc) @capspc 100 all-released ()
 
 ;;   ;; shift
@@ -331,12 +337,22 @@
 
 
 ;;   ;; (spc v) S-\ $ct first-release ()
-;; )
+)
+
+(t! tatak 1000 selectbase \ \
+  1 (layer-switch base)
+  2 (layer-swtich intact)
+  nop0 XX
+  nop0 XX
+)
+(defalias 
+  \ @selectbase
+)
 
 (deflayer intact
   grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
-  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         @\
+  caps      a         s         d         f         g         h         j         k         l         ;         '         ret
   sft       z         x         c         v         b         n         m         ,         .         /         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
   _ _ _ _ _ _ _ _ _ _
