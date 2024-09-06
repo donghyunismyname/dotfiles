@@ -87,7 +87,7 @@
   _         _         _         _         _         _         C-y       C-z       home      end       _         _         _         _
   _         _         _         ctl       sft       _         left      down      up        right     bspc      del       _ 
   _         _         _         _         _         _         tab       ret       bspc      del       esc       _
-  _         _         _         (multi (release-layer nav) (macro ; spc))                   _         _         _
+  _         _         _         _                                                           _         _         _
   _ _ _ _ _ _ _ _ _ _
 )
 (deflayer semicolon
@@ -95,7 +95,7 @@
   _         S-\       S-9       S-0       \         S-grv     C-y       C-z       C-left    C-right   -         _         _         _
   _         S-=       -         S--       =         grv       left      down      up        right     ;         del       _
   _         S-[       S-]       [         ]         S-tab     tab       ret       C-bspc    C-del     esc       _
-  _         _         _         (multi (release-layer semicolon) (macro , spc))             _         _         _
+  _         _         _         (multi (release-layer semicolon) (macro ; spc))             _         _         _
   _ _ _ _ _ _ _ _ _ _
 )
 (deflayer comma
