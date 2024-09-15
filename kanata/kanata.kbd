@@ -80,8 +80,8 @@
 )
 
 (deflayer base
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         @\
+  @grv      1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
   @caps     a         @sss      @ddd      f         g         h         @jjj      @kkk      @lll      @;        '         ret
   @lsft     z         x         c         v         b         n         m         @,        @.        /         @rsft
   @caps     met       alt       spc                                                         ralt      rmet      rctl
@@ -149,16 +149,16 @@
 (deftemplate tatak (idle name tap hold k1 a1 k2 a2 k3 a3 k4 a4)
   (deflayer $name
     (if-not-in-list grv  ($k1 $k2 $k3 $k4) (fork grv  (multi (release-layer $name) (macro $tap grv  )) (nop9))) (if-in-list grv  ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal grv  $k1 $a1) (if-equal grv  $k2 $a2) (if-equal grv   $k3 $a3) (if-equal grv   $k4 $a4)))
-    (if-not-in-list @1   ($k1 $k2 $k3 $k4) (fork @1   (multi (release-layer $name) (macro $tap @1   )) (nop9))) (if-in-list @1   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @1   $k1 $a1) (if-equal @1   $k2 $a2) (if-equal @1    $k3 $a3) (if-equal @1    $k4 $a4)))
-    (if-not-in-list @2   ($k1 $k2 $k3 $k4) (fork @2   (multi (release-layer $name) (macro $tap @2   )) (nop9))) (if-in-list @2   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @2   $k1 $a1) (if-equal @2   $k2 $a2) (if-equal @2    $k3 $a3) (if-equal @2    $k4 $a4)))
-    (if-not-in-list @3   ($k1 $k2 $k3 $k4) (fork @3   (multi (release-layer $name) (macro $tap @3   )) (nop9))) (if-in-list @3   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @3   $k1 $a1) (if-equal @3   $k2 $a2) (if-equal @3    $k3 $a3) (if-equal @3    $k4 $a4)))
-    (if-not-in-list @4   ($k1 $k2 $k3 $k4) (fork @4   (multi (release-layer $name) (macro $tap @4   )) (nop9))) (if-in-list @4   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @4   $k1 $a1) (if-equal @4   $k2 $a2) (if-equal @4    $k3 $a3) (if-equal @4    $k4 $a4)))
-    (if-not-in-list @5   ($k1 $k2 $k3 $k4) (fork @5   (multi (release-layer $name) (macro $tap @5   )) (nop9))) (if-in-list @5   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @5   $k1 $a1) (if-equal @5   $k2 $a2) (if-equal @5    $k3 $a3) (if-equal @5    $k4 $a4)))
-    (if-not-in-list @6   ($k1 $k2 $k3 $k4) (fork @6   (multi (release-layer $name) (macro $tap @6   )) (nop9))) (if-in-list @6   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @6   $k1 $a1) (if-equal @6   $k2 $a2) (if-equal @6    $k3 $a3) (if-equal @6    $k4 $a4)))
-    (if-not-in-list @7   ($k1 $k2 $k3 $k4) (fork @7   (multi (release-layer $name) (macro $tap @7   )) (nop9))) (if-in-list @7   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @7   $k1 $a1) (if-equal @7   $k2 $a2) (if-equal @7    $k3 $a3) (if-equal @7    $k4 $a4)))
-    (if-not-in-list @8   ($k1 $k2 $k3 $k4) (fork @8   (multi (release-layer $name) (macro $tap @8   )) (nop9))) (if-in-list @8   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @8   $k1 $a1) (if-equal @8   $k2 $a2) (if-equal @8    $k3 $a3) (if-equal @8    $k4 $a4)))
-    (if-not-in-list @9   ($k1 $k2 $k3 $k4) (fork @9   (multi (release-layer $name) (macro $tap @9   )) (nop9))) (if-in-list @9   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @9   $k1 $a1) (if-equal @9   $k2 $a2) (if-equal @9    $k3 $a3) (if-equal @9    $k4 $a4)))
-    (if-not-in-list @0   ($k1 $k2 $k3 $k4) (fork @0   (multi (release-layer $name) (macro $tap @0   )) (nop9))) (if-in-list @0   ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal @0   $k1 $a1) (if-equal @0   $k2 $a2) (if-equal @0    $k3 $a3) (if-equal @0    $k4 $a4)))
+    (if-not-in-list 1    ($k1 $k2 $k3 $k4) (fork 1    (multi (release-layer $name) (macro $tap @1   )) (nop9))) (if-in-list 1    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 1    $k1 $a1) (if-equal 1    $k2 $a2) (if-equal 1     $k3 $a3) (if-equal 1     $k4 $a4)))
+    (if-not-in-list 2    ($k1 $k2 $k3 $k4) (fork 2    (multi (release-layer $name) (macro $tap @2   )) (nop9))) (if-in-list 2    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 2    $k1 $a1) (if-equal 2    $k2 $a2) (if-equal 2     $k3 $a3) (if-equal 2     $k4 $a4)))
+    (if-not-in-list 3    ($k1 $k2 $k3 $k4) (fork 3    (multi (release-layer $name) (macro $tap @3   )) (nop9))) (if-in-list 3    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 3    $k1 $a1) (if-equal 3    $k2 $a2) (if-equal 3     $k3 $a3) (if-equal 3     $k4 $a4)))
+    (if-not-in-list 4    ($k1 $k2 $k3 $k4) (fork 4    (multi (release-layer $name) (macro $tap @4   )) (nop9))) (if-in-list 4    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 4    $k1 $a1) (if-equal 4    $k2 $a2) (if-equal 4     $k3 $a3) (if-equal 4     $k4 $a4)))
+    (if-not-in-list 5    ($k1 $k2 $k3 $k4) (fork 5    (multi (release-layer $name) (macro $tap @5   )) (nop9))) (if-in-list 5    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 5    $k1 $a1) (if-equal 5    $k2 $a2) (if-equal 5     $k3 $a3) (if-equal 5     $k4 $a4)))
+    (if-not-in-list 6    ($k1 $k2 $k3 $k4) (fork 6    (multi (release-layer $name) (macro $tap @6   )) (nop9))) (if-in-list 6    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 6    $k1 $a1) (if-equal 6    $k2 $a2) (if-equal 6     $k3 $a3) (if-equal 6     $k4 $a4)))
+    (if-not-in-list 7    ($k1 $k2 $k3 $k4) (fork 7    (multi (release-layer $name) (macro $tap @7   )) (nop9))) (if-in-list 7    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 7    $k1 $a1) (if-equal 7    $k2 $a2) (if-equal 7     $k3 $a3) (if-equal 7     $k4 $a4)))
+    (if-not-in-list 8    ($k1 $k2 $k3 $k4) (fork 8    (multi (release-layer $name) (macro $tap @8   )) (nop9))) (if-in-list 8    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 8    $k1 $a1) (if-equal 8    $k2 $a2) (if-equal 8     $k3 $a3) (if-equal 8     $k4 $a4)))
+    (if-not-in-list 9    ($k1 $k2 $k3 $k4) (fork 9    (multi (release-layer $name) (macro $tap @9   )) (nop9))) (if-in-list 9    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 9    $k1 $a1) (if-equal 9    $k2 $a2) (if-equal 9     $k3 $a3) (if-equal 9     $k4 $a4)))
+    (if-not-in-list 0    ($k1 $k2 $k3 $k4) (fork 0    (multi (release-layer $name) (macro $tap @0   )) (nop9))) (if-in-list 0    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal 0    $k1 $a1) (if-equal 0    $k2 $a2) (if-equal 0     $k3 $a3) (if-equal 0     $k4 $a4)))
     (if-not-in-list -    ($k1 $k2 $k3 $k4) (fork -    (multi (release-layer $name) (macro $tap -    )) (nop9))) (if-in-list -    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal -    $k1 $a1) (if-equal -    $k2 $a2) (if-equal -     $k3 $a3) (if-equal -     $k4 $a4)))
     (if-not-in-list =    ($k1 $k2 $k3 $k4) (fork =    (multi (release-layer $name) (macro $tap =    )) (nop9))) (if-in-list =    ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal =    $k1 $a1) (if-equal =    $k2 $a2) (if-equal =     $k3 $a3) (if-equal =     $k4 $a4)))
     (if-not-in-list bspc ($k1 $k2 $k3 $k4) (fork bspc (multi (release-layer $name) (macro $tap bspc )) (nop9))) (if-in-list bspc ($k1 $k2 $k3 $k4) (multi (release-key nop9) (if-equal bspc $k1 $a1) (if-equal bspc $k2 $a2) (if-equal bspc  $k3 $a3) (if-equal bspc  $k4 $a4)))
@@ -273,9 +273,9 @@
 
 
 ;; chord/combo
-(defchordsv2-experimental
-  (spc l rsft 1) (layer-switch base)   500 first-release ()
-  (spc l rsft 2) (layer-switch intact) 500 first-release ()
+;; (defchordsv2-experimental
+;;   (lctl lalt rsft 1) (layer-switch base)   500 first-release ()
+;;   (lctl lalt rsft 2) (layer-switch intact) 500 first-release ()
 ;;   (ctl spc) @capspc 100 all-released ()
 
 ;;   ;; shift
@@ -346,21 +346,21 @@
 
 
 ;;   ;; (spc v) S-\ $ct first-release ()
-)
+;; )
 
-(t! tatak 1000 selectbase \ \
+(t! tatak 0 selectbase grv grv
   1 (layer-switch base)
-  2 (layer-swtich intact)
+  2 (layer-switch intact)
   nop0 XX
   nop0 XX
 )
 (defalias 
-  \ @selectbase
+  grv @selectbase
 )
 
 (deflayer intact
-  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         i         o         p         [         ]         @\
+  @grv      1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
   @caps     a         s         d         f         g         h         j         k         l         ;         '         ret
   @lsft2    z         x         c         v         b         n         m         ,         .         /         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
