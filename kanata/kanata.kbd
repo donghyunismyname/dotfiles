@@ -29,7 +29,6 @@
   tt 300 ;; tap timeout (repeat)
   ct 100 ;; chord timeout
 
-  st 200 ;; shift timeout
   mt 300 ;; modifier alternative function
   lt 1000 ;; layer timeout
   gt 200 ;; guard idle timeout
@@ -58,12 +57,18 @@
   lnup (macro home ret)
 	
   ;; shift
-  fsf (t! guard-idle $gt f (tap-hold-except-keys 0 $st f (tap-hold-press-timeout 0 800 @ossft sft f) $keyl))
-	jsf (t! guard-idle $gt j (tap-hold-except-keys 0 $st j (tap-hold-press-timeout 0 800 @ossft sft j) $keyr))
+  ;; fsf (tap-hold-except-keys 0 200 f (tap-hold-press-timeout 0 800 @ossft sft f) $keyl)
+  fsf (tap-hold 0 200 f sft)
+	jsf (fork (tap-hold-except-keys 0 200 j (tap-hold-press-timeout 0 800 @ossft sft j) $keyr) (tap-hold 0 1 j j) (sft))
+  esf (tap-hold 300 200 e sft)
+  isf (tap-hold 300 200 i sft)
+  rsf (tap-hold 300 200 r sft)
+  usf (tap-hold 300 200 u sft)
 
   ;; modifiers
-  caps (tap-hold-press 0 $mt bspc (multi ctl (layer-toggle capslock)))
-  lsft (tap-hold-press 0 $mt esc lsft)
+  caps (tap-hold-press 0 $mt esc (multi ctl (layer-toggle capslock)))
+  ;; lsft (tap-hold-press 0 $mt esc lsft)
+  lsft lsft
   rsft (tap-hold-press 0 $mt (caps-word 2000) rsft)
 
   ;; experimental
@@ -81,9 +86,9 @@
 
 (deflayer base
   @grv      1         2         3         4         5         6         7         8         9         0         -         =         bspc
-  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
-  @caps     a         @sss      @ddd      f         g         h         @jjj      @kkk      @lll      @;        '         ret
-  @lsft     z         x         c         v         b         n         m         @,        @.        /         @rsft
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  @caps     a         s         @ddd      f         g         h         j         @kkk      l         @;        '         ret
+  sft       z         x         c         v         b         n         m         @,        @.        /         @rsft
   @caps     met       alt       spc                                                         ralt      rmet      rctl
   _ _ _ _ _ _ _ _ _ _
 )
@@ -250,10 +255,10 @@
   nop0 XX
 )
 (t! tatak 0 lll l l
-  m C-S-left
-  j S-left
-  k S-right
-  n C-S-left
+  j @ossft
+  nop0 XX
+  nop0 XX
+  nop0 XX
 )
 (t! tatak 0 iii i i
   j S-left
@@ -348,7 +353,7 @@
 ;;   ;; (spc v) S-\ $ct first-release ()
 ;; )
 
-(t! tatak 0 selectbase grv grv
+(t! tatak 1000 selectbase grv grv
   1 (layer-switch base)
   2 (layer-switch intact)
   nop0 XX
@@ -362,7 +367,7 @@
   @grv      1         2         3         4         5         6         7         8         9         0         -         =         bspc
   tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
   @caps     a         s         d         f         g         h         j         k         l         ;         '         ret
-  @lsft2    z         x         c         v         b         n         m         ,         .         /         rsft
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft
   ctl       met       alt                           spc                                     ralt      rmet      rctl
   _ _ _ _ _ _ _ _ _ _
 )
