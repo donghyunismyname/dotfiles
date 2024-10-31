@@ -1,81 +1,84 @@
 {
-    //
+    "window.confirmBeforeClose": "always",
+    "files.hotExit": "onExitAndWindowClose",
+
+    // Sync across different platforms (Windows, Linux, MacOS)
     "settingsSync.keybindingsPerPlatform": false,
 
-    // formatOnType
-    "editor.formatOnType": false,
+    // Disable accepting suggestions
+    "editor.acceptSuggestionOnEnter": "smart",
 
+    // Extension: wikitext
+    "wikitext.host": "en.wikipedia.org",
 
     // Cmake
-    "cmake.configureOnOpen": true,
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": false,
     "cmake.options.statusBarVisibility": "visible",
     "cmake.showOptionsMovedNotification": false,
-    "workbench.panel.defaultLocation": "right",
 
-    
-    // If the file is already open in the editor, 
-    // just move focus to it instead of opening a new editor
+    // Formatting
+    "l_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, IndentWidth: 4 }",
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "editor.formatOnPaste": true,
+
+    // Workbench
     "workbench.editor.revealIfOpen": true,
-    
+    "workbench.panel.defaultLocation": "right",
     
     // Autosave
-    "files.autoSave": "afterDelay",
-    
+    "files.autoSave": "onFocusChange",
     
     // Unfocused panes are dimmed
     "accessibility.dimUnfocused.enabled": true,
-    "accessibility.dimUnfocused.opacity": 0.7,
+    "accessibility.dimUnfocused.opacity": 0.9,
     
-    
-    // Editor settings
+    // Editor options
     "editor.inlineSuggest.enabled": true,
     "editor.cursorSurroundingLines": 10,
     "editor.cursorBlinking": "blink",
-    "editor.rulers": [80],
+    "editor.rulers": [80, 120],
     "editor.minimap.enabled": false,
-    "editor.wordWrap": "off",
-    "editor.lineNumbers": "relative",
-    "editor.smoothScrolling": true,
+    "editor.wordWrap": "on",
+    "editor.lineNumbers": "on",
+    "editor.smoothScrolling": false,
     "editor.renderWhitespace": "trailing",
-    "editor.fontFamily": "Consolas, 'Courier New', monospace, 'DroidSansM Nerd Font Mono'",
+
+    // Font
+    // "editor.fontFamily": "Consolas, 'Courier New', monospace, 'DroidSansM Nerd Font Mono'",
     // "editor.fontFamily": "Consolas, 'Courier New', monospace",
-    "editor.smartSelect.selectSubwords": false,
-    
-    
-    // Current line highlighted
+
+    // Highlight color
     "editor.renderLineHighlight": "all",
     "workbench.colorCustomizations": {
         "editor.lineHighlightBackground": "#ffffff10",
-        "editor.lineHighlightBorder": "#00000000",
-        // "editor.selectionBackground": "#135564",
-        // "editor.selectionHighlightBackground": "#135564"
-        // "editor.selectionBackground": "#ff00ff",
-        // "editor.selectionHighlightBackground": "#00ff00",
+        "editor.lineHighlightBorder": "#ffffff00",
+        "editor.wordHighlightBackground": "#ffffff20",
+        "editor.selectionBackground": "#ff0000c0",
+        "editor.selectionHighlightBackground": "#ff000040",
+        "editor.findMatchBackground": "#00ff00c0",
+        "editor.findMatchHighlightBackground": "#00ff0040",
     },
-    
+
     
     // Outline made succint (ctrl+shift+O)
     "outline.showVariables": false,
-    
     
     // Breadcumbs
     "breadcrumbs.showVariables": false,
     "breadcrumbs.showConstants": false,
 
-    
     // Git diff show added/removed whitespaces
     "diffEditor.ignoreTrimWhitespace": false,
-    
+
+
     
     // ========== Terminal Settings ==========
     // Input not directed to terminal
     "terminal.integrated.commandsToSkipShell": [
     //     "workbench.action.navigateUp",
-    //     "workbench.action.focusBelowGroup",
-    //     "workbench.action.focusLeftGroup",
-    //     "workbench.action.focusRightGroup",
-    //     "workbench.action.focusActiveEditorGroup",
-    //     "workbench.action.focusPanel"
         "workbench.action.createTerminalEditor",
         "workbench.action.toggleEditorWidths",
         "workbench.action.toggleMaximizeEditorGroup",
@@ -92,29 +95,29 @@
     // Terminal tab title/description
     "terminal.integrated.tabs.title": "${cwdFolder}",
     "terminal.integrated.tabs.description": "",
-    
+
+    // Terminal font
+    "terminal.integrated.fontFamily": "DroidSansM Nerd Font Mono",
 
 
-    // ========== Extension for make vscode transparent ==========
-    "glassit.alpha": 255,
 
 
     // ========== Extension: Path Intellisense ==========
     "typescript.suggest.paths": false,
     "javascript.suggest.paths": false,
-    "path-intellisense.absolutePathToWorkspace": false,
 
 
     // ==================== VIM ======================
     "vim.useSystemClipboard": true,
     "vim.easymotion": true,
     "vim.surround": true,
-    "vim.sneak": false,
+    "vim.sneak": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
     "vim.replaceWithRegister": false,
     "vim.camelCaseMotion.enable": false,
     "vim.leader": "<space>",
-    "vim.hlsearch": false,
+    "vim.hlsearch": true,
+    "vim.incsearch": true,
     "vim.inccommand": "replace",
     "vim.gdefault": true,
 
@@ -151,26 +154,35 @@
         "<C-l>": false, // right
     },
 
-    // jk to exit insert mode
-    "vim.insertModeKeyBindings": [
+    "vim.insertModeKeyBindingsNonRecursive": [
+        // jk to exit insert mode
         {
             "before": ["j", "k"],
-            "after": ["<Esc>"]
-        }
-    ],
+            "after": ["esc", "l"]
+        },
 
-    "vim.normalModeKeyBindings": [
+        // jh
+        {
+            "before": ["j", "h"],
+            "commands": ["cursorHome"],
+        },
+
+        // jl
+        {
+            "before": ["j", "l"],
+            "commands": ["cursorEnd"],
+        },
     ],
 
     "vim.operatorPendingModeKeyBindings": [
-        // HJKL
+        // home/end
         {
-            "before": ["L"],
-            "after": ["$"]
-        },
+            "before": ["leader", "h"],
+            "after": ["^"],
+        },        
         {
-            "before": ["H"],
-            "after": ["^"]
+            "before": ["leader", "l"],
+            "after": ["$"],
         },
 
         // Prevent mistype cie (change in entirety) for ciw (change in word)
@@ -180,6 +192,7 @@
         }
     ],
 
+    "vim.normalModeKeyBindings": [],
     "vim.normalModeKeyBindingsNonRecursive": [
         // Language Server Protocol
         // https://dev.to/ansonh/10-vs-code-vim-tricks-to-boost-your-productivity-1b0n#5-lsp-keybindings
@@ -218,6 +231,10 @@
 
         // Leader
         {
+            "before": ["leader", "w"],
+            "after": [":", "w", "enter"],
+        },
+        {
             "before": ["leader", "o"],
             "commands": ["workbench.action.quickOpen"],
         },
@@ -225,21 +242,7 @@
             "before": ["leader", "q"],
             "commands": ["workbench.action.closeActiveEditor"],
         },        
-        {
-            "before": ["leader", "v"],
-            "after": ["V", "leader", "leader", "leader", "b", "d", "j", "k"],
-        },  
 
-        // Move to next/previous occurrence of the current symbol
-        {
-            "before": [","],
-            "after": ["#"],
-        },
-        {
-            "before": ["."],
-            "after": ["*"],
-        },
-        
         // sft
         // vim.easymotion
         {
@@ -273,61 +276,6 @@
             "after": ["\"", "a", "d", "d"],
         },
 
-        // easy delete foward/back
-        {
-            "before": [";"],
-            "after": ["d", "b"],
-        },
-        {
-            "before": ["'"],
-            "after": ["d", "w"],
-        },
-        
-
-        // ========== both normal & visual ==========
-        // HJKL
-        {
-            "before": ["H"],
-            "after": ["^"],
-        },
-        {
-            "before": ["L"],
-            "after": ["$"],
-        },
-        {
-            "before": ["J"],
-            "after": ["j", "j", "j", "j", "j", ],
-        },
-        {
-            "before": ["K"],
-            "after": ["k", "k", "k", "k", "k", ],
-        },
-        // indent
-        {
-            "before": ["shift+tab"],
-            "commands": ["editor.action.outdentLines"],
-        },
-        {
-            "before": ["tab"],
-            "commands": ["editor.action.indentLines"],
-        },
-        // Yank & Paste
-        {
-            "before": ["y"],
-            "after": ["\"", "*", "y"],
-        },
-        {
-            "before": ["Y"],
-            "after": ["\"", "*", "y", "$"],
-        },
-        {
-            "before": ["p"],
-            "after": ["\"", "*", "p"],
-        },
-        {
-            "before": ["P"],
-            "after": ["\"", "*", "P"],
-        },
         // Increase/decrease number
         {
             "before": ["-"],
@@ -337,28 +285,131 @@
             "before": ["="],
             "after": ["ctrl+a"]
         },
-        // ctrl+u, ctrl+d
+
+        // Cursor move word wrap (do not preserve column position)
+        // {
+        //     "before": ["j"],
+        //     "after": ["g", "u"]
+        // },
+        // {
+        //     "before": ["k"],
+        //     "after": ["g", "k"]
+        // },
+        
+        // x does not taint register
         {
-            "before": ["ctrl+u"],
-            "after": ["1", "0", "k"],
+            "before": ["x"],
+            "after": ["\"", "_", "x"]
+        },
+
+        // ========== same normal & visual ==========
+        // indent
+        {
+            "before": ["shift+tab"],
+            "commands": ["editor.action.outdentLines"],
         },
         {
-            "before": ["ctrl+d"],
-            "after": ["1", "0", "j"],
+            "before": ["tab"],
+            "commands": ["editor.action.indentLines"],
         },
-    ],
+        // indent
+        {
+            "before": ["["],
+            "commands": ["editor.action.outdentLines"],
+        },
+        {
+            "before": ["]"],
+            "commands": ["editor.action.indentLines"],
+        },
+        // Up/Down fast
+        {
+            "before": ["ctrl+p"],
+            "after": ["9", "k"],
+        },
+        {
+            "before": ["ctrl+n"],
+            "after": ["9", "j"],
+        },
+        {
+            "before": ["leader", "k"],
+            "after": ["m", "`", "1", "0", "0", "k"],
+        },
+        {
+            "before": ["leader", "j"],
+            "after": ["m", "`", "1", "0", "0", "j"],
+        },
+        {
+            "before": ["H"],
+            "after": ["^"],
+        },        
+        {
+            "before": ["J"],
+            "after": ["5", "j"],
+        },
+        {
+            "before": ["K"],
+            "after": ["5", "k"],
+        },
+        {
+            "before": ["L"],
+            "after": ["$"],
+        },
+        // home/end
+        {
+            "before": ["leader", "h"],
+            "after": ["^"],
+        },        
+        {
+            "before": ["leader", "l"],
+            "after": ["$"],
+        },
+
+        // ========== combined normal & visual ==========
+        // Current word search
+        {
+            "before": [";"],
+            "after": ["*", "N"],
+        },
+        {
+            "before": [","],
+            "after": ["N"],
+        },
+        {
+            "before": ["."],
+            "after": ["n"],
+        },
+
+   ],
 
     "vim.visualModeKeyBindingsNonRecursive": [
         // Easy replace
         {
             "before": ["r"],
             "after": [":", "s", "/"]
+        }, 
+        
+        // Prevent mistype cie (change in entirety) for ciw (change in word)
+        {
+            "before": [
+                "i",
+                "e"
+            ],
+            "after": [
+                "i",
+                "w"
+            ]
         },
 
         // vv instead of V
         {
             "before": ["v"],
             "after": ["V"],
+        },
+
+        // Exit visual mode
+        {
+            "before": ["enter"],
+            "after": ["esc"],
         },
 
         // Easy surround
@@ -403,25 +454,25 @@
             "after": ["S", "'"],
         },
 
+        // Yank & Paste
+        {
+            "before": ["y"],
+            "after": ["y","g","v","esc",],
+        },
+        {
+            "before": ["Y"],
+            "after": ["y","g","v","esc",],
+        },
+        {
+            "before": ["p"],
+            "after": ["p","g","v","y"],
+        },
+        {
+            "before": ["P"],
+            "after": ["p","g","v","y"],
+        },
 
-        // ========== both normal & visual ==========
-        // HJKL
-        {
-            "before": ["H"],
-            "after": ["^"],
-        },
-        {
-            "before": ["L"],
-            "after": ["$"],
-        },
-        {
-            "before": ["J"],
-            "after": ["j", "j", "j", "j", "j", ],
-        },
-        {
-            "before": ["K"],
-            "after": ["k", "k", "k", "k", "k", ],
-        },
+        // ========== same normal & visual ==========
         // Indent
         {
             "before": ["shift+tab"],
@@ -431,42 +482,81 @@
             "before": ["tab"],
             "commands": ["editor.action.indentLines"],
         },
-        // Yank & Paste
+        // indent
         {
-            "before": ["y"],
-            "after": ["\"","*","y","g","v","esc",],
+            "before": ["["],
+            "commands": ["editor.action.outdentLines"],
         },
         {
-            "before": ["Y"],
-            "after": ["\"","*","y","g","v","esc",],
+            "before": ["]"],
+            "commands": ["editor.action.indentLines"],
+        },
+        // Up/Down fast
+        {
+            "before": ["ctrl+p"],
+            "after": ["9", "k"],
         },
         {
-            "before": ["p"],
-            "after": ["\"","*","p","g","v","\"","*","y"],
+            "before": ["ctrl+n"],
+            "after": ["9", "j"],
         },
         {
-            "before": ["P"],
-            "after": ["\"","*","p","g","v","\"","*","y"],
-        },
-        // Increase/decrease number
-        {
-            "before": ["-"],
-            "after": ["ctrl+x"]
+            "before": ["leader", "k"],
+            "after": ["m", "`", "1", "0", "0", "k"],
         },
         {
-            "before": ["="],
-            "after": ["ctrl+a"]
-        },
-        // ctrl+u, ctrl+d
-        {
-            "before": ["ctrl+u"],
-            "after": ["1", "0", "k"],
+            "before": ["leader", "j"],
+            "after": ["m", "`", "1", "0", "0", "j"],
         },
         {
-            "before": ["ctrl+d"],
-            "after": ["1", "0", "j"],
+            "before": ["H"],
+            "after": ["^"],
+        },        
+        {
+            "before": ["J"],
+            "after": ["5", "j"],
         },
+        {
+            "before": ["K"],
+            "after": ["5", "k"],
+        },
+        {
+            "before": ["L"],
+            "after": ["$"],
+        },
+        // home/end
+        {
+            "before": ["leader", "h"],
+            "after": ["^"],
+        },        
+        {
+            "before": ["leader", "l"],
+            "after": ["$"],
+        },
+
+        // ========== combined normal & visual ==========
+        // Current word search
+        {
+            "before": [";"],
+            "after": ["\"", "a", "y", "/", "<c-r>", "a", "enter", "N",],
+        },
+        {
+            "before": [","],
+            "after": ["N"],
+        },
+        {
+            "before": ["."],
+            "after": ["n"],
+        },
+
     ],
 
-    "workbench.colorTheme": "Default Dark+",
+    "window.zoomLevel": -1,
+    "cmake.pinnedCommands": [
+        "workbench.action.tasks.configureTaskRunner",
+        "workbench.action.tasks.runTask"
+    ],
+    "python.createEnvironment.trigger": "off",
+    "workbench.colorTheme": "Visual Studio 2019 Dark",
+    "vscode-kanata.localKeysVariant": "deflocalkeys-win",
 }
