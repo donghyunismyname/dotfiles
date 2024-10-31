@@ -1,5 +1,36 @@
 // Place your key bindings in this file to override the default
 [
+    // Ctrl + up/down
+    {
+        "key": "ctrl+up",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "cursorUp",
+                "cursorUp",
+                "cursorUp",
+                "cursorUp",
+                "cursorUp",
+            ]
+            },
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+down",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "cursorDown",
+                "cursorDown",
+                "cursorDown",
+                "cursorDown",
+                "cursorDown",
+            ]
+        },
+        "when": "editorTextFocus"
+    },
+
+
     // Multiple Cursors Find Next Match
     {
         "key": "ctrl+m",
@@ -7,21 +38,7 @@
         "when": "editorFocus"
     },
 
-
-    // ctrl+enter to switch focus
-    // {
-    //     "key": "ctrl+enter",
-    //     "command": "workbench.action.focusActiveEditorGroup",
-    //     "when": "inOutput || !editorFocus"
-    // },
-    // {
-    //     "key": "ctrl+enter",
-    //     "command": "workbench.action.focusPanel",
-    //     "when": "!focusedView && !panelFocus"
-    // },
-
-
-    // Navigate Left Down Up Right
+    // Navigate Left Down Up Right hjkl
     {
         "key": "ctrl+h",
         "command": "workbench.action.navigateLeft",
@@ -48,6 +65,66 @@
         "command": "workbench.action.previousSideBarView",
         "when": "sideBarFocus",
     },
+
+
+    // Vim Insert Mode hjkl
+    {
+        "key": "ctrl+h",
+        "command": "cursorLeft",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "cursorDown",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "cursorUp",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "cursorRight",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+
+    // Vim Inseret Mode fast delete
+    {
+        "key": "ctrl+,",
+        "command": "deleteWordPartLeft",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+    {
+        "key": "ctrl+.",
+        "command": "deleteWordPartRight",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+
+    // Vim Insert Mode Fast Curosr Movement
+    {
+        "key": "ctrl+i",
+        "command": "cursorWordPartLeft",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+    {
+        "key": "ctrl+o",
+        "command": "cursorWordPartRight",
+        "when": "vim.mode == 'Insert' && editorTextFocus"
+    },
+
+    // insert line above/below
+    {
+        "key": "ctrl+p",
+        "command": "editor.action.insertLineBefore",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "editor.action.insertLineAfter",
+        "when": "editorTextFocus"
+    },
+
 
     // Panel view navigation
     {
@@ -143,17 +220,17 @@
 
     // Move between editor tabs
     {
-        "key": "ctrl+oem_period",
+        "key": "ctrl+.",
         "command": "workbench.action.nextEditorInGroup",
-        "when": "!sideBarFocus && !panelFocus",
+        "when": "!sideBarFocus && !panelFocus && vim.mode!='Insert'",
     },
     {
-        "key": "ctrl+oem_comma",
+        "key": "ctrl+,",
         "command": "workbench.action.previousEditorInGroup",
-        "when": "!sideBarFocus && !panelFocus",
+        "when": "!sideBarFocus && !panelFocus && vim.mode!='Insert'",
     },
     {
-        "key": "ctrl+oem_comma",
+        "key": "ctrl+,",
         "command": "-workbench.action.openSettings"
     },
 
@@ -227,7 +304,7 @@
         }
     },
 
-    // Move editor to another group hjklj
+    // Move editor to another group hjkl
     {
         "key": "ctrl+alt+h",
         "command": "workbench.action.moveEditorToLeftGroup",
@@ -250,22 +327,22 @@
     },
 
     // Resize editor
-    {
-        "key": "ctrl+[",
-        "command": "workbench.action.decreaseViewWidth"
-    },
-    {
-        "key": "ctrl+]",
-        "command": "workbench.action.increaseViewWidth"
-    },
-    {
-        "key": "ctrl+shift+[",
-        "command": "workbench.action.decreaseViewHeight"
-    },
-    {
-        "key": "ctrl+shift+]",
-        "command": "workbench.action.increaseViewHeight"
-    },
+    // {
+    //     "key": "ctrl+[",
+    //     "command": "workbench.action.decreaseViewWidth"
+    // },
+    // {
+    //     "key": "ctrl+]",
+    //     "command": "workbench.action.increaseViewWidth"
+    // },
+    // {
+    //     "key": "ctrl+shift+[",
+    //     "command": "workbench.action.decreaseViewHeight"
+    // },
+    // {
+    //     "key": "ctrl+shift+]",
+    //     "command": "workbench.action.increaseViewHeight"
+    // },
 
 
 
@@ -297,12 +374,12 @@
         "key": "ctrl+enter",
         // "command": "workbench.action.toggleEditorWidths",
         "command": "workbench.action.toggleMaximizeEditorGroup",
-        "when": "!panelFocus"
+        "when": "!panelFocus",
     },
     {
         "key": "ctrl+enter",
         "command": "workbench.action.toggleMaximizedPanel",
-        "when": "panelFocus"
+        "when": "panelFocus",
     },
 
 
@@ -328,7 +405,7 @@
         "when": "inQuickOpen"
     },
 
-    // Suggestion Navigation
+    // Nagivate suggestions
     {
         "key": "ctrl+j",
         "command": "selectNextSuggestion",
@@ -339,6 +416,37 @@
         "command": "selectPrevSuggestion",
         "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
     },
+    {
+        "key": "ctrl+n",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+
+
+
+    // alt + hjkl
+    // {
+    //     "key": "alt+h",
+    //     "command": "editor.action.moveCarretLeftAction",
+    // },
+    // {
+    //     "key": "alt+j",
+    //     "command": "editor.action.moveLinesDownAction",
+    // },
+    // {
+    //     "key": "alt+k",
+    //     "command": "editor.action.moveLinesUpAction",
+    // },
+    // {
+    //     "key": "alt+l",
+    //     "command": "editor.action.moveCarretRightAction",
+    // },
+
 
     // Create new terminal
     {
@@ -381,22 +489,19 @@
     // },
 
 
-    // Disable Ctrl+Shift+W
+    // Disable keys
     {
         "key": "ctrl+shift+w",
         "command": "-workbench.action.closeWindow"
     },
-    // Disable ctrl+p
     {
         "key": "ctrl+p",
         "command": "-workbench.action.quickOpen"
     },
-    // Disable ctrl+e when on terminal focus
     {
         "key": "ctrl+o",
         "command": "-workbench.action.openfile"
     },
-
     // Disable ctrl+w to close terminal
     // {
     //     "key": "ctrl+w",
@@ -428,12 +533,12 @@
     
     // Multicursor up/down
     {
-        "key": "ctrl+p",
+        "key": "alt+k",
         "command": "editor.action.insertCursorAbove",
         "when": "editorTextFocus && !suggestWidgetHasFocusedSuggestion"
     },
     {
-        "key": "ctrl+n",
+        "key": "alt+j",
         "command": "editor.action.insertCursorBelow",
         "when": "editorTextFocus && !suggestWidgetHasFocusedSuggestion"
     },
@@ -441,52 +546,51 @@
 
     // alt hjkl
     // terminal scroll up/down
-    {
-        "key": "alt+k",
-        "command": "workbench.action.terminal.scrollUp",
-        "when": "terminalFocus"
-    },
-    {
-        "key": "alt+j",
-        "command": "workbench.action.terminal.scrollDownPage",
-        "when": "terminalFocus"
-    },
-    {
-        "key": "alt+h",
-        "command": "workbench.action.terminal.scrollUpPage",
-        "when": "terminalFocus"
-    },
-    {
-        "key": "alt+l",
-        "command": "workbench.action.terminal.scrollDownPage",
-        "when": "terminalFocus"
-    },
+    // {
+    //     "key": "alt+k",
+    //     "command": "workbench.action.terminal.scrollUp",
+    //     "when": "terminalFocus"
+    // },
+    // {
+    //     "key": "alt+j",
+    //     "command": "workbench.action.terminal.scrollDownPage",
+    //     "when": "terminalFocus"
+    // },
+    // {
+    //     "key": "alt+h",
+    //     "command": "workbench.action.terminal.scrollUpPage",
+    //     "when": "terminalFocus"
+    // },
+    // {
+    //     "key": "alt+l",
+    //     "command": "workbench.action.terminal.scrollDownPage",
+    //     "when": "terminalFocus"
+    // },
 
     // ctrl alt hjkl
     // terminal resize
-    {
-        "key": "ctrl+alt+h",
-        "command": "workbench.action.terminal.resizePaneLeft",
-        "when": "panelFocus",
-    },
-    {
-        "key": "ctrl+alt+j",
-        "command": "workbench.action.terminal.resizePaneDown",
-        "when": "panelFocus",
-    },
-    {
-        "key": "ctrl+alt+k",
-        "command": "workbench.action.terminal.resizePaneUp",
-        "when": "panelFocus",
-    },
-    {
-        "key": "ctrl+alt+l",
-        "command": "workbench.action.terminal.resizePaneRight",
-        "when": "panelFocus",
-    },
+    // {
+    //     "key": "ctrl+alt+h",
+    //     "command": "workbench.action.terminal.resizePaneLeft",
+    //     "when": "panelFocus",
+    // },
+    // {
+    //     "key": "ctrl+alt+j",
+    //     "command": "workbench.action.terminal.resizePaneDown",
+    //     "when": "panelFocus",
+    // },
+    // {
+    //     "key": "ctrl+alt+k",
+    //     "command": "workbench.action.terminal.resizePaneUp",
+    //     "when": "panelFocus",
+    // },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "workbench.action.terminal.resizePaneRight",
+    //     "when": "panelFocus",
+    // },
 
     
-
     // Jumpy2
     // {
     //     "key": "ctrl+'",
@@ -552,9 +656,9 @@
                 "list.focusUp",
                 "list.selectAndPreserveFocus",
             ]
-        }
-      },
-      {
+        },
+    },
+    {
         "key": "alt+d",
         "command": "runCommands",
         "args": {
@@ -562,13 +666,103 @@
                 "workbench.files.action.showActiveFileInExplorer",
                 "list.focusDown",
                 "list.selectAndPreserveFocus",
-            ]
-        }
+            ],
+        },
+    },
+
+    // When Find Widget is visible (ctrl+f)
+    {
+        "key": "ctrl+f",
+        "command": "closeFindWidget",
+        "when": "findWidgetVisible",
+    },
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.nextMatchFindAction",
+        "when": "findWidgetVisible"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "editor.action.previousMatchFindAction",
+        "when": "findWidgetVisible"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "editor.action.nextMatchFindAction",
+        "when": "findWidgetVisible"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "editor.action.previousMatchFindAction",
+        "when": "findWidgetVisible"
+    },
+
+    // Replace default ctrl+f
+    {
+        "key": "ctrl+f",
+        "command": "fuzzySearch.activeTextEditor",
     },
 
 
-    // Bookmarks
+
+    // // Disable default key bindings for expand-region
+    {
+        "key": "ctrl+w",
+        "command": "-expand_region",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+w",
+        "command": "-undo_expand_region",
+        "when": "editorHasSelection && editorTextFocus"
+    },
+    // // Replace key bindings for expand-region
     // {
+    //     "key": "ctrl+;",
+    //     "command": "expand_region",
+    //     "when": "editorTextFocus",
+    // },
+    // {
+    //     "key": "ctrl+'",
+    //     "command": "undo_expand_region",
+    //     "when": "editorHasSelection && editorTextFocus"
+    // },
+
+
+
+    // Copilot Chat
+    {
+        "key": "ctrl+enter",
+        "command": "workbench.action.quickchat.launchInlineChat",
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "workbench.action.terminal.chat.start",
+        "when": "panelFocus",
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "inlineChat.acceptChanges",
+        "when": "inlineChatVisible && editorFocus",
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "workbench.action.terminal.chat.runCommand",
+        "when": "inlineChatVisible && terminalFocus",
+    },
+
+    // Remove up/down from selecting suggestions
+    {
+        "key": "up",
+        "command": "-selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+    {
+        "key": "down",
+        "command": "-selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+    
     //     "key": "alt+m",
     //     "command": "bookmarks.toggle",
     //     "when": "editorTextFocus"
@@ -597,17 +791,5 @@
     //     "key": "ctrl+alt+j",
     //     "command": "-bookmarks.jumpToPrevious",
     //     "when": "editorTextFocus"
-    // }
-
-    // Replace default ctrl+f
-    {
-        "key": "ctrl+f",
-        "command": "fuzzySearch.activeTextEditor",
-    },
-
-    // Remove brackets
-    // {
-    //     "key": "ctrl+;",
-    //     "command": "editor.action.removeBrackets",
     // }
 ]
