@@ -698,10 +698,10 @@
     },
 
     // Replace default ctrl+f
-    {
-        "key": "ctrl+f",
-        "command": "fuzzySearch.activeTextEditor",
-    },
+    //{
+    //    "key": "ctrl+f",
+    //    "command": "fuzzySearch.activeTextEditor",
+    //},
 
 
 
