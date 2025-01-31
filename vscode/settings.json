@@ -1,6 +1,10 @@
 {
     "window.confirmBeforeClose": "always",
+    "window.zoomLevel": -1,
     "files.hotExit": "onExitAndWindowClose",
+
+    "vscode-kanata.localKeysVariant": "deflocalkeys-win",
+    "python.createEnvironment.trigger": "off",
 
     // Sync across different platforms (Windows, Linux, MacOS)
     "settingsSync.keybindingsPerPlatform": false,
@@ -16,6 +20,10 @@
     "cmake.configureOnEdit": false,
     "cmake.options.statusBarVisibility": "visible",
     "cmake.showOptionsMovedNotification": false,
+    "cmake.pinnedCommands": [
+        "workbench.action.tasks.configureTaskRunner",
+        "workbench.action.tasks.runTask"
+    ],
 
     // Formatting
     "l_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, IndentWidth: 4 }",
@@ -332,11 +340,11 @@
         },
         {
             "before": ["leader", "k"],
-            "after": ["m", "`", "1", "0", "0", "k"],
+            "after": ["m", "`", "4", "0", "k"],
         },
         {
             "before": ["leader", "j"],
-            "after": ["m", "`", "1", "0", "0", "j"],
+            "after": ["m", "`", "4", "0", "j"],
         },
         {
             "before": ["H"],
@@ -378,7 +386,6 @@
             "before": ["."],
             "after": ["n"],
         },
-
    ],
 
     "vim.visualModeKeyBindingsNonRecursive": [
@@ -502,11 +509,11 @@
         },
         {
             "before": ["leader", "k"],
-            "after": ["m", "`", "1", "0", "0", "k"],
+            "after": ["m", "`", "4", "0", "k"],
         },
         {
             "before": ["leader", "j"],
-            "after": ["m", "`", "1", "0", "0", "j"],
+            "after": ["m", "`", "4", "0", "j"],
         },
         {
             "before": ["H"],
@@ -550,13 +557,4 @@
         },
 
     ],
-
-    "window.zoomLevel": -1,
-    "cmake.pinnedCommands": [
-        "workbench.action.tasks.configureTaskRunner",
-        "workbench.action.tasks.runTask"
-    ],
-    "python.createEnvironment.trigger": "off",
-    "workbench.colorTheme": "Visual Studio 2019 Dark",
-    "vscode-kanata.localKeysVariant": "deflocalkeys-win",
 }
