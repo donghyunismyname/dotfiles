@@ -146,6 +146,10 @@ let mapleader = " "
 "nnoremap <leader>j :sp<cr><c-w>j
 "nnoremap <leader>k :sp<cr>
 "nnoremap <leader>l :vs<cr><c-w>l
+nnoremap <leader>h ^
+nnoremap <leader>j 40j
+nnoremap <leader>k 40k
+nnoremap <leader>l $
 
 
 "remap :w and :q
