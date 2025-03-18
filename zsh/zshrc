@@ -107,16 +107,19 @@ source $ZSH/oh-my-zsh.sh
 # vim mode on command line
 #set -o vi
 
-# aliases
+# alias
 alias tmux="tmux -u"
 alias python=python3
 alias pip=pip3
+alias ll="ls -al"
+alias cp="cp -i"
 
 # alias e="emacsclient -t"
 # alias ec="emacsclient -c"
 # alias ed="emacs --daemon"
 # alias edkill="emacsclient -e \"(kill-emacs)\""
 
+# alias for git
 alias gl="git log --graph --all"
 alias gs="git status"
 alias gd="git diff"
@@ -124,8 +127,6 @@ alias gds="git diff --staged"
 alias ga="git add"
 alias glp='git log --graph --all --pretty'     # orignal format
 alias glpp='git log --graph --all --pretty -p' # orignal format + diff
-
-alias cp="cp -i"
 
 
 # mv to ~/.trash when rm
@@ -139,7 +140,8 @@ move_to_trash() {
   fi
 
   local new_dir_name
-  new_dir_name="${trash_dir}/$(date +%Y-%m-%d-%H-%M-%S)/"
+  # new_dir_name="${trash_dir}/$(date +%Y-%m-%d-%H-%M-%S)/"
+  new_dir_name="${trash_dir}/$@-$(date +%Y-%m%d-%H%M%S)/"
   mkdir "${new_dir_name}"
 
   echo "Moving to: ${new_dir_name}"
