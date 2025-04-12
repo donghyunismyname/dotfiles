@@ -217,6 +217,10 @@ prompt_dir() {
 # note that it is not hidden when connedted via ssh
 export DEFAULT_USER=$USER
 
+# Ghostty
+export TERM=xterm-256color
+
+# WSL
 export PATH=/usr/lib/wsl/lib:$PATH
 
 
