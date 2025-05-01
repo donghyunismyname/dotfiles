@@ -111,7 +111,7 @@ source $ZSH/oh-my-zsh.sh
 alias tmux="tmux -u"
 alias python=python3
 alias pip=pip3
-alias ll="ls -al"
+alias ll="ls -alh"
 alias cp="cp -i"
 
 # alias e="emacsclient -t"
