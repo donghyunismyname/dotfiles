@@ -113,6 +113,7 @@ alias python=python3
 alias pip=pip3
 alias ll="ls -alh"
 alias cp="cp -i"
+alias dush="du -sh *"
 
 # alias e="emacsclient -t"
 # alias ec="emacsclient -c"
@@ -228,3 +229,8 @@ export PATH=/usr/lib/wsl/lib:$PATH
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/$USER/.lmstudio/bin"
+# End of LM Studio CLI section
+
