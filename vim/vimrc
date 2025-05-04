@@ -10,7 +10,9 @@ autocmd CursorHold,CursorHoldI * checktime
 
 
 filetype plugin on  "understand file types
-set pastetoggle=<f2> "togle paste mode
+if !has('nvim')
+  set pastetoggle=<f2> "toggle paste mode (not supported in Neovim)
+endif
 autocmd FileType * set formatoptions-=o "disable autoindent
 
 
