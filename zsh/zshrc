@@ -234,3 +234,5 @@ export NVM_DIR="$HOME/.nvm"
 export PATH="$PATH:/Users/$USER/.lmstudio/bin"
 # End of LM Studio CLI section
 
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
