@@ -113,7 +113,7 @@ alias python=python3
 alias pip=pip3
 alias ll="ls -alh"
 alias cp="cp -i"
-alias dush="du -sh *"
+alias dush="du -sh * .*"
 
 # alias e="emacsclient -t"
 # alias ec="emacsclient -c"
@@ -154,7 +154,7 @@ alias rm="move_to_trash"
 
 
 # bindkey
-bindkey '^U' reverse-menu-complete
+# bindkey '^U' reverse-menu-complete
 # bindkey '^Q' backward-word
 # bindkey '^W' forward-word
 
@@ -224,8 +224,7 @@ export TERM=xterm-256color
 # WSL
 export PATH=/usr/lib/wsl/lib:$PATH
 
-
-
+# NodeJS Version Manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -236,4 +235,13 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/donghyun/.lmstudio/bin"
+# End of LM Studio CLI section
+
+# Java
+export JAVA_HOME=$(/usr/libexec/java_home)
+
+
 
