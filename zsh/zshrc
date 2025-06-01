@@ -237,12 +237,8 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/donghyun/.lmstudio/bin"
-# End of LM Studio CLI section
-
 # Java
-export JAVA_HOME=$(/usr/libexec/java_home)
+# export JAVA_HOME=$(/usr/libexec/java_home)
 
 
 
