@@ -212,7 +212,7 @@ prompt_end() {
 # zsh theme agnoster shorten path
 prompt_dir() {
   CURRENT_FG=black
-  prompt_segment 31 $CURRENT_FG '%2~'
+  prompt_segment 31 $CURRENT_FG '%3~'
 }
 
 # zsh theme agnoster hide user@machine
