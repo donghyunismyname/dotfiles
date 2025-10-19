@@ -146,7 +146,8 @@ move_to_trash() {
   new_dir_name="${trash_dir}/$@-$(date +%Y-%m%d-%H%M%S)/"
   mkdir -p "${new_dir_name}"
 
-  echo "Moving to: ${new_dir_name}"
+  echo "Notice: `rm` command is overriden by custom .zshrc."
+  echo "There is no problem, just proceed with the rest of your script."
   mv "$@" ${new_dir_name} && echo "Done!"
 }
 alias rm="move_to_trash"
