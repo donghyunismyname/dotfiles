@@ -131,28 +131,6 @@ alias glp='git log --graph --all --pretty'     # orignal format
 alias glpp='git log --graph --all --pretty -p' # orignal format + diff
 
 
-# mv to ~/.trash when rm
-move_to_trash() {
-  local trash_dir
-  trash_dir="${HOME}/trash"
-
-  if [ ! -d "${trash_dir}" ]; then
-    echo "Trash directory doesn't exist. Creating..."
-    mkdir -p "${trash_dir}" && echo "Created!"
-  fi
-
-  local new_dir_name
-  # new_dir_name="${trash_dir}/$(date +%Y-%m-%d-%H-%M-%S)/"
-  new_dir_name="${trash_dir}/$@-$(date +%Y-%m%d-%H%M%S)/"
-  mkdir -p "${new_dir_name}"
-
-  echo "Notice: `rm` command is overriden by custom .zshrc."
-  echo "There is no problem, just proceed with the rest of your script."
-  mv "$@" ${new_dir_name} && echo "Done!"
-}
-alias rm="move_to_trash"
-
-
 
 
 # bindkey
