@@ -115,14 +115,14 @@ alias ll="ls -alh"
 alias cp="cp -i"
 alias dush="du -sh -- *(D)"
 
-
+# alias for emacs
 # alias e="emacsclient -t"
 # alias ec="emacsclient -c"
 # alias ed="emacs --daemon"
 # alias edkill="emacsclient -e \"(kill-emacs)\""
 
 # alias for git
-alias gl="git log --graph --all"
+alias gl="git log --graph --all --pretty=format:'%C(auto)%h %Cgreen%ad %Cblue%an%Creset %s' --date=short"
 alias gs="git status"
 alias gd="git diff"
 alias gds="git diff --staged"
