@@ -10,9 +10,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/install/.fzf
 ~/install/.fzf/install
 
 # cdhist
-pip3 install cdhist
-# git clone --branch 3.6 http://github.com/bulletmark/cdhist ~/install/cdhist
-# pip3 install -U ~/install/cdhist/.
+uv tool install cdhist
 
 # diff-so-fancy
 git clone https://github.com/so-fancy/diff-so-fancy ~/install/diff-so-fancy
