@@ -2,16 +2,13 @@
 git config --global pull.ff only
 git config --global merge.ff only
 
+
 # git status opens in less
 git config --global pager.status false
 
+
 # git default editor vim
 git config --global core.editor "vim"
-
-
-# git log made pretty
-git config --global log.date short
-git config --global format.pretty "format:%C(auto)%h %C(green)%ad %C(white)%s%C(auto)%d"
 
 
 # git diff pretty
