@@ -123,7 +123,7 @@ alias dush="du -sh -- *(D)"
 
 # alias for git
 alias gl="git log --graph --all \
-  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset %C(auto)%d%Creset %s' \
+  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset %s' \
   --date=short"
 alias gs="git status"
 alias gd="git diff"
