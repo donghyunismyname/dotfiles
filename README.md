@@ -7,6 +7,7 @@ development environment.
 ## Recommended Fonts
 - (DroidSansMono Nerd Font) https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf
 - (D2Coding) https://github.com/naver/d2codingfont
+- `sudo apt install fonts-jetbrains-mono`
 
 
 ## Dependency (install on your own)
