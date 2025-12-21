@@ -217,11 +217,11 @@ export NVM_DIR="$HOME/.nvm"
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
-
 # Java
 # export JAVA_HOME=$(/usr/libexec/java_home)
+
+# Local machine specific configuration
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 
 
