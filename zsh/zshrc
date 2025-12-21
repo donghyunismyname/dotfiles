@@ -163,11 +163,18 @@ alias gs="git status"
 alias gd="git diff"
 alias gds="git diff --staged"
 alias ga="git add"
-alias glp='git log --graph --all --pretty'     # orignal format
+alias glp='git log -p'     # orignal format
 alias gsw='git switch'
 alias gc='git commit'
+
+# interactive git switch with fzf
 gswf() {
   git branch --format='%(refname:short)' | fzf | xargs git switch
+}
+
+# inline git commit with message
+gcm() {
+  git commit -m "$*"
 }
 
 
@@ -247,3 +254,6 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 
+
+# Added by Antigravity
+export PATH="/Users/donghyun/.antigravity/antigravity/bin:$PATH"
