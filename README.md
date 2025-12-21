@@ -3,15 +3,18 @@ An attempt to create my own dotfiles.
 `zsh`, `vim`, and `tmux` combine together to create an awesome
 development environment.
 
+(no, modern GUI-based AI-assisted editors are better)
+
 
 ## Recommended Fonts
 - (DroidSansMono Nerd Font) https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf
 - (D2Coding) https://github.com/naver/d2codingfont
 - `sudo apt install fonts-jetbrains-mono`
+- `brew install --cask font-jetbrains-mono-nerd-font`
 
 
 ## Dependency (install on your own)
-Mostly like you can use `apt` or `brew` to install them.
+Most likely you can use `apt` or `brew` to install:
 - zsh
 - tree (show directory stuructures as a tree)
 - bat (like cat but fancy)
