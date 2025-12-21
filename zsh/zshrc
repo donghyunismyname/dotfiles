@@ -103,9 +103,41 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
+# oh-my-zsh theme agnoster newline
+prompt_end() {
+  if [[ -n $CURRENT_BG ]]; then
+    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
+  else
+    echo -n "%{%k%}"
+  fi
+  echo -n "\n%{%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR%{%f%}"
+  CURRENT_BG=''
+}
+
+# zsh theme agnoster shorten path
+prompt_dir() {
+  CURRENT_FG=black
+  prompt_segment 31 $CURRENT_FG '%3~'
+}
+
+# zsh theme agnoster hide user@machine
+# note that it is not hidden when connedted via ssh
+export DEFAULT_USER=$USER
 
 # vim mode on command line
 #set -o vi
+
+# bindkey
+# bindkey '^U' reverse-menu-complete
+# bindkey '^Q' backward-word
+# bindkey '^W' forward-word
+
+
+
+
+# ================================================
+# Below are independent of oh-my-zsh
+# ================================================
 
 # alias
 alias tmux="tmux -u"
@@ -137,10 +169,9 @@ alias glpp='git log --graph --all --pretty -p' # orignal format + diff
 
 
 
-# bindkey
-# bindkey '^U' reverse-menu-complete
-# bindkey '^Q' backward-word
-# bindkey '^W' forward-word
+# zoxide
+eval "$(zoxide init zsh)"
+
 
 
 
@@ -167,8 +198,7 @@ export FZF_CTRL_R_OPTS="
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
 
-
-# Sometimes cdhist is installed here
+# cdhist:Sometimes cdhist is installed here
 export PATH=$PATH:$HOME/.local/bin
 
 # cdhist
@@ -181,29 +211,12 @@ export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
 
 
-# zsh theme agnoster newline
-prompt_end() {
-  if [[ -n $CURRENT_BG ]]; then
-    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
-  else
-    echo -n "%{%k%}"
-  fi
-  echo -n "\n%{%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR%{%f%}"
-  CURRENT_BG=''
-}
-
-# zsh theme agnoster shorten path
-prompt_dir() {
-  CURRENT_FG=black
-  prompt_segment 31 $CURRENT_FG '%3~'
-}
-
-# zsh theme agnoster hide user@machine
-# note that it is not hidden when connedted via ssh
-export DEFAULT_USER=$USER
 
 # Ghostty
 export TERM=xterm-256color
+
+
+
 
 # WSL
 export PATH=/usr/lib/wsl/lib:$PATH
@@ -220,8 +233,12 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 # Java
 # export JAVA_HOME=$(/usr/libexec/java_home)
 
-# Local machine specific configuration
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
+
+
+
+
+# Local configurations
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 
