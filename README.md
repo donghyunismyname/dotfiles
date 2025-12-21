@@ -14,16 +14,21 @@ development environment.
 
 
 ## Dependency (install on your own)
-Most likely you can use `apt` or `brew` to install:
-- zsh
-- tree (show directory stuructures as a tree)
-- bat (like cat but fancy)
-- tmux
-- ripgrep
-- fd (try `fd` or `fd-find` for installation)
-- neovim
-- emacs
-- delta (better git diff)
+
+| Tool | Description | brew | apt |
+|------|-------------|------|-----|
+| zsh | Shell | `brew install zsh` | `sudo apt install zsh` |
+| tmux | Terminal multiplexer | `brew install tmux` | `sudo apt install tmux` |
+| neovim | Editor | `brew install neovim` | `sudo apt install neovim` |
+| tree | Directory tree view | `brew install tree` | `sudo apt install tree` |
+| bat | Better cat | `brew install bat` | `sudo apt install bat` |
+| ripgrep | Better grep | `brew install ripgrep` | `sudo apt install ripgrep` |
+| fd | Better find | `brew install fd` | `sudo apt install fd-find` |
+| delta | Better git diff | `brew install git-delta` | `sudo apt install git-delta` |
+| btop | Better htop | `brew install btop` | `sudo apt install btop` |
+| dust | Better du | `brew install dust` | `sudo apt install dust` |
+| duf | Better df | `brew install duf` | `sudo apt install duf` |
+| procs | Better ps | `brew install procs` | `sudo apt install procs` |
 
 
 ## Dependency (install script provided)
