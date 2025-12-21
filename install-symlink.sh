@@ -5,8 +5,7 @@ echo "    ~/.vimrc"
 echo "    ~/.vim"
 echo "    ~/.tmux.conf"
 echo "    ~/.zshrc"
-# echo "    ~/.emacs.d"
-# echo "    ~/.config/i3/config"
+echo "    ~/.gitconfig"
 read -p "Do you want to continue? (y/N): " ans
 
 if [ $ans != "y" ]; then
@@ -36,6 +35,10 @@ ln -snfF $DIR/tmux/tmux.conf  ~/.tmux.conf
 # zsh
 rm -ri                        ~/.zshrc
 ln -snfF $DIR/zsh/zshrc       ~/.zshrc
+
+# git
+rm -ri                        ~/.gitconfig
+ln -snfF $DIR/git/gitconfig   ~/.gitconfig
 
 # i3
 # rm -ri                        ~/.config/i3/config

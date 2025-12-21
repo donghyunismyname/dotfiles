@@ -12,10 +12,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/install/.fzf
 # cdhist
 uv tool install cdhist
 
-# diff-so-fancy
-git clone https://github.com/so-fancy/diff-so-fancy ~/install/diff-so-fancy
-sudo ln -snf ~/install/diff-so-fancy/diff-so-fancy /usr/local/bin/diff-so-fancy
-
 # oh-my-zsh (need to be installed last)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 

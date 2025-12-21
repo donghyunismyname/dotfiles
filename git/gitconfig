@@ -1,0 +1,19 @@
+[pull]
+    ff = only
+
+[merge]
+    ff = only
+
+[pager]
+    status = false
+
+[core]
+    editor = vim
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    line-numbers = true
