@@ -6,8 +6,14 @@ development environment.
 
 (no, modern GUI-based AI-assisted editors are better)
 
+(terminal utilities are still useful, though...)
+
+
 
 ## Fonts
+
+Install on your **local machine** (where your terminal app runs), not on remote servers.
+
 - (DroidSansMono Nerd Font) https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf
 - (D2Coding) https://github.com/naver/d2codingfont
 - `sudo apt install fonts-jetbrains-mono`
@@ -18,10 +24,10 @@ development environment.
 
 ```sh
 # brew
-brew install zsh tmux neovim bat ripgrep fd git-delta eza
+brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide
 
 # apt
-sudo apt update && sudo apt install zsh tmux neovim bat ripgrep fd-find git-delta eza
+sudo apt update && sudo apt install zsh tmux neovim bat ripgrep fd-find git-delta eza zoxide
 ```
 
 | Tool | Description | brew | apt |
@@ -34,21 +40,21 @@ sudo apt update && sudo apt install zsh tmux neovim bat ripgrep fd-find git-delt
 | fd | Better find | `brew install fd` | `sudo apt install fd-find` |
 | delta | Better git diff | `brew install git-delta` | `sudo apt install git-delta` |
 | eza | Better ls | `brew install eza` | `sudo apt install eza` |
+| zoxide | Better cd | `brew install zoxide` | `sudo apt install zoxide` |
 
 
 ## Useful Utilities
 
 ```sh
 # brew
-brew install zoxide btop dust duf procs lazygit lazydocker tokei
+brew install btop dust duf procs lazygit lazydocker tokei
 
 # apt
-sudo apt update && sudo apt install zoxide btop dust duf procs lazygit lazydocker tokei
+sudo apt update && sudo apt install btop dust duf procs lazygit lazydocker tokei
 ```
 
 | Tool | Description | brew | apt |
 |------|-------------|------|-----|
-| zoxide | Better cd | `brew install zoxide` | `sudo apt install zoxide` |
 | btop | Better htop | `brew install btop` | `sudo apt install btop` |
 | dust | Better du | `brew install dust` | `sudo apt install dust` |
 | duf | Better df | `brew install duf` | `sudo apt install duf` |
