@@ -20,7 +20,6 @@ development environment.
 | zsh | Shell | `brew install zsh` | `sudo apt install zsh` |
 | tmux | Terminal multiplexer | `brew install tmux` | `sudo apt install tmux` |
 | neovim | Editor | `brew install neovim` | `sudo apt install neovim` |
-| tree | Directory tree view | `brew install tree` | `sudo apt install tree` |
 | bat | Better cat | `brew install bat` | `sudo apt install bat` |
 | ripgrep | Better grep | `brew install ripgrep` | `sudo apt install ripgrep` |
 | fd | Better find | `brew install fd` | `sudo apt install fd-find` |
@@ -29,6 +28,10 @@ development environment.
 | dust | Better du | `brew install dust` | `sudo apt install dust` |
 | duf | Better df | `brew install duf` | `sudo apt install duf` |
 | procs | Better ps | `brew install procs` | `sudo apt install procs` |
+| eza | Better ls | `brew install eza` | `sudo apt install eza` |
+| zoxide | Better cd | `brew install zoxide` | `sudo apt install zoxide` |
+| lazygit | Git TUI | `brew install lazygit` | `sudo apt install lazygit` |
+| lazydocker | Docker TUI | `brew install lazydocker` | `sudo apt install lazydocker` |
 
 
 ## Dependency (install script provided)

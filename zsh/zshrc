@@ -142,9 +142,11 @@ export DEFAULT_USER=$USER
 # alias
 alias tmux="tmux -u"
 alias python=python3
-alias ll="ls -alh"
 alias cp="cp -i"
 alias dush="du -sh -- *(D)"
+alias l="eza -a"
+alias ll="eza -la --git --time-style=long-iso"
+alias lt="eza --tree"
 
 # alias for emacs
 # alias e="emacsclient -t"
@@ -164,13 +166,22 @@ alias gd="git diff"
 alias gds="git diff --staged"
 alias ga="git add"
 alias glp='git log --graph --all --pretty'     # orignal format
-alias glpp='git log --graph --all --pretty -p' # orignal format + diff
+alias gsw='git switch'
+alias gc='git commit'
+gswf() {
+  git branch --format='%(refname:short)' | fzf | xargs git switch
+}
 
 
 
 
 # zoxide
 eval "$(zoxide init zsh)"
+
+
+
+# Ghostty
+export TERM=xterm-256color
 
 
 
@@ -210,10 +221,6 @@ fi
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
 
-
-
-# Ghostty
-export TERM=xterm-256color
 
 
 

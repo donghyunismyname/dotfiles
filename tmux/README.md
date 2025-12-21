@@ -1,3 +1,20 @@
+## Windows Terminal Setup
+
+Open `settings.json` (Ctrl+Shift+,).
+Add the following and save.
+
+```json
+{
+  "actions": [
+    { "command": { "action": "sendInput", "input": "\u001b[44;5u" }, "keys": "ctrl+," },
+    { "command": { "action": "sendInput", "input": "\u001b[46;5u" }, "keys": "ctrl+." }
+  ]
+}
+```
+
+
+
+
 ## Existing Ctrl-? Bindings
 
 There are preexisting `ctrl` bindings.
@@ -100,6 +117,7 @@ ctrl-v:
 ctrl-b:
     [emacs/shell] backward (cf. ctrl-f)
     [vim-normal] back page
+    [tmux-default] prefix key
 
 ctrl-n:
     [emacs/shell] next item (cf. ctrl-p)
