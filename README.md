@@ -48,7 +48,7 @@ Run the scripts inside project diretory.
 
 ```sh
 dotfiles$ sh install-dependency.sh
-dotfiles$ sh install-symlink.sh
+dotfiles$ sh install-symlinks.sh
 ```
 
 But things may not work.
