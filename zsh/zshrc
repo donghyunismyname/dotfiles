@@ -255,5 +255,3 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 
 
 
-# Added by Antigravity
-export PATH="/Users/donghyun/.antigravity/antigravity/bin:$PATH"
