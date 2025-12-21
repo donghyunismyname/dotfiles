@@ -14,7 +14,15 @@ development environment.
 - `brew install font-jetbrains-mono`
 
 
-## Dependency (install on your own)
+## Dependencies
+
+```sh
+# brew
+brew install zsh tmux neovim bat ripgrep fd git-delta eza
+
+# apt
+sudo apt update && sudo apt install zsh tmux neovim bat ripgrep fd-find git-delta eza
+```
 
 | Tool | Description | brew | apt |
 |------|-------------|------|-----|
@@ -25,14 +33,29 @@ development environment.
 | ripgrep | Better grep | `brew install ripgrep` | `sudo apt install ripgrep` |
 | fd | Better find | `brew install fd` | `sudo apt install fd-find` |
 | delta | Better git diff | `brew install git-delta` | `sudo apt install git-delta` |
+| eza | Better ls | `brew install eza` | `sudo apt install eza` |
+
+
+## Useful Utilities
+
+```sh
+# brew
+brew install zoxide btop dust duf procs lazygit lazydocker tokei
+
+# apt
+sudo apt update && sudo apt install zoxide btop dust duf procs lazygit lazydocker tokei
+```
+
+| Tool | Description | brew | apt |
+|------|-------------|------|-----|
+| zoxide | Better cd | `brew install zoxide` | `sudo apt install zoxide` |
 | btop | Better htop | `brew install btop` | `sudo apt install btop` |
 | dust | Better du | `brew install dust` | `sudo apt install dust` |
 | duf | Better df | `brew install duf` | `sudo apt install duf` |
 | procs | Better ps | `brew install procs` | `sudo apt install procs` |
-| eza | Better ls | `brew install eza` | `sudo apt install eza` |
-| zoxide | Better cd | `brew install zoxide` | `sudo apt install zoxide` |
 | lazygit | Git TUI | `brew install lazygit` | `sudo apt install lazygit` |
 | lazydocker | Docker TUI | `brew install lazydocker` | `sudo apt install lazydocker` |
+| tokei | Code line counter | `brew install tokei` | `sudo apt install tokei` |
 
 
 
