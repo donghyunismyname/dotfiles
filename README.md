@@ -65,10 +65,10 @@ sudo apt update && sudo apt install btop dust duf procs lazygit lazydocker tokei
 
 
 
-## Dependency (install script provided)
-- oh-my-zsh
+## Dependencies (install script provided)
 - fzf
 - cdhist
+- oh-my-zsh
 
 
 
@@ -76,7 +76,7 @@ sudo apt update && sudo apt install btop dust duf procs lazygit lazydocker tokei
 Run the scripts inside project diretory.
 
 ```sh
-dotfiles$ sh install-dependency.sh
+dotfiles$ sh install-dependencies.sh
 dotfiles$ sh install-symlinks.sh
 ```
 
