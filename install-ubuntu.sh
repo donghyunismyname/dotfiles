@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Ubuntu installation script for all CLI tools
 # Automatically fetches latest versions from GitHub
 
@@ -6,7 +6,7 @@ set -e
 
 # Helper function to get latest GitHub release version
 get_latest_version() {
-    curl -s "https://api.github.com/repos/$1/releases/latest" | grep -Po '"tag_name": "\K[^"]*' | sed 's/^v//'
+    curl -s "https://api.github.com/repos/$1/releases/latest" | sed -n 's/.*"tag_name": "v\{0,1\}\([^"]*\)".*/\1/p'
 }
 
 echo "=== Installing packages from apt ==="
