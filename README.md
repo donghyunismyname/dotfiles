@@ -1,117 +1,107 @@
 # dotfiles
-my own dotfiles
 
-`zsh`, `vim`, and `tmux` combine together to create an awesome
-development environment.
+Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 
 (no, modern GUI-based AI-assisted editors are better)
 
 (terminal utilities are still useful, though...)
 
+## Quick Start
+
+### macOS
+
+```sh
+# Install CLI tools
+brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide
+brew install btop dust duf procs lazygit lazydocker tokei
+
+# Install fzf, oh-my-zsh, zsh plugins
+./install-dependencies.sh
+
+# Create symlinks
+./install-symlinks.sh
+```
+
+### Ubuntu
+
+```sh
+# Install CLI tools (auto-fetches latest versions)
+./install-ubuntu.sh
+
+# Install fzf, oh-my-zsh, zsh plugins
+./install-dependencies.sh
+
+# Create symlinks
+./install-symlinks.sh
+```
+
+> **Note**: Add these aliases on Ubuntu:
+> ```sh
+> alias bat='batcat'
+> alias fd='fdfind'
+> ```
 
 
 ## Fonts
 
 Install on your **local machine** (where your terminal app runs), not on remote servers.
 
-- (DroidSansMono Nerd Font) https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf
-- (D2Coding) https://github.com/naver/d2codingfont
-- `sudo apt install fonts-jetbrains-mono`
-- `brew install font-jetbrains-mono`
+| Font | Install |
+|------|---------|
+| [DroidSansMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf) | Download |
+| [D2Coding](https://github.com/naver/d2codingfont) | Download |
+| JetBrains Mono | `brew install font-jetbrains-mono` / `sudo apt install fonts-jetbrains-mono` |
 
 
-## Dependencies
+## CLI Tools
 
-```sh
-# brew
-brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide
-
-# apt
-sudo apt update && sudo apt install zsh tmux neovim bat ripgrep fd-find git-delta eza zoxide
-```
-
-| Tool | Description | brew | apt |
-|------|-------------|------|-----|
-| zsh | Shell | `brew install zsh` | `sudo apt install zsh` |
-| tmux | Terminal multiplexer | `brew install tmux` | `sudo apt install tmux` |
-| neovim | Editor | `brew install neovim` | `sudo apt install neovim` |
-| bat | Better cat | `brew install bat` | `sudo apt install bat` |
-| ripgrep | Better grep | `brew install ripgrep` | `sudo apt install ripgrep` |
-| fd | Better find | `brew install fd` | `sudo apt install fd-find` |
-| delta | Better git diff | `brew install git-delta` | `sudo apt install git-delta` |
-| eza | Better ls | `brew install eza` | `sudo apt install eza` |
-| zoxide | Better cd | `brew install zoxide` | `sudo apt install zoxide` |
-
-
-## Useful Utilities
-
-```sh
-# brew
-brew install btop dust duf procs lazygit lazydocker tokei
-
-# apt
-sudo apt update && sudo apt install btop dust duf procs lazygit lazydocker tokei
-```
-
-| Tool | Description | brew | apt |
-|------|-------------|------|-----|
-| btop | Better htop | `brew install btop` | `sudo apt install btop` |
-| dust | Better du | `brew install dust` | `sudo apt install dust` |
-| duf | Better df | `brew install duf` | `sudo apt install duf` |
-| procs | Better ps | `brew install procs` | `sudo apt install procs` |
-| lazygit | Git TUI | `brew install lazygit` | `sudo apt install lazygit` |
-| lazydocker | Docker TUI | `brew install lazydocker` | `sudo apt install lazydocker` |
-| tokei | Code line counter | `brew install tokei` | `sudo apt install tokei` |
+| Tool | Description |
+|------|-------------|
+| zsh | Shell |
+| tmux | Terminal multiplexer |
+| neovim | Editor |
+| bat | Better `cat` |
+| ripgrep | Better `grep` |
+| fd | Better `find` |
+| delta | Better `git diff` |
+| eza | Better `ls` |
+| zoxide | Better `cd` |
+| btop | Better `htop` |
+| dust | Better `du` |
+| duf | Better `df` |
+| procs | Better `ps` |
+| lazygit | Git TUI |
+| lazydocker | Docker TUI |
+| tokei | Code line counter |
+| fzf | Fuzzy finder |
+| cdhist | Better `cd` history |
+| oh-my-zsh | Zsh framework |
 
 
+## Troubleshooting
 
-## Dependencies (install script provided)
-- fzf
-- cdhist
-- oh-my-zsh
+### Latest Neovim on Ubuntu
 
-
-
-## Installation
-Run the scripts inside project diretory.
-
-```sh
-dotfiles$ sh install-dependencies.sh
-dotfiles$ sh install-symlinks.sh
-```
-
-But things may not work.
-
-
-
-
-## Latest Neovim
 ```sh
 sudo apt-get remove neovim -y
-
 sudo add-apt-repository ppa:neovim-ppa/stable
 sudo apt-get update -y
 sudo apt-get install neovim -y
 ```
 
+### zsh: character not in range
 
-
-## Troubleshooting
-```sh
-zsh | (anon):12: character not in range
-```
 https://gist.github.com/jadia/1f4c2190730ef646d41823b6a6c30926
 
-Special characters break on tmux
+### Special characters break on tmux
+
 https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-tmux
 
-Neovim plugins not installed properly
+### Neovim: No Python3 provider
+
 https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_checkhealth_provider/
 
 
+## Credits
 
-
-## Inspired by
-https://github.com/wookayin/dotfiles/
-
-
+Inspired by https://github.com/wookayin/dotfiles/
