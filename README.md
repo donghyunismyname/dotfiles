@@ -11,28 +11,17 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 ### macOS
 
 ```sh
-# Install CLI tools
-brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide
-brew install btop dust duf procs lazygit lazydocker tokei
-
-# Install fzf, oh-my-zsh, zsh plugins
-./install-dependencies.sh
-
-# Create symlinks
-./install-symlinks.sh
+sh install-macos.sh
+sh install-zsh.sh
+sh install-symlinks.sh
 ```
 
 ### Ubuntu
 
 ```sh
-# Install CLI tools (auto-fetches latest versions)
-./install-ubuntu.sh
-
-# Install fzf, oh-my-zsh, zsh plugins
-./install-dependencies.sh
-
-# Create symlinks
-./install-symlinks.sh
+sh install-ubuntu.sh
+sh install-zsh.sh
+sh install-symlinks.sh
 ```
 
 > **Note**: Add these aliases on Ubuntu:
