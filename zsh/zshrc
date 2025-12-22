@@ -168,12 +168,12 @@ alias gd="git diff"
 alias gds="git diff --staged"
 alias ga="git add"
 alias glp='git log -p'     # orignal format
-alias gsw='git switch'
+alias gco='git checkout'
 alias gc='git commit'
 
-# interactive git switch with fzf
-gswf() {
-  git branch --format='%(refname:short)' | fzf | xargs git switch
+# interactive git checkout with fzf
+gcof() {
+  git branch --format='%(refname:short)' | fzf | xargs git checkout
 }
 
 # inline git commit with message
