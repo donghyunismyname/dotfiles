@@ -140,6 +140,10 @@ export DEFAULT_USER=$USER
 # alias
 alias tmux="tmux -u"
 alias python=python3
+
+# Ubuntu binary name aliases (no-op on macOS)
+command -v batcat >/dev/null && alias bat='batcat'
+command -v fdfind >/dev/null && alias fd='fdfind'
 alias cp="cp -i"
 alias dush="du -sh -- *(D)"
 alias l="eza -a"

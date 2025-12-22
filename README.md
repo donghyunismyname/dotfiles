@@ -24,12 +24,6 @@ sh install-zsh.sh
 sh install-symlinks.sh
 ```
 
-> **Note**: Add these aliases on Ubuntu:
-> ```sh
-> alias bat='batcat'
-> alias fd='fdfind'
-> ```
-
 
 ## Fonts
 
