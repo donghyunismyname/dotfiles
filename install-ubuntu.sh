@@ -87,12 +87,22 @@ rm /tmp/lazydocker.tar.gz
 echo ""
 CURRENT_STEP="tokei"
 echo "=== Installing tokei ==="
-V=$(get_latest_version "XAMPPRocky/tokei")
-echo "Latest version: $V"
-wget --show-progress "https://github.com/XAMPPRocky/tokei/releases/download/v${V}/tokei-x86_64-unknown-linux-gnu.tar.gz" -O /tmp/tokei.tar.gz
-tar -xzf /tmp/tokei.tar.gz -C /tmp
-sudo mv /tmp/tokei /usr/local/bin/
-rm /tmp/tokei.tar.gz
+# Try GitHub binary first (v12.1.2 is last version with prebuilt binaries)
+TOKEI_V="12.1.2"
+TOKEI_URL="https://github.com/XAMPPRocky/tokei/releases/download/v${TOKEI_V}/tokei-x86_64-unknown-linux-gnu.tar.gz"
+if wget --show-progress "$TOKEI_URL" -O /tmp/tokei.tar.gz 2>/dev/null; then
+    echo "Installing tokei v${TOKEI_V} from GitHub..."
+    tar -xzf /tmp/tokei.tar.gz -C /tmp
+    sudo mv /tmp/tokei /usr/local/bin/
+    rm /tmp/tokei.tar.gz
+else
+    echo "GitHub binary not available, installing via cargo..."
+    if ! command -v cargo >/dev/null 2>&1; then
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        . "$HOME/.cargo/env"
+    fi
+    cargo install tokei
+fi
 
 echo ""
 echo "=== Verifying installation ==="
