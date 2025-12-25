@@ -4,16 +4,21 @@
 
 set -e
 
+CURRENT_STEP=""
+trap 'echo ""; echo "❌ Installation failed at: $CURRENT_STEP"; exit 1' ERR
+
 # Helper function to get latest GitHub release version
 get_latest_version() {
     curl -s "https://api.github.com/repos/$1/releases/latest" | sed -n 's/.*"tag_name": "v\{0,1\}\([^"]*\)".*/\1/p'
 }
 
+CURRENT_STEP="apt packages"
 echo "=== Installing packages from apt ==="
 sudo apt update
 sudo apt install -y zsh tmux neovim bat ripgrep fd-find zoxide btop curl unzip
 
 echo ""
+CURRENT_STEP="eza"
 echo "=== Installing eza (apt repo) ==="
 sudo mkdir -p /etc/apt/keyrings
 wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor --yes -o /etc/apt/keyrings/gierens.gpg
@@ -23,67 +28,89 @@ sudo apt update
 sudo apt install -y eza
 
 echo ""
+CURRENT_STEP="git-delta"
 echo "=== Installing git-delta ==="
 V=$(get_latest_version "dandavison/delta")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/dandavison/delta/releases/download/${V}/git-delta_${V}_amd64.deb" -O /tmp/git-delta.deb
+wget --show-progress "https://github.com/dandavison/delta/releases/download/${V}/git-delta_${V}_amd64.deb" -O /tmp/git-delta.deb
 sudo dpkg -i /tmp/git-delta.deb
 rm /tmp/git-delta.deb
 
 echo ""
+CURRENT_STEP="duf"
 echo "=== Installing duf ==="
 V=$(get_latest_version "muesli/duf")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/muesli/duf/releases/download/v${V}/duf_${V}_linux_amd64.deb" -O /tmp/duf.deb
+wget --show-progress "https://github.com/muesli/duf/releases/download/v${V}/duf_${V}_linux_amd64.deb" -O /tmp/duf.deb
 sudo dpkg -i /tmp/duf.deb
 rm /tmp/duf.deb
 
 echo ""
+CURRENT_STEP="dust"
 echo "=== Installing dust ==="
 V=$(get_latest_version "bootandy/dust")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/bootandy/dust/releases/download/v${V}/du-dust_${V}-1_amd64.deb" -O /tmp/dust.deb
+wget --show-progress "https://github.com/bootandy/dust/releases/download/v${V}/du-dust_${V}-1_amd64.deb" -O /tmp/dust.deb
 sudo dpkg -i /tmp/dust.deb
 rm /tmp/dust.deb
 
 echo ""
+CURRENT_STEP="procs"
 echo "=== Installing procs ==="
 V=$(get_latest_version "dalance/procs")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/dalance/procs/releases/download/v${V}/procs-v${V}-x86_64-linux.zip" -O /tmp/procs.zip
+wget --show-progress "https://github.com/dalance/procs/releases/download/v${V}/procs-v${V}-x86_64-linux.zip" -O /tmp/procs.zip
 unzip -o /tmp/procs.zip -d /tmp
 sudo mv /tmp/procs /usr/local/bin/
 rm /tmp/procs.zip
 
 echo ""
+CURRENT_STEP="lazygit"
 echo "=== Installing lazygit ==="
 V=$(get_latest_version "jesseduffield/lazygit")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/jesseduffield/lazygit/releases/download/v${V}/lazygit_${V}_Linux_x86_64.tar.gz" -O /tmp/lazygit.tar.gz
+wget --show-progress "https://github.com/jesseduffield/lazygit/releases/download/v${V}/lazygit_${V}_Linux_x86_64.tar.gz" -O /tmp/lazygit.tar.gz
 tar -xzf /tmp/lazygit.tar.gz -C /tmp lazygit
 sudo mv /tmp/lazygit /usr/local/bin/
 rm /tmp/lazygit.tar.gz
 
 echo ""
+CURRENT_STEP="lazydocker"
 echo "=== Installing lazydocker ==="
 V=$(get_latest_version "jesseduffield/lazydocker")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/jesseduffield/lazydocker/releases/download/v${V}/lazydocker_${V}_Linux_x86_64.tar.gz" -O /tmp/lazydocker.tar.gz
+wget --show-progress "https://github.com/jesseduffield/lazydocker/releases/download/v${V}/lazydocker_${V}_Linux_x86_64.tar.gz" -O /tmp/lazydocker.tar.gz
 tar -xzf /tmp/lazydocker.tar.gz -C /tmp lazydocker
 sudo mv /tmp/lazydocker /usr/local/bin/
 rm /tmp/lazydocker.tar.gz
 
 echo ""
+CURRENT_STEP="tokei"
 echo "=== Installing tokei ==="
 V=$(get_latest_version "XAMPPRocky/tokei")
 echo "Latest version: $V"
-wget -q --show-progress "https://github.com/XAMPPRocky/tokei/releases/download/v${V}/tokei-x86_64-unknown-linux-gnu.tar.gz" -O /tmp/tokei.tar.gz
+wget --show-progress "https://github.com/XAMPPRocky/tokei/releases/download/v${V}/tokei-x86_64-unknown-linux-gnu.tar.gz" -O /tmp/tokei.tar.gz
 tar -xzf /tmp/tokei.tar.gz -C /tmp
 sudo mv /tmp/tokei /usr/local/bin/
 rm /tmp/tokei.tar.gz
 
 echo ""
+echo "=== Verifying installation ==="
+FAILED=""
+for cmd in zsh tmux nvim bat rg fdfind zoxide btop eza delta duf dust procs lazygit lazydocker tokei; do
+    if ! command -v $cmd >/dev/null 2>&1; then
+        FAILED="$FAILED $cmd"
+    fi
+done
+
+if [ -n "$FAILED" ]; then
+    echo "❌ Failed to install:$FAILED"
+    exit 1
+fi
+
+echo ""
 echo "=== Done ==="
+echo "✅ All tools installed successfully!"
 echo ""
 echo "Installed:"
 echo "  - zsh, tmux, neovim, bat, ripgrep, fd-find, zoxide, btop (apt)"
