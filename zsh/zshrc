@@ -165,14 +165,15 @@ alias gll="git log --graph --all \
   --date=format:'%Y-%m-%d %H:%M:%S'"
 alias gs="git status"
 alias gd="git diff"
-alias gds="git diff --staged"
+alias gds="git diff --stat"
+alias gdstg="git diff --staged"
 alias ga="git add"
 alias glp='git log -p'     # orignal format
 alias gco='git checkout'
 alias gc='git commit'
 
 # interactive git checkout with fzf
-gcof() {
+gcoi() {
   git branch --format='%(refname:short)' | fzf | xargs git checkout
 }
 
