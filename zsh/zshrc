@@ -197,7 +197,13 @@ gcoi() {
 
 # inline git commit with message
 gcm() {
-  git commit -m "$*"
+  if [[ $# -eq 0 ]]; then
+    echo -n "Commit message: "
+    read -r msg
+    git commit -m "$msg"
+  else
+    git commit -m "$*"
+  fi
 }
 
 
