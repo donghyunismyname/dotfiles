@@ -166,6 +166,7 @@ alias gll="git log --graph --all \
 alias gs="git status"
 alias gd="git diff"
 alias gds="git diff --stat"
+alias gdss="git diff --stat --staged"
 alias gdstg="git diff --staged"
 alias ga="git add"
 alias glp='git log -p'     # orignal format
