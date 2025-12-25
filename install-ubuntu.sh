@@ -107,7 +107,8 @@ fi
 echo ""
 echo "=== Verifying installation ==="
 FAILED=""
-for cmd in zsh tmux nvim bat rg fdfind zoxide btop eza delta duf dust procs lazygit lazydocker tokei; do
+# Note: bat -> batcat, fd -> fdfind on Ubuntu
+for cmd in zsh tmux nvim batcat rg fdfind zoxide btop eza delta duf dust procs lazygit lazydocker tokei; do
     if ! command -v $cmd >/dev/null 2>&1; then
         FAILED="$FAILED $cmd"
     fi
