@@ -150,15 +150,28 @@ bindkey '^W' forward-word
 
 
 
+
 # ================================================
 # Below are independent of oh-my-zsh
 # ================================================
+
+# locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# for ghostty
+export TERM=xterm-256color
+
+# editor
+export EDITOR=vim
+
+
 
 # alias
 alias tmux="tmux -u"
 alias python=python3
 
-# Ubuntu binary name aliases (no-op on macOS)
+# alias: Ubuntu binary name aliases (no-op on macOS)
 command -v batcat >/dev/null && alias bat='batcat'
 command -v fdfind >/dev/null && alias fd='fdfind'
 alias cp="cp -i"
@@ -173,7 +186,7 @@ alias lt="eza --tree"
 # alias ed="emacs --daemon"
 # alias edkill="emacsclient -e \"(kill-emacs)\""
 
-# alias for git
+# alias: git
 alias gl="git log --graph --all \
   --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset %s' \
   --date=short"
@@ -209,9 +222,9 @@ gcm() {
 
 
 
+
 # zoxide
 eval "$(zoxide init zsh)"
-
 
 
 
@@ -255,37 +268,27 @@ export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
 
 
-# Ghostty
-export TERM=xterm-256color
-
-# locale
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
 
 
 
 
-# WSL
+# PATH: WSL
 export PATH=/usr/lib/wsl/lib:$PATH
 
-# NodeJS Version Manager
+# PATH; NodeJS Version Manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Added by LM Studio CLI (lms)
+# PATH: Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
-# Java
-# export JAVA_HOME=$(/usr/libexec/java_home)
 
 
 
 
-
-
-# Local configurations
+# local configurations
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 
