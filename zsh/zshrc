@@ -264,6 +264,8 @@ fi
 # fzf and cdhist integration
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
+# ff - Flexible File Finder (relative to this file)
+source "${0:A:h}/ff.sh"
 
 
 
