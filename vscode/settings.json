@@ -1,10 +1,7 @@
 {
     "window.confirmBeforeClose": "always",
-    "window.zoomLevel": -1,
+    "window.openFoldersInNewWindow": "on",
     "files.hotExit": "onExitAndWindowClose",
-
-    "vscode-kanata.localKeysVariant": "deflocalkeys-win",
-    "python.createEnvironment.trigger": "off",
 
     // Sync across different platforms (Windows, Linux, MacOS)
     "settingsSync.keybindingsPerPlatform": false,
@@ -12,21 +9,16 @@
     // Disable accepting suggestions
     "editor.acceptSuggestionOnEnter": "smart",
 
-    // Extension: wikitext
-    "wikitext.host": "en.wikipedia.org",
-
     // Cmake
     "cmake.configureOnOpen": false,
     "cmake.configureOnEdit": false,
     "cmake.options.statusBarVisibility": "visible",
-    "cmake.showOptionsMovedNotification": false,
     "cmake.pinnedCommands": [
         "workbench.action.tasks.configureTaskRunner",
         "workbench.action.tasks.runTask"
     ],
 
     // Formatting
-    "l_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, IndentWidth: 4 }",
     "[cpp]": {
         "editor.defaultFormatter": "ms-vscode.cpptools"
     },
@@ -34,7 +26,9 @@
 
     // Workbench
     "workbench.editor.revealIfOpen": true,
-    "workbench.panel.defaultLocation": "right",
+    "workbench.editor.limit.enabled": true,
+    "workbench.editor.limit.perEditorGroup": true,
+    "workbench.editor.limit.value": 4,
     
     // Autosave
     "files.autoSave": "onFocusChange",
@@ -96,6 +90,22 @@
     "terminal.integrated.scrollback": 10000,
     "terminal.integrated.defaultProfile.windows": "Git Bash",
     // "terminal.integrated.stickyScroll.enabled": true,
+    "terminal.integrated.profiles.linux": {
+        "zsh (login)": {
+            "path": "zsh",
+            "args": [
+                "-l"
+            ],
+        },
+    },
+    "terminal.integrated.profiles.osx": {
+        "zsh (login)": {
+            "path": "zsh",
+            "args": [
+                "-l"
+            ],
+        },
+    },
     
     // Custom environment variables
     "terminal.integrated.env.linux": {},
@@ -160,6 +170,8 @@
         "<C-j>": false, // down
         "<C-k>": false, // up
         "<C-l>": false, // right
+
+        "<C-p>": false, // quick open
     },
 
     "vim.insertModeKeyBindingsNonRecursive": [
@@ -312,14 +324,14 @@
 
         // ========== same normal & visual ==========
         // indent
-        {
-            "before": ["shift+tab"],
-            "commands": ["editor.action.outdentLines"],
-        },
-        {
-            "before": ["tab"],
-            "commands": ["editor.action.indentLines"],
-        },
+        // {
+        //     "before": ["shift+tab"],
+        //     "commands": ["editor.action.outdentLines"],
+        // },
+        // {
+        //     "before": ["tab"],
+        //     "commands": ["editor.action.indentLines"],
+        // },
         // indent
         {
             "before": ["["],
@@ -331,11 +343,11 @@
         },
         // Up/Down fast
         {
-            "before": ["ctrl+p"],
+            "before": [";"],
             "after": ["9", "k"],
         },
         {
-            "before": ["ctrl+n"],
+            "before": ["m"],
             "after": ["9", "j"],
         },
         {
@@ -375,7 +387,7 @@
         // ========== combined normal & visual ==========
         // Current word search
         {
-            "before": [";"],
+            "before": ["'"],
             "after": ["*", "N"],
         },
         {
@@ -481,14 +493,14 @@
 
         // ========== same normal & visual ==========
         // Indent
-        {
-            "before": ["shift+tab"],
-            "commands": ["editor.action.outdentLines"],
-        },
-        {
-            "before": ["tab"],
-            "commands": ["editor.action.indentLines"],
-        },
+        // {
+        //     "before": ["shift+tab"],
+        //     "commands": ["editor.action.outdentLines"],
+        // },
+        // {
+        //     "before": ["tab"],
+        //     "commands": ["editor.action.indentLines"],
+        // },
         // indent
         {
             "before": ["["],
@@ -500,11 +512,11 @@
         },
         // Up/Down fast
         {
-            "before": ["ctrl+p"],
+            "before": [";"],
             "after": ["9", "k"],
         },
         {
-            "before": ["ctrl+n"],
+            "before": ["m"],
             "after": ["9", "j"],
         },
         {
@@ -544,7 +556,7 @@
         // ========== combined normal & visual ==========
         // Current word search
         {
-            "before": [";"],
+            "before": ["'"],
             "after": ["\"", "a", "y", "/", "<c-r>", "a", "enter", "N",],
         },
         {
@@ -555,6 +567,5 @@
             "before": ["."],
             "after": ["n"],
         },
-
     ],
 }
