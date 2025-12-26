@@ -154,10 +154,6 @@ bindkey '^W' forward-word
 # Below are independent of oh-my-zsh
 # ================================================
 
-# locale
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
 # alias
 alias tmux="tmux -u"
 alias python=python3
@@ -218,9 +214,6 @@ eval "$(zoxide init zsh)"
 
 
 
-# Ghostty
-export TERM=xterm-256color
-
 
 
 
@@ -259,6 +252,15 @@ fi
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
 
+
+
+
+# Ghostty
+export TERM=xterm-256color
+
+# locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 
 
