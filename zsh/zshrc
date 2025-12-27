@@ -166,6 +166,9 @@ export TERM=xterm-256color
 export EDITOR=vim
 
 
+# disable AUTO_CD
+unsetopt AUTO_CD
+
 
 # alias
 alias tmux="tmux -u"
