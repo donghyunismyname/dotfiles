@@ -89,7 +89,7 @@ CURRENT_STEP="witr"
 echo "=== Installing witr ==="
 V=$(get_latest_version "pranshuparmar/witr")
 echo "Latest version: $V"
-wget --show-progress "https://github.com/pranshuparmar/witr/releases/download/v${V}/witr-linux-x86_64" -O /tmp/witr
+wget --show-progress "https://github.com/pranshuparmar/witr/releases/download/v${V}/witr-linux-amd64" -O /tmp/witr
 chmod +x /tmp/witr
 sudo mv /tmp/witr /usr/local/bin/
 
