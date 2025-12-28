@@ -24,42 +24,40 @@ sh install-zsh.sh
 sh install-symlinks.sh
 ```
 
-
 ## Fonts
 
 Install on your **local machine** (where your terminal app runs), not on remote servers.
 
-| Font | Install |
-|------|---------|
-| [DroidSansMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf) | Download |
-| [D2Coding](https://github.com/naver/d2codingfont) | Download |
-| JetBrains Mono | `brew install font-jetbrains-mono` / `sudo apt install fonts-jetbrains-mono` |
-
+| Font                                                                                                                                       | Install                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| [DroidSansMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf) | Download                                                                         |
+| [D2Coding](https://github.com/naver/d2codingfont)                                                                                             | Download                                                                         |
+| JetBrains Mono                                                                                                                             | `brew install font-jetbrains-mono` / `sudo apt install fonts-jetbrains-mono` |
 
 ## CLI Tools
 
-| Tool | Description |
-|------|-------------|
-| zsh | Shell |
-| tmux | Terminal multiplexer |
-| neovim | Editor |
-| bat | Better `cat` |
-| ripgrep | Better `grep` |
-| fd | Better `find` |
-| delta | Better `git diff` |
-| eza | Better `ls` |
-| zoxide | Better `cd` |
-| btop | Better `htop` |
-| dust | Better `du` |
-| duf | Better `df` |
-| procs | Better `ps` |
-| lazygit | Git TUI |
-| lazydocker | Docker TUI |
-| tokei | Code line counter |
-| fzf | Fuzzy finder |
-| cdhist | Better `cd` history |
-| oh-my-zsh | Zsh framework |
-
+| Tool       | Description           |
+| ---------- | --------------------- |
+| zsh        | Shell                 |
+| tmux       | Terminal multiplexer  |
+| neovim     | Editor                |
+| bat        | Better `cat`        |
+| ripgrep    | Better `grep`       |
+| fd         | Better `find`       |
+| delta      | Better `git diff`   |
+| eza        | Better `ls`         |
+| zoxide     | Better `cd`         |
+| btop       | Better `htop`       |
+| dust       | Better `du`         |
+| duf        | Better `df`         |
+| procs      | Better `ps`         |
+| witr       | Why is this running?  |
+| lazygit    | Git TUI               |
+| lazydocker | Docker TUI            |
+| tokei      | Code line counter     |
+| fzf        | Fuzzy finder          |
+| cdhist     | Better `cd` history |
+| oh-my-zsh  | Zsh framework         |
 
 ## Troubleshooting
 
@@ -83,7 +81,6 @@ https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-t
 ### Neovim: No Python3 provider
 
 https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_checkhealth_provider/
-
 
 ## Credits
 

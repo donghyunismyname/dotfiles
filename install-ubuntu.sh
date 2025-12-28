@@ -85,6 +85,15 @@ sudo mv /tmp/lazydocker /usr/local/bin/
 rm /tmp/lazydocker.tar.gz
 
 echo ""
+CURRENT_STEP="witr"
+echo "=== Installing witr ==="
+V=$(get_latest_version "pranshuparmar/witr")
+echo "Latest version: $V"
+wget --show-progress "https://github.com/pranshuparmar/witr/releases/download/v${V}/witr-linux-x86_64" -O /tmp/witr
+chmod +x /tmp/witr
+sudo mv /tmp/witr /usr/local/bin/
+
+echo ""
 CURRENT_STEP="tokei"
 echo "=== Installing tokei ==="
 # Try GitHub binary first (v12.1.2 is last version with prebuilt binaries)
@@ -108,7 +117,7 @@ echo ""
 echo "=== Verifying installation ==="
 FAILED=""
 # Note: bat -> batcat, fd -> fdfind on Ubuntu
-for cmd in zsh tmux nvim batcat rg fdfind zoxide btop eza delta duf dust procs lazygit lazydocker tokei; do
+for cmd in zsh tmux nvim batcat rg fdfind zoxide btop eza delta duf dust procs witr lazygit lazydocker tokei; do
     if ! command -v $cmd >/dev/null 2>&1; then
         FAILED="$FAILED $cmd"
     fi
@@ -126,4 +135,4 @@ echo ""
 echo "Installed:"
 echo "  - zsh, tmux, neovim, bat, ripgrep, fd-find, zoxide, btop (apt)"
 echo "  - eza (apt repo)"
-echo "  - git-delta, duf, dust, procs, lazygit, lazydocker, tokei (GitHub latest)"
+echo "  - git-delta, duf, dust, procs, witr, lazygit, lazydocker, tokei (GitHub latest)"
