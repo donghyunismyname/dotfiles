@@ -208,7 +208,7 @@ alias gc='git commit'
 
 # interactive git checkout with fzf
 gcoi() {
-  git branch --format='%(refname:short)' | fzf | xargs git checkout
+  git branch --all --format='%(refname:short)' | fzf | xargs git checkout
 }
 
 # inline git commit with message
