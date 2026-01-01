@@ -70,6 +70,7 @@ alias tmux="tmux -u"
 alias python=python3
 alias cp="cp -i"
 alias dush="du -sh -- *(D)"
+alias path='echo $PATH | tr ":" "\n" | nl'
 
 # Ubuntu binary name compatibility
 command -v batcat >/dev/null && alias bat='batcat'
