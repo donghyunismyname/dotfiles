@@ -94,7 +94,7 @@ alias gl="git log --graph --all \
   --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset %s' \
   --date=short"
 alias gll="git log --graph --all \
-  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset%n%s' \
+  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an <%ae>%Creset%C(auto)%d%Creset%n%s' \
   --date=format:'%Y-%m-%d %H:%M:%S'"
 
 
