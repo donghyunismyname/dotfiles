@@ -12,7 +12,7 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 
 ```sh
 sh install-macos.sh
-sh install-zsh.sh
+sh install-shell.sh
 sh install-symlinks.sh
 ```
 
@@ -20,7 +20,7 @@ sh install-symlinks.sh
 
 ```sh
 sh install-ubuntu.sh
-sh install-zsh.sh
+sh install-shell.sh
 sh install-symlinks.sh
 ```
 
@@ -56,6 +56,7 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | lazydocker | Docker TUI            |
 | tokei      | Code line counter     |
 | fzf        | Fuzzy finder          |
+| uv         | Python package manager |
 | cdhist     | Better `cd` history |
 | oh-my-zsh  | Zsh framework         |
 

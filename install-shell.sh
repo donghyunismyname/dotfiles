@@ -17,6 +17,11 @@ clone_or_pull() {
 clone_or_pull https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
 
+# uv (Python package manager)
+if ! command -v uv >/dev/null 2>&1; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
 # cdhist
 uv tool install cdhist
 
