@@ -1,19 +1,27 @@
 #!/bin/sh
-# macOS installation script for all CLI tools
+# Unified installation script for CLI tools (macOS and Linux)
 
 set -e
 
 trap 'echo ""; echo "❌ Installation failed"; exit 1' ERR
 
-# Check if brew is installed
+# Install Homebrew if not present
 if ! command -v brew >/dev/null 2>&1; then
-    echo "Homebrew not found. Installing..."
+    echo "=== Installing Homebrew ==="
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add brew to PATH for Linux
+    if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    elif [ -f "$HOME/.linuxbrew/bin/brew" ]; then
+        eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
+    fi
 fi
 
+echo ""
 echo "=== Installing CLI tools ==="
-brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide
-brew install btop dust duf procs witr lazygit lazydocker tokei miniserve
+brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide \
+    btop dust duf procs witr lazygit lazydocker tokei miniserve
 
 echo ""
 echo "=== Verifying installation ==="
@@ -32,6 +40,3 @@ fi
 echo ""
 echo "=== Done ==="
 echo "✅ All tools installed successfully!"
-echo ""
-echo "Installed: zsh, tmux, neovim, bat, ripgrep, fd, git-delta, eza, zoxide"
-echo "           btop, dust, duf, procs, witr, lazygit, lazydocker, tokei, miniserve"

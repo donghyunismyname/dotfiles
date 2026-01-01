@@ -8,19 +8,9 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 
 ## Quick Start
 
-### macOS
-
 ```sh
-sh install-macos.sh
-sh install-shell.sh
-sh install-symlinks.sh
-```
-
-### Ubuntu
-
-```sh
-sh install-ubuntu.sh
-sh install-shell.sh
+sh install-tools.sh   # CLI tools (uses Homebrew)
+sh install-shell.sh   # zsh plugins, fzf, uv, cdhist
 sh install-symlinks.sh
 ```
 
