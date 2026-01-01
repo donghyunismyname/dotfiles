@@ -13,12 +13,12 @@ fi
 
 echo "=== Installing CLI tools ==="
 brew install zsh tmux neovim bat ripgrep fd git-delta eza zoxide
-brew install btop dust duf procs witr lazygit lazydocker tokei
+brew install btop dust duf procs witr lazygit lazydocker tokei miniserve
 
 echo ""
 echo "=== Verifying installation ==="
 FAILED=""
-for cmd in zsh tmux nvim bat rg fd delta eza zoxide btop dust duf procs witr lazygit lazydocker tokei; do
+for cmd in zsh tmux nvim bat rg fd delta eza zoxide btop dust duf procs witr lazygit lazydocker tokei miniserve; do
     if ! command -v $cmd >/dev/null 2>&1; then
         FAILED="$FAILED $cmd"
     fi
@@ -34,4 +34,4 @@ echo "=== Done ==="
 echo "✅ All tools installed successfully!"
 echo ""
 echo "Installed: zsh, tmux, neovim, bat, ripgrep, fd, git-delta, eza, zoxide"
-echo "           btop, dust, duf, procs, witr, lazygit, lazydocker, tokei"
+echo "           btop, dust, duf, procs, witr, lazygit, lazydocker, tokei, miniserve"
