@@ -13,16 +13,10 @@ clone_or_pull() {
     fi
 }
 
-# fzf
-clone_or_pull https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install --all
+# fzf key bindings and completion (requires fzf from brew)
+"$(brew --prefix)/opt/fzf/install" --all --no-update-rc
 
-# uv (Python package manager)
-if ! command -v uv >/dev/null 2>&1; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
-
-# cdhist
+# cdhist (requires uv from brew)
 uv tool install cdhist
 
 # oh-my-zsh
