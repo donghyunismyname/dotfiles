@@ -1,16 +1,182 @@
+# ============================================
+# PATH
+# ============================================
+
+# Homebrew (Linux) - must be first
+if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# ~/.local/bin
+export PATH=$HOME/.local/bin:$PATH
+
+# WSL
+export PATH=/usr/lib/wsl/lib:$PATH
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# LM Studio
+export PATH="$PATH:$HOME/.lmstudio/bin"
+
+
+# ============================================
+# Oh My Zsh
+# ============================================
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="dst"
+plugins=(zsh-autosuggestions zsh-syntax-highlighting zsh-completions)
+source $ZSH/oh-my-zsh.sh
+
+
+# ============================================
+# Environment
+# ============================================
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export TERM=xterm-256color
+export EDITOR=vim
+
+
+# ============================================
+# Shell options
+# ============================================
+
+unsetopt AUTO_CD
+
+bindkey '^Q' backward-word
+bindkey '^W' forward-word
+
+
+# ============================================
+# Aliases
+# ============================================
+
+alias tmux="tmux -u"
+alias python=python3
+alias cp="cp -i"
+alias reload="source ~/.zshrc"
+alias dush="du -sh -- *(D)"
+
+# Ubuntu binary name compatibility
+command -v batcat >/dev/null && alias bat='batcat'
+command -v fdfind >/dev/null && alias fd='fdfind'
+
+# eza
+alias l="eza -a"
+alias ll="eza -la --git --time-style=long-iso"
+alias lt="eza --tree"
+
+# git
+alias gs="git status"
+alias gd="git diff"
+alias gds="git diff --stat"
+alias gdss="git diff --stat --staged"
+alias gdstg="git diff --staged"
+alias ga="git add"
+alias gc='git commit'
+alias gco='git checkout'
+alias glp='git log -p'     # orignal format
+alias gl="git log --graph --all \
+  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset %s' \
+  --date=short"
+alias gll="git log --graph --all \
+  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset%n%s' \
+  --date=format:'%Y-%m-%d %H:%M:%S'"
+
+
+# ============================================
+# Functions
+# ============================================
+
+# interactive git checkout with fzf
+gcoi() {
+  git branch --all --format='%(refname:short)' | fzf | xargs git checkout
+}
+
+# inline git commit with message
+gcm() {
+  if [[ $# -eq 0 ]]; then
+    echo -n "Commit message: "
+    read -r msg
+    git commit -m "$msg"
+  else
+    git commit -m "$*"
+  fi
+}
+
+
+# ============================================
+# Tools
+# ============================================
+
+# zoxide
+eval "$(zoxide init zsh)"
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# fzf bindkey
+bindkey '^G' fzf-cd-widget
+
+# fzf-cd-widget preview
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+
+# Preview file content using bat (https://github.com/sharkdp/bat)
+export FZF_CTRL_T_OPTS="
+  --preview 'bat -n --color=always {}'
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+
+# CTRL-/ to toggle small preview window to see the full command
+# CTRL-Y to copy the command into clipboard using pbcopy
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --color header:italic
+  --header 'Press CTRL-Y to copy command into clipboard'"
+
+# cdhist
+if type cdhist &>/dev/null; then
+    . <(cdhist -i)
+fi
+
+# fzf and cdhist integration
+export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
+
+# ff - Flexible File Finder
+source "$HOME/dotfiles/zsh/ff.sh"
+
+
+# ============================================
+# Local config (machine-specific overrides)
+# ============================================
+
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+
+# ============================================
+# Unused (kept for reference)
+# ============================================
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="dst"
-
-
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -67,16 +233,6 @@ ZSH_THEME="dst"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-plugins=(
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  zsh-completions
-)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -100,10 +256,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
-
-
-
 
 # ===============================
 # personal agnoster theme
@@ -136,178 +288,10 @@ source $ZSH/oh-my-zsh.sh
 # personal agnoster theme end
 # ===============================
 
-
-
-
 # vim mode on command line
 #set -o vi
 
 # bindkey
 # bindkey '^U' reverse-menu-complete
-bindkey '^Q' backward-word
-bindkey '^W' forward-word
-
-
-
-
-
-# ================================================
-# Below are independent of oh-my-zsh
-# ================================================
-
-# locale
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# for ghostty
-export TERM=xterm-256color
-
-# editor
-export EDITOR=vim
-
-
-# disable AUTO_CD
-unsetopt AUTO_CD
-
-
-# alias
-alias tmux="tmux -u"
-alias python=python3
-
-# alias: Ubuntu binary name aliases (no-op on macOS)
-command -v batcat >/dev/null && alias bat='batcat'
-command -v fdfind >/dev/null && alias fd='fdfind'
-alias cp="cp -i"
-alias dush="du -sh -- *(D)"
-alias l="eza -a"
-alias ll="eza -la --git --time-style=long-iso"
-alias lt="eza --tree"
-
-# alias for emacs
-# alias e="emacsclient -t"
-# alias ec="emacsclient -c"
-# alias ed="emacs --daemon"
-# alias edkill="emacsclient -e \"(kill-emacs)\""
-
-# alias: git
-alias gl="git log --graph --all \
-  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset %s' \
-  --date=short"
-alias gll="git log --graph --all \
-  --pretty=format:'%C(auto)%h%Creset %Cgreen%ad%Creset %Cblue%an%Creset%C(auto)%d%Creset%n%s' \
-  --date=format:'%Y-%m-%d %H:%M:%S'"
-alias gs="git status"
-alias gd="git diff"
-alias gds="git diff --stat"
-alias gdss="git diff --stat --staged"
-alias gdstg="git diff --staged"
-alias ga="git add"
-alias glp='git log -p'     # orignal format
-alias gco='git checkout'
-alias gc='git commit'
-
-# interactive git checkout with fzf
-gcoi() {
-  git branch --all --format='%(refname:short)' | fzf | xargs git checkout
-}
-
-# inline git commit with message
-gcm() {
-  if [[ $# -eq 0 ]]; then
-    echo -n "Commit message: "
-    read -r msg
-    git commit -m "$msg"
-  else
-    git commit -m "$*"
-  fi
-}
-
-
-
-
-
-# zoxide
-eval "$(zoxide init zsh)"
-
-
-
-
-
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# fzf bindkey
-bindkey '^G' fzf-cd-widget
-
-# fzf-cd-widget preview
-export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
-
-# Preview file content using bat (https://github.com/sharkdp/bat)
-export FZF_CTRL_T_OPTS="
-  --preview 'bat -n --color=always {}'
-  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
-
-# CTRL-/ to toggle small preview window to see the full command
-# CTRL-Y to copy the command into clipboard using pbcopy
-export FZF_CTRL_R_OPTS="
-  --preview 'echo {}' --preview-window up:3:hidden:wrap
-  --bind 'ctrl-/:toggle-preview'
-  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
-  --color header:italic
-  --header 'Press CTRL-Y to copy command into clipboard'"
-
-# cdhist:Sometimes cdhist is installed here
-export PATH=$PATH:$HOME/.local/bin
-
-# cdhist
-if type cdhist &>/dev/null; then
-    . <(cdhist -i)
-fi
-
-# fzf and cdhist integration
-export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
-
-# ff - Flexible File Finder (relative to this file)
-source "$HOME/dotfiles/zsh/ff.sh"
-
-
-
-
-
-
-
-
-# PATH: WSL
-export PATH=/usr/lib/wsl/lib:$PATH
-
-# PATH: Added by LM Studio CLI (lms)
-export PATH="$PATH:$HOME/.lmstudio/bin"
-# End of LM Studio CLI section
-
-# PATH; NodeJS Version Manager
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# PATH: pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# Homebrew (Linux)
-if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
-
-
-
-# local configurations
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
-
 
 
