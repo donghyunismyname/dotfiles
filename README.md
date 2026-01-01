@@ -55,6 +55,7 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | lazygit    | Git TUI               |
 | lazydocker | Docker TUI            |
 | tokei      | Code line counter     |
+| miniserve  | Simple HTTP server    |
 | fzf        | Fuzzy finder          |
 | uv         | Python package manager |
 | cdhist     | Better `cd` history |

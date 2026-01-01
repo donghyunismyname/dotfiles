@@ -114,10 +114,19 @@ else
 fi
 
 echo ""
+CURRENT_STEP="miniserve"
+echo "=== Installing miniserve ==="
+V=$(get_latest_version "svenstaro/miniserve")
+echo "Latest version: $V"
+wget --show-progress "https://github.com/svenstaro/miniserve/releases/download/v${V}/miniserve-${V}-x86_64-unknown-linux-gnu" -O /tmp/miniserve
+chmod +x /tmp/miniserve
+sudo mv /tmp/miniserve /usr/local/bin/
+
+echo ""
 echo "=== Verifying installation ==="
 FAILED=""
 # Note: bat -> batcat, fd -> fdfind on Ubuntu
-for cmd in zsh tmux nvim batcat rg fdfind zoxide btop eza delta duf dust procs witr lazygit lazydocker tokei; do
+for cmd in zsh tmux nvim batcat rg fdfind zoxide btop eza delta duf dust procs witr lazygit lazydocker tokei miniserve; do
     if ! command -v $cmd >/dev/null 2>&1; then
         FAILED="$FAILED $cmd"
     fi
@@ -135,4 +144,4 @@ echo ""
 echo "Installed:"
 echo "  - zsh, tmux, neovim, bat, ripgrep, fd-find, zoxide, btop (apt)"
 echo "  - eza (apt repo)"
-echo "  - git-delta, duf, dust, procs, witr, lazygit, lazydocker, tokei (GitHub latest)"
+echo "  - git-delta, duf, dust, procs, witr, lazygit, lazydocker, tokei, miniserve (GitHub latest)"
