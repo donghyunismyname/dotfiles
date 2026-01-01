@@ -8,10 +8,10 @@ if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
 fi
 
 # ~/.local/bin
-export PATH=$HOME/.local/bin:$PATH
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 
 # WSL
-export PATH=/usr/lib/wsl/lib:$PATH
+[[ -d "/usr/lib/wsl/lib" ]] && export PATH="/usr/lib/wsl/lib:$PATH"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -20,13 +20,15 @@ export NVM_DIR="$HOME/.nvm"
 
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+if [[ -d "$PNPM_HOME" ]]; then
+  case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
+fi
 
 # LM Studio
-export PATH="$PATH:$HOME/.lmstudio/bin"
+[[ -d "$HOME/.lmstudio/bin" ]] && export PATH="$PATH:$HOME/.lmstudio/bin"
 
 
 # ============================================
