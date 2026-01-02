@@ -75,7 +75,7 @@ command -v fdfind >/dev/null && alias fd='fdfind'
 
 # eza
 alias l="eza -a"
-alias ll="eza -la --git --time-style=long-iso"
+alias ll="eza -alg --git --time-style=long-iso"
 alias lt="eza --tree"
 
 # git
