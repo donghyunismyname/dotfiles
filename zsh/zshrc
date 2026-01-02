@@ -163,7 +163,15 @@ source "$HOME/dotfiles/zsh/ff.sh"
 # Local config (machine-specific overrides)
 # ============================================
 
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local || true
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+
+
+# ============================================
+# no-op (for exit code 0)
+# ============================================
+
+true
 
 
 # ============================================
