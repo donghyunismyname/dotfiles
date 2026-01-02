@@ -148,8 +148,8 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command into clipboard'"
 
 # cdhist
-if type cdhist &>/dev/null; then
-    . <(cdhist -i)
+if command -v cdhist &>/dev/null; then
+    eval "$(cdhist -i)"
 fi
 
 # fzf and cdhist integration
