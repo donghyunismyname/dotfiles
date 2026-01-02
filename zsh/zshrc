@@ -13,11 +13,6 @@ fi
 # WSL
 [[ -d "/usr/lib/wsl/lib" ]] && export PATH="/usr/lib/wsl/lib:$PATH"
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
 if [[ -d "$PNPM_HOME" ]]; then
