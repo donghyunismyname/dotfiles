@@ -64,7 +64,6 @@ bindkey '^W' forward-word
 # ============================================
 
 alias tmux="tmux -u"
-alias python=python3
 alias cp="cp -i"
 alias dush="du -sh -- *(D)"
 alias path='echo $PATH | tr ":" "\n" | nl'
@@ -115,6 +114,18 @@ gcm() {
     git commit -m "$*"
   fi
 }
+
+
+# ============================================
+# Python
+# ============================================
+
+alias python='uv run python'
+alias py='uv run python'
+
+if command -v uv > /dev/null; then
+    eval "$(uv generate-shell-completion zsh)"
+fi
 
 
 # ============================================
