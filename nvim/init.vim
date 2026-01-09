@@ -49,13 +49,14 @@ Plug 'folke/flash.nvim'
 " let g:easycomplete_nerd_font = 1
 
 
-noremap gr :ALEFindReferences<cr>
-noremap gd :ALEGoToDefinition<cr>
-noremap gh :ALEHover<cr>
-noremap ? :ALESymbolSearch<space>
-let g:ale_completion_enabled = 1
-set omnifunc=ale#completion#OmniFunc
-Plug 'dense-analysis/ale'
+" ALE removed - was causing lag
+" noremap gr :ALEFindReferences<cr>
+" noremap gd :ALEGoToDefinition<cr>
+" noremap gh :ALEHover<cr>
+" noremap ? :ALESymbolSearch<space>
+" let g:ale_completion_enabled = 1
+" set omnifunc=ale#completion#OmniFunc
+" Plug 'dense-analysis/ale'
 
 ":LspInstallServer
 "Plug 'prabirshrestha/vim-lsp'
