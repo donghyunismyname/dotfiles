@@ -6,6 +6,8 @@ echo "    ~/.vim"
 echo "    ~/.tmux.conf"
 echo "    ~/.zshrc"
 echo "    ~/.gitconfig"
+echo "    ~/.claude/commands"
+echo "    ~/.claude/CLAUDE.md"
 read -p "Do you want to continue? (y/N): " ans
 
 if [ $ans != "y" ]; then
@@ -39,6 +41,13 @@ ln -snfF $DIR/zsh/zshrc       ~/.zshrc
 # git
 rm -ri                        ~/.gitconfig
 ln -snfF $DIR/git/gitconfig   ~/.gitconfig
+
+# claude
+mkdir -p                      ~/.claude
+rm -ri                        ~/.claude/commands
+rm -ri                        ~/.claude/CLAUDE.md
+ln -snfF $DIR/claude/commands ~/.claude/commands
+ln -snfF $DIR/claude/CLAUDE.md ~/.claude/CLAUDE.md
 
 # i3
 # rm -ri                        ~/.config/i3/config
