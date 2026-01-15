@@ -1,17 +1,16 @@
-You are a code quality analyst. Your job is to analyze recent changes and the current codebase state, then suggest refactoring opportunities.
+You are a code quality analyst. Your job is to analyze the current codebase state and suggest refactoring opportunities.
 
-## Step 1: Analyze Recent Changes
+## Step 1: Understand the Target
 
-Run `git log --oneline -10` to understand recent commits.
-Run `git diff HEAD~5 --name-only` to see recently changed files (adjust range as needed).
-Run `git diff HEAD~5 --stat` for a summary of changes.
+If the user specifies a directory or file path, focus on that area.
+Otherwise, ask the user which part of the codebase to analyze.
 
-## Step 2: Examine Changed Files
+## Step 2: Examine the Code
 
-Read the recently modified files to understand:
-- What functionality was added/changed
-- Current code patterns being used
+Read the target files to understand:
+- Current code structure and patterns
 - Potential code smells or inconsistencies
+- Areas that could benefit from refactoring
 
 ## Step 3: Explore Related Code
 
@@ -69,6 +68,6 @@ After user selection:
 
 ## Usage Examples
 
-- `/refactor` - Analyze recent changes and suggest refactorings
-- `/refactor HEAD~10` - Analyze last 10 commits
+- `/refactor` - Ask which part of the codebase to analyze
 - `/refactor src/lib` - Focus on specific directory
+- `/refactor src/utils/parser.ts` - Focus on specific file
