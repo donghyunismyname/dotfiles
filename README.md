@@ -73,7 +73,3 @@ https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-t
 ### Neovim: No Python3 provider
 
 https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_checkhealth_provider/
-
-## Credits
-
-Inspired by https://github.com/wookayin/dotfiles/
