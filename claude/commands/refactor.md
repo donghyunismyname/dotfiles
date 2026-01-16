@@ -39,14 +39,14 @@ Look for:
 - Missing abstractions for repeated logic
 - Hardcoded values that should be constants/config
 
-### Types (TypeScript)
+### Types
 - Missing or overly loose types
 - Repeated type definitions
 - Types that could be inferred
 
 ## Step 5: Present Suggestions
 
-Use AskUserQuestion to present refactoring suggestions. Group by priority:
+Present refactoring suggestions. Group by priority:
 
 1. **High impact**: Changes that significantly improve readability or maintainability
 2. **Medium impact**: Consistency improvements and minor code smells
@@ -64,7 +64,7 @@ Let the user select which refactorings to proceed with.
 After user selection:
 1. Create a todo list for the selected refactorings
 2. Implement changes one at a time
-3. For each change, use AskUserQuestion if there are naming/approach decisions
+3. For each change, use `AskUserQuestion` if there are naming/approach decisions
 
 ## Usage Examples
 
