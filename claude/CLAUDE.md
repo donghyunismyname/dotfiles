@@ -29,5 +29,6 @@ When your work is done, test it with Playwright MCP.
 Multiple AI agents may connect to the same browser instance concurrently.
 Open a new tab to avoid conflicts.
 When testing is done, close the tab you opened.
+Never close the tab if you didn't open it.
 
 
