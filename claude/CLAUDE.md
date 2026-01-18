@@ -10,23 +10,23 @@
 
 ## Code Review Behavior
 
-When implementing code, proactively use AskUserQuestion to:
+When implementing code, proactively use `AskUserQuestion` to:
 - Suggest better variable/function/file names before writing them
 - Propose alternative approaches if you see a cleaner solution
+- Clarify ambiguities
 - Flag potential issues with the requested approach
-
-Do this during implementation, not just during planning. Example scenarios:
-- I ask for `getData()` → ask if `fetchUserProfile()` would be clearer
-- I specify a file location → suggest a better location if appropriate
 
 ## Git Commits
 
 When your work is done, always commit the changes you made.
-Multiple AI agents may work on the same worktree concurrently. Be aware:
+Multiple AI agents may work on the same worktree concurrently.
+Commit only the changes you made, not other AI agents.
+Report what you committed.
 
-- Do not simply `git add .`
-- Add to stage only the changes you have made, not other AI agents
-- Run `git status` before committing to check for unexpected changes
-- If you see changes you didn't make, do not stage or commit them
-- Report what you committed
+## Playwright MCP
+
+When your work is done, test it with Playwright MCP.
+Multiple AI agents may connect to the same browser instance concurrently.
+Open your own tab to avoid collision.
+
 
