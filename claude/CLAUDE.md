@@ -18,10 +18,14 @@ When implementing code, proactively use `AskUserQuestion` to:
 
 ## Git Commits
 
-When your work is done, always commit the changes you made.
+When your work is done, always commit the changes you made immediately.
 Multiple AI agents may work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
 Report what you committed.
+
+## Git Logs
+
+When you need to know the changes other agents made, look at git commit logs.
 
 ## Playwright MCP
 
