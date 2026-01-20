@@ -35,4 +35,10 @@ Open a new tab to avoid conflicts.
 When testing is done, close the tab you opened.
 Never close the tab if you didn't open it.
 
+## Dev Server Logs
+
+When testing, closely look at dev server logs.
+Move back and forth between browser frontend and server logs.
+
+
 
