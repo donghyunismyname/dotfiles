@@ -40,6 +40,7 @@ When your work is done, test it with the browser.
 Multiple AI agents connect to the same browser instance concurrently.
 **Open a new tab to avoid conflicts.**
 Move back and forth between browser frontend and server logs.
+Have a close look at UI and report any slightly off behavior from user's perspective.
 
 
 
