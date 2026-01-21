@@ -27,18 +27,14 @@ Report what you committed.
 
 When you need to know the changes other agents made, look at git commit logs.
 
-## Playwright MCP
+## Browser Testing
 
-When your work is done, test it with Playwright MCP.
+When your work is done, test it with the browser.
 Multiple AI agents may connect to the same browser instance concurrently.
 Open a new tab to avoid conflicts.
 When testing is done, close the tab you opened.
 Never close the tab if you didn't open it.
-
-## Dev Server Logs
-
-When testing, closely look at dev server logs.
-Move back and forth between browser frontend and server logs.
+Move back and forth between browser frontend and dev server logs.
 
 
 
