@@ -34,8 +34,6 @@ When you need to know the changes other agents made, look at git commit logs.
 When your work is done, test it with the browser.
 Multiple AI agents connect to the same browser instance concurrently.
 **Open a new tab to avoid conflicts.**
-When testing is done, close the tab you opened.
-**Never close the tab you didn't open.**
 Move back and forth between browser frontend and server logs.
 
 
