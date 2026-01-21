@@ -20,11 +20,9 @@ When implementing code, proactively use `AskUserQuestion` to:
 ## Git Commits
 
 When your work is done, always commit the changes you made immediately.
-
-Multiple AI agents may work on the same worktree concurrently.
+Multiple AI agents work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
-
-Follow the common commit message style that starts with `feat: `, `chore: `, or `fix: `.
+Follow the common commit message style starting with `feat: `, `chore: `, or `fix: `.
 Report what you committed.
 
 ## Git Logs
@@ -34,10 +32,10 @@ When you need to know the changes other agents made, look at git commit logs.
 ## Browser Testing
 
 When your work is done, test it with the browser.
-Multiple AI agents may connect to the same browser instance concurrently.
-Open a new tab to avoid conflicts.
+Multiple AI agents connect to the same browser instance concurrently.
+**Open a new tab to avoid conflicts.**
 When testing is done, close the tab you opened.
-Never close the tab if you didn't open it.
+**Never close the tab you didn't open.**
 Move back and forth between browser frontend and dev server logs.
 
 
