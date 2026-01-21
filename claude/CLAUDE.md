@@ -20,8 +20,11 @@ When implementing code, proactively use `AskUserQuestion` to:
 ## Git Commits
 
 When your work is done, always commit the changes you made immediately.
+
 Multiple AI agents may work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
+
+Follow the common commit message style that starts with `feat: `, `chore: `, or `fix: `.
 Report what you committed.
 
 ## Git Logs
