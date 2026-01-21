@@ -47,6 +47,7 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | tokei      | Code line counter     |
 | miniserve  | Simple HTTP server    |
 | fzf        | Fuzzy finder          |
+| jq         | JSON processor        |
 | uv         | Python package manager |
 | cdhist     | Better `cd` history |
 | oh-my-zsh  | Zsh framework         |
