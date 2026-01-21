@@ -9,7 +9,7 @@
 - Centralize configuration variables
 - Prefer code constants over optional env vars; use env vars only for secrets and deployment-specific settings
 
-## Code Review Behavior
+## Review Behavior
 
 When implementing code, proactively use `AskUserQuestion` to:
 - Suggest better variable/function/file names before writing them
@@ -22,7 +22,7 @@ When implementing code, proactively use `AskUserQuestion` to:
 When your work is done, always commit the changes you made immediately.
 Multiple AI agents work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
-Follow the common commit message style starting with `feat: `, `chore: `, or `fix: `.
+Follow the commit message style starting with `{feat|fix|refactor|chore|docs|*}: `.
 Report what you committed.
 
 ## Git Logs
@@ -36,7 +36,7 @@ Multiple AI agents connect to the same browser instance concurrently.
 **Open a new tab to avoid conflicts.**
 When testing is done, close the tab you opened.
 **Never close the tab you didn't open.**
-Move back and forth between browser frontend and dev server logs.
+Move back and forth between browser frontend and server logs.
 
 
 
