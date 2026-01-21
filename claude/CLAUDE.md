@@ -2,6 +2,7 @@
 
 ## Code Style
 
+- Avoid overengineering
 - Write comments in English (not Korean) inside code
 - Use early return style to avoid nesting
 - Avoid redundant boilerplate; keep the code thin
