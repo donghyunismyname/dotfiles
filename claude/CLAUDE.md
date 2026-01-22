@@ -27,12 +27,12 @@ Be aware that multiple agents work on the same projects.
 When your work is done, always commit the changes you made immediately.
 Multiple AI agents work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
-Follow the commit message style starting with `{feat|fix|refactor|chore|docs|*}: `.
+Follow the commit message style convention `{feat|fix|refactor|chore|*}: `.
 Report what you committed.
 
 ## Git Logs
 
-When you need to know codebase history, look at git logs.
+When you need to know codebase history or the work done by other agent, look at git logs.
 
 ## Browser Testing
 
