@@ -11,5 +11,9 @@ fi
   --user-data-dir="$HOME/workspace/playwright" \
   --disable-backgrounding-occluded-windows \
   --disable-background-timer-throttling \
-  --disable-renderer-backgrounding
+  --disable-renderer-backgrounding \
+  --no-first-run \
+  --no-default-browser-check \
+  --disable-infobars \
+  --disable-popup-blocking
 
