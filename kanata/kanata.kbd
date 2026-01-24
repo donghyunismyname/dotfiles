@@ -1,0 +1,89 @@
+;; Kanata v1.10.1+ configuration
+;; Clean, minimal setup with tap-hold layers
+
+(defcfg
+  process-unmapped-keys no      ;; avoid kor/eng key issues
+  concurrent-tap-hold yes       ;; allow multiple tap-holds simultaneously
+  log-layer-changes no          ;; better performance
+)
+
+;; kor/eng key mapping
+(platform (win winiov2 wintercept)
+  (defalias kor ralt)
+)
+(platform (macos)
+  (defalias kor capslock)
+)
+(platform (linux)
+  (defalias kor ralt)
+)
+
+;; ============================================================================
+;; Source keys - physical keyboard layout
+;; ============================================================================
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  spc
+)
+
+;; ============================================================================
+;; Variables
+;; ============================================================================
+(defvar
+  tt 0        ;; tap timeout (0 = immediate)
+  ht 1000     ;; hold timeout (large = no time-based hold)
+  ct 50       ;; chord timeout (short = fast)
+)
+
+;; ============================================================================
+;; Aliases - key behaviors
+;; ============================================================================
+(defalias
+  ;; CapsLock: tap = 한영키, hold = Ctrl
+  ;; tap-hold-press: no time-based detection
+  ;;   - alone = tap (한영키)
+  ;;   - with another key = hold (Ctrl)
+  cap (tap-hold-press $tt $ht @kor lctl)
+
+  esc-sft (tap-hold-press $tt $ht esc lsft)
+
+  ;; Semicolon: tap = ;, hold = nav layer (ESDF = arrows)
+  ;; tap-hold-press: hold activates when another key is pressed
+  sem (tap-hold-press-timeout $tt $ht ; (layer-while-held nav) ;)
+
+  ;; Sticky shift - one-shot modifier (2초 타임아웃)
+  ssf (one-shot 2000 lsft)
+)
+
+;; sticky shift
+(defchordsv2
+  (d f) @ssf $ct all-released ()
+  (j k) @ssf $ct all-released ()
+)
+
+
+;; ============================================================================
+;; Layers
+;; ============================================================================
+
+;; Base layer - normal typing with modified keys
+(deflayer base
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @cap a    s    d    f    g    h    j    k    l    @sem '    ret
+  @esc-sft z x   c    v    b    n    m    ,    .    /    rsft
+  spc
+)
+
+;; Navigation layer (activated by holding ;)
+;; ESDF = arrow keys
+(deflayer nav
+  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
+  _    _    bspc up   del  _    _    _    tab  _    _    _    _    _
+  _    home left down right end _    lctl lsft lmet _    _    _
+  _    _    _    _    _    _    _    ret  _    _    _    _
+  (macro ; spc)
+)

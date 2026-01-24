@@ -1,0 +1,97 @@
+(defcfg 
+  concurrent-tap-hold yes  ;; required by defchordsv2-experiment
+  log-layer-changes no     ;; performance reasons
+  chords-v2-min-idle-experimental 200
+)
+(defsrc
+  ;; grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc                 ralt rmet rctl
+)
+
+(defoverrides
+  (ctl ;) (bspc)
+  (ctl ') (del)
+)
+
+(defvar
+  tt 300 ;; tab timeout
+  ct 100 ;; chord timeout
+  ost 2000 ;; one-shot timeout
+
+  ht 300 ;; hold timeout
+  st 200 ;; shift timeout
+  lt 300 ;; layer timeout
+)
+
+(defalias
+  ddd (layer-toggle ddd)   
+	nav (layer-toggle nav)
+  cap (multi ctl (layer-toggle cap))
+  capspc (layer-toggle nav)
+)
+(defalias
+  ;; shift
+  ;-sft (tap-hold $tt $st ; sft)
+  a-sft (tap-hold $tt $st a sft)
+  f-sft (tap-hold $tt $st f sft)
+  j-sft (tap-hold $tt $st j sft)
+  cf-sft (tap-hold $tt $st C-f sft)
+
+  ;; home
+  l-hom (tap-hold $tt $ht left home)
+  cl-hom (tap-hold $tt $ht C-left home)
+  i-hom (tap-hold $tt $ht i home)
+
+  ;; end
+  r-end (tap-hold $tt $ht right end)
+  cr-end (tap-hold $tt $ht C-right end)
+  o-end (tap-hold $tt $ht o end)
+
+  ;; layer 
+  k-lay (tap-hold $tt $lt k @ddd)
+
+  ;; alt
+  lalt (tap-hold $tt $ht (one-shot $ost sft) alt)
+  spc (tap-hold 0 500 spc sft)
+)
+
+
+
+
+(deflayer base
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         @f-sft    g         h         @j-sft    @k-lay    l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                         @spc                                    ralt       rmet      rctl
+)
+
+(deflayer ddd
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         bspc      k         del       ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+(deflayer intact
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+
+
+(deflayer nav 
+  tab       [         ]         S-9       S-0       t         C-y       C-z       C-left    C-right   _         C-M-left  C-M-right \
+  ctl       S-=       =         S--       sft       g         left      down      up        right     bspc      del       ret
+  sft       S-[       S-]       left      right     b         tab       ret       C-bspc    C-del     _         rsft
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
+
+(deflayer cap
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         @capspc   _         _         _
+)

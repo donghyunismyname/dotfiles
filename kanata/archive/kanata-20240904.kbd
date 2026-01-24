@@ -1,0 +1,311 @@
+(defcfg 
+  process-unmapped-keys no ;; kor/eng key erros if yes
+  concurrent-tap-hold yes  ;; required by defchordsv2-experiment
+  log-layer-changes no     ;; performance reasons
+  chords-v2-min-idle-experimental 200 ;; required idle time before chords
+  ;; sequence-input-mode visible-backspaced
+  ;; sequence-input-mode hidden-delay-type
+  ;; sequence-timeout 2000
+  ;; If your environment is particularly buggy, might need to delay even more
+  ;; rapid-event-delay 20
+)
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc                 ralt rmet rctl
+)
+(defoverrides
+  (ctl ;) (bspc)
+  (ctl ') (del)
+)
+
+(defvar
+  tt 300 ;; tap timeout (repeat)
+  ct 100 ;; chord timeout
+  ost 2000 ;; one-shot timeout
+
+  ht 300 ;; hold timeout
+  st 200 ;; shift timeout
+  lt 300 ;; layer timeout
+)
+
+(defalias
+	nav (layer-toggle nav)
+  cap (tap-hold-press 0 $ht esc (multi ctl (layer-toggle cap)))
+  capspc (layer-toggle nav)
+)
+
+(defalias
+  ;; shift
+  ;; ;-sft (tap-hold $tt $st ; sft)
+  ;; a-sft (tap-hold $tt $st a sft)
+  fsf (tap-hold 0 200 f (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft f))
+  jsf (tap-hold 0 200 j (tap-hold-press-timeout 0 800 (one-shot 2000 sft) sft j))
+
+  ;; home
+  ;; l-hom (tap-hold $tt $ht left home)
+  ;; cl-hom (tap-hold $tt $ht C-left home)
+  ;; i-hom (tap-hold $tt $ht i home)
+
+  ;; end
+  ;; r-end (tap-hold $tt $ht right end)
+  ;; cr-end (tap-hold $tt $ht C-right end)
+  ;; o-end (tap-hold $tt $ht o end)
+)
+(defalias
+  ; (tap-hold-press-timeout 0 1000 ; (layer-toggle nav) ;)
+  ' (tap-hold-press-timeout 0 1000 ' (layer-toggle qot) ')
+  spc (tap-hold-press-timeout $tt 500 spc spc sft)
+  u (tap-dance 300 (u y))
+  v (tap-dance 300 (v b))
+)
+(deflayer base
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         @iii      @ooo      p         [         ]         \
+  @cap      a         s         @ddd      @fsf      g         h         @jsf      @kkk      @lll      @;        '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  @cap      met       alt                           @spc                          ralt      rmet      rctl
+)
+(deflayer nav 
+  grv       S-1       S-2       S-3       S-4       S-5       S-6       S-7       S-8       S-9       S-0         -         =         bspc
+  tab       S-\       S-9       S-0       \         grv       C-y       C-z       C-left    C-right   -         C-M-left  C-M-right \
+  ctl       S-=       -         S--       =         sft       left      down      up        right     bspc      del       ret
+  sft       S-[       S-]       [         ]         S-grv     tab       ret       C-bspc    C-del     esc       rsft
+  ctl       met       alt       (multi (release-layer nav) (macro ; spc))         ralt      rmet      rctl
+)
+(deflayer qot
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         sft       ctl       alt       '         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         _         _         _         _
+)
+(deflayer cap
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _         _
+  _         _         _         _         _         _         _         _         _         _         _         _ 
+  _         _         _         @capspc   _         _         _
+)
+
+(defalias
+  1 1
+  2 2
+  3 3
+  4 4
+  5 5
+  6 6
+  7 7
+  8 8
+  9 9
+  0 0
+)
+;; recent idle state too short -> tab
+;; tab -> $tab
+;; hold timeout -> $hold
+;; while waitng:
+;;   press $k? while holding $key -> hold action $a?
+;;   press other key while holding $key -> release layer with tab action
+(deftemplate tatak (idle name tap hold k1 a1 k2 a2 k3 a3 k4 a4)
+  (deflayer $name
+    (multi (if-not-in-list grv  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list grv   ($k1 $k2 $k3 $k4) (macro $tap grv  )) (if-equal grv  $k1 $a1) (if-equal grv  $k2 $a2) (if-equal grv   $k3 $a3) (if-equal grv   $k4 $a4))
+    (multi (if-not-in-list @1   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @1    ($k1 $k2 $k3 $k4) (macro $tap @1   )) (if-equal @1   $k1 $a1) (if-equal @1   $k2 $a2) (if-equal @1    $k3 $a3) (if-equal @1    $k4 $a4))
+    (multi (if-not-in-list @2   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @2    ($k1 $k2 $k3 $k4) (macro $tap @2   )) (if-equal @2   $k1 $a1) (if-equal @2   $k2 $a2) (if-equal @2    $k3 $a3) (if-equal @2    $k4 $a4))
+    (multi (if-not-in-list @3   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @3    ($k1 $k2 $k3 $k4) (macro $tap @3   )) (if-equal @3   $k1 $a1) (if-equal @3   $k2 $a2) (if-equal @3    $k3 $a3) (if-equal @3    $k4 $a4))
+    (multi (if-not-in-list @4   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @4    ($k1 $k2 $k3 $k4) (macro $tap @4   )) (if-equal @4   $k1 $a1) (if-equal @4   $k2 $a2) (if-equal @4    $k3 $a3) (if-equal @4    $k4 $a4))
+    (multi (if-not-in-list @5   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @5    ($k1 $k2 $k3 $k4) (macro $tap @5   )) (if-equal @5   $k1 $a1) (if-equal @5   $k2 $a2) (if-equal @5    $k3 $a3) (if-equal @5    $k4 $a4))
+    (multi (if-not-in-list @6   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @6    ($k1 $k2 $k3 $k4) (macro $tap @6   )) (if-equal @6   $k1 $a1) (if-equal @6   $k2 $a2) (if-equal @6    $k3 $a3) (if-equal @6    $k4 $a4))
+    (multi (if-not-in-list @7   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @7    ($k1 $k2 $k3 $k4) (macro $tap @7   )) (if-equal @7   $k1 $a1) (if-equal @7   $k2 $a2) (if-equal @7    $k3 $a3) (if-equal @7    $k4 $a4))
+    (multi (if-not-in-list @8   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @8    ($k1 $k2 $k3 $k4) (macro $tap @8   )) (if-equal @8   $k1 $a1) (if-equal @8   $k2 $a2) (if-equal @8    $k3 $a3) (if-equal @8    $k4 $a4))
+    (multi (if-not-in-list @9   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @9    ($k1 $k2 $k3 $k4) (macro $tap @9   )) (if-equal @9   $k1 $a1) (if-equal @9   $k2 $a2) (if-equal @9    $k3 $a3) (if-equal @9    $k4 $a4))
+    (multi (if-not-in-list @0   ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list @0    ($k1 $k2 $k3 $k4) (macro $tap @0   )) (if-equal @0   $k1 $a1) (if-equal @0   $k2 $a2) (if-equal @0    $k3 $a3) (if-equal @0    $k4 $a4))
+    (multi (if-not-in-list -    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list -     ($k1 $k2 $k3 $k4) (macro $tap -    )) (if-equal -    $k1 $a1) (if-equal -    $k2 $a2) (if-equal -     $k3 $a3) (if-equal -     $k4 $a4))
+    (multi (if-not-in-list =    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list =     ($k1 $k2 $k3 $k4) (macro $tap =    )) (if-equal =    $k1 $a1) (if-equal =    $k2 $a2) (if-equal =     $k3 $a3) (if-equal =     $k4 $a4))
+    (multi (if-not-in-list bspc ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list bspc  ($k1 $k2 $k3 $k4) (macro $tap bspc )) (if-equal bspc $k1 $a1) (if-equal bspc $k2 $a2) (if-equal bspc  $k3 $a3) (if-equal bspc  $k4 $a4))
+    (multi (if-not-in-list tab  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list tab   ($k1 $k2 $k3 $k4) (macro $tap tab  )) (if-equal tab  $k1 $a1) (if-equal tab  $k2 $a2) (if-equal tab   $k3 $a3) (if-equal tab   $k4 $a4))
+    (multi (if-not-in-list q    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list q     ($k1 $k2 $k3 $k4) (macro $tap q    )) (if-equal q    $k1 $a1) (if-equal q    $k2 $a2) (if-equal q     $k3 $a3) (if-equal q     $k4 $a4))
+    (multi (if-not-in-list w    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list w     ($k1 $k2 $k3 $k4) (macro $tap w    )) (if-equal w    $k1 $a1) (if-equal w    $k2 $a2) (if-equal w     $k3 $a3) (if-equal w     $k4 $a4))
+    (multi (if-not-in-list e    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list e     ($k1 $k2 $k3 $k4) (macro $tap e    )) (if-equal e    $k1 $a1) (if-equal e    $k2 $a2) (if-equal e     $k3 $a3) (if-equal e     $k4 $a4))
+    (multi (if-not-in-list r    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list r     ($k1 $k2 $k3 $k4) (macro $tap r    )) (if-equal r    $k1 $a1) (if-equal r    $k2 $a2) (if-equal r     $k3 $a3) (if-equal r     $k4 $a4))
+    (multi (if-not-in-list t    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list t     ($k1 $k2 $k3 $k4) (macro $tap t    )) (if-equal t    $k1 $a1) (if-equal t    $k2 $a2) (if-equal t     $k3 $a3) (if-equal t     $k4 $a4))
+    (multi (if-not-in-list y    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list y     ($k1 $k2 $k3 $k4) (macro $tap y    )) (if-equal y    $k1 $a1) (if-equal y    $k2 $a2) (if-equal y     $k3 $a3) (if-equal y     $k4 $a4))
+    (multi (if-not-in-list u    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list u     ($k1 $k2 $k3 $k4) (macro $tap u    )) (if-equal u    $k1 $a1) (if-equal u    $k2 $a2) (if-equal u     $k3 $a3) (if-equal u     $k4 $a4))
+    (multi (if-not-in-list i    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list i     ($k1 $k2 $k3 $k4) (macro $tap i    )) (if-equal i    $k1 $a1) (if-equal i    $k2 $a2) (if-equal i     $k3 $a3) (if-equal i     $k4 $a4))
+    (multi (if-not-in-list o    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list o     ($k1 $k2 $k3 $k4) (macro $tap o    )) (if-equal o    $k1 $a1) (if-equal o    $k2 $a2) (if-equal o     $k3 $a3) (if-equal o     $k4 $a4))
+    (multi (if-not-in-list p    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list p     ($k1 $k2 $k3 $k4) (macro $tap p    )) (if-equal p    $k1 $a1) (if-equal p    $k2 $a2) (if-equal p     $k3 $a3) (if-equal p     $k4 $a4))
+    (multi (if-not-in-list [    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list [     ($k1 $k2 $k3 $k4) (macro $tap [    )) (if-equal [    $k1 $a1) (if-equal [    $k2 $a2) (if-equal [     $k3 $a3) (if-equal [     $k4 $a4))
+    (multi (if-not-in-list ]    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ]     ($k1 $k2 $k3 $k4) (macro $tap ]    )) (if-equal ]    $k1 $a1) (if-equal ]    $k2 $a2) (if-equal ]     $k3 $a3) (if-equal ]     $k4 $a4))
+    (multi (if-not-in-list \    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list \     ($k1 $k2 $k3 $k4) (macro $tap \    )) (if-equal \    $k1 $a1) (if-equal \    $k2 $a2) (if-equal \     $k3 $a3) (if-equal \     $k4 $a4)) _
+    (multi (if-not-in-list a    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list a     ($k1 $k2 $k3 $k4) (macro $tap a    )) (if-equal a    $k1 $a1) (if-equal a    $k2 $a2) (if-equal a     $k3 $a3) (if-equal a     $k4 $a4))
+    (multi (if-not-in-list s    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list s     ($k1 $k2 $k3 $k4) (macro $tap s    )) (if-equal s    $k1 $a1) (if-equal s    $k2 $a2) (if-equal s     $k3 $a3) (if-equal s     $k4 $a4))
+    (multi (if-not-in-list d    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list d     ($k1 $k2 $k3 $k4) (macro $tap d    )) (if-equal d    $k1 $a1) (if-equal d    $k2 $a2) (if-equal d     $k3 $a3) (if-equal d     $k4 $a4))
+    (multi (if-not-in-list f    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list f     ($k1 $k2 $k3 $k4) (macro $tap f    )) (if-equal f    $k1 $a1) (if-equal f    $k2 $a2) (if-equal f     $k3 $a3) (if-equal f     $k4 $a4))
+    (multi (if-not-in-list g    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list g     ($k1 $k2 $k3 $k4) (macro $tap g    )) (if-equal g    $k1 $a1) (if-equal g    $k2 $a2) (if-equal g     $k3 $a3) (if-equal g     $k4 $a4))
+    (multi (if-not-in-list h    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list h     ($k1 $k2 $k3 $k4) (macro $tap h    )) (if-equal h    $k1 $a1) (if-equal h    $k2 $a2) (if-equal h     $k3 $a3) (if-equal h     $k4 $a4))
+    (multi (if-not-in-list j    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list j     ($k1 $k2 $k3 $k4) (macro $tap j    )) (if-equal j    $k1 $a1) (if-equal j    $k2 $a2) (if-equal j     $k3 $a3) (if-equal j     $k4 $a4))
+    (multi (if-not-in-list k    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list k     ($k1 $k2 $k3 $k4) (macro $tap k    )) (if-equal k    $k1 $a1) (if-equal k    $k2 $a2) (if-equal k     $k3 $a3) (if-equal k     $k4 $a4))
+    (multi (if-not-in-list l    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list l     ($k1 $k2 $k3 $k4) (macro $tap l    )) (if-equal l    $k1 $a1) (if-equal l    $k2 $a2) (if-equal l     $k3 $a3) (if-equal l     $k4 $a4))
+    (multi (if-not-in-list ;    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ;     ($k1 $k2 $k3 $k4) (macro $tap ;    )) (if-equal ;    $k1 $a1) (if-equal ;    $k2 $a2) (if-equal ;     $k3 $a3) (if-equal ;     $k4 $a4))
+    (multi (if-not-in-list '    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list '     ($k1 $k2 $k3 $k4) (macro $tap '    )) (if-equal '    $k1 $a1) (if-equal '    $k2 $a2) (if-equal '     $k3 $a3) (if-equal '     $k4 $a4))
+    (multi (if-not-in-list ret  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ret   ($k1 $k2 $k3 $k4) (macro $tap ret  )) (if-equal ret  $k1 $a1) (if-equal ret  $k2 $a2) (if-equal ret   $k3 $a3) (if-equal ret   $k4 $a4)) _
+    (multi (if-not-in-list z    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list z     ($k1 $k2 $k3 $k4) (macro $tap z    )) (if-equal z    $k1 $a1) (if-equal z    $k2 $a2) (if-equal z     $k3 $a3) (if-equal z     $k4 $a4))
+    (multi (if-not-in-list x    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list x     ($k1 $k2 $k3 $k4) (macro $tap x    )) (if-equal x    $k1 $a1) (if-equal x    $k2 $a2) (if-equal x     $k3 $a3) (if-equal x     $k4 $a4))
+    (multi (if-not-in-list c    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list c     ($k1 $k2 $k3 $k4) (macro $tap c    )) (if-equal c    $k1 $a1) (if-equal c    $k2 $a2) (if-equal c     $k3 $a3) (if-equal c     $k4 $a4))
+    (multi (if-not-in-list v    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list v     ($k1 $k2 $k3 $k4) (macro $tap v    )) (if-equal v    $k1 $a1) (if-equal v    $k2 $a2) (if-equal v     $k3 $a3) (if-equal v     $k4 $a4))
+    (multi (if-not-in-list b    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list b     ($k1 $k2 $k3 $k4) (macro $tap b    )) (if-equal b    $k1 $a1) (if-equal b    $k2 $a2) (if-equal b     $k3 $a3) (if-equal b     $k4 $a4))
+    (multi (if-not-in-list n    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list n     ($k1 $k2 $k3 $k4) (macro $tap n    )) (if-equal n    $k1 $a1) (if-equal n    $k2 $a2) (if-equal n     $k3 $a3) (if-equal n     $k4 $a4))
+    (multi (if-not-in-list m    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list m     ($k1 $k2 $k3 $k4) (macro $tap m    )) (if-equal m    $k1 $a1) (if-equal m    $k2 $a2) (if-equal m     $k3 $a3) (if-equal m     $k4 $a4))
+    (multi (if-not-in-list ,    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list ,     ($k1 $k2 $k3 $k4) (macro $tap ,    )) (if-equal ,    $k1 $a1) (if-equal ,    $k2 $a2) (if-equal ,     $k3 $a3) (if-equal ,     $k4 $a4))
+    (multi (if-not-in-list .    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list .     ($k1 $k2 $k3 $k4) (macro $tap .    )) (if-equal .    $k1 $a1) (if-equal .    $k2 $a2) (if-equal .     $k3 $a3) (if-equal .     $k4 $a4))
+    (multi (if-not-in-list /    ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list /     ($k1 $k2 $k3 $k4) (macro $tap /    )) (if-equal /    $k1 $a1) (if-equal /    $k2 $a2) (if-equal /     $k3 $a3) (if-equal /     $k4 $a4)) _ _ _ _
+    (multi (if-not-in-list spc  ($k1 $k2 $k3 $k4) (release-layer $name)) (if-not-in-list spc   ($k1 $k2 $k3 $k4) (macro $tap spc  )) (if-equal spc  $k1 a1) (if-equal spc   $k2 $a2) (if-equal spc   $k3 $a3) (if-equal spc   $k4 $a4)) _ _ _
+  )
+  (defalias $name 
+    (switch
+      ((key-timing 1 less-than $idle)) $tap break
+      () (tap-hold-press-timeout 0 200 $tap (layer-toggle $name) $hold) break
+    )
+  )
+)
+
+(t! tatak $idle ddd d d
+  f esc
+  nop0 XX
+  nop0 XX
+  nop0 XX
+)
+
+(t! tatak 0 jjj j j
+  k (one-shot 2000 sft)
+  nop0 XX
+  nop0 XX
+  nop0 XX
+)
+(t! tatak 0 fff f f
+  d (one-shot 2000 sft)
+  nop0 XX
+  nop0 XX
+  nop0 XX
+)
+
+(defvar
+  idle 200
+)
+(t! tatak $idle iii i i
+  o end
+  j tab
+  nop0 XX
+  nop0 XX
+)
+(t! tatak $idle ooo o o
+  i home
+  j ret
+  nop0 XX
+  nop0 XX
+)
+(t! tatak $idle kkk k k
+  f ctl
+  d sft
+  j left
+  l right
+  ;; j (multi (release-key k) (one-shot 2000 sft))
+  ;; l (switch ((key-history right 1)) right break ((key-timing 1 lt $idle)) (multi (release-layer kkk) (macro k l)) break () right break)
+)
+(t! tatak $idle lll l l
+  f ctl
+  j bspc
+  k del
+  nop0 XX
+)
+
+
+
+
+
+
+
+
+
+;; chord/combo
+(defchordsv2-experimental
+;;   (ctl spc) @capspc 100 all-released ()
+
+;;   ;; shift
+;; (d f) sft $ct first-release ()
+;; (j k) sft $ct first-release ()
+;;   ;; (spc f j) sft $ct all-released ()
+  
+;;   ;; special keys left
+;;   (w e) =   $ct first-release (ddd nav cap)
+;;   (e r) S-= $ct first-release (ddd nav cap)
+
+;;   (s d) -   $ct first-release (ddd nav cap)
+;;   (d f) S-- $ct first-release (ddd nav cap)
+;;   (s f) esc $ct first-release (ddd nav cap)
+
+;;   (w f) tab $ct first-release (ddd nav cap)
+
+  ;; special keys right
+  ;; (u i) home $ct first-release ()
+  ;; (i o) end $ct first-release ()
+
+;;   (j k) (multi (macro bspc) (layer-toggle ddd)) $ct all-released (ddd nav cap)
+;;   (k l) (multi (macro del) (layer-toggle ddd))  $ct all-released (ddd nav cap)
+  ;; (j l) esc $ct all-released ()
+  ;; (j i) tab $ct first-release ()
+  ;; (j o) ret $ct first-release ()
+
+  ;; (k j) (switch (k) 1 break (j) 2 break) 200 first-release ()
+
+
+;;   ;; layers
+;;   ;; (f spc) @mov $ct all-released ()
+;;   ;; (j spc) @mov $ct all-released ()
+;;   ;; (d spc) @digit $ct all-released ()
+;;   ;; (k spc) @digit $ct all-released ()
+;;   ;; (s spc) @symbol $ct all-released ()
+;;   ;; (l spc) @symbol $ct all-released ()
+
+;;   ;; symbols
+;;   ;; (z i) S-9 $ct first-release ()
+;;   ;; (z o) S-0 $ct first-release ()
+;;   ;; (z h) -   $ct first-release ()
+;;   ;; (z j) S-- $ct first-release ()
+;;   ;; (z k) =   $ct first-release ()
+;;   ;; (z l) S-= $ct first-release ()
+;;   ;; (z m) [   $ct first-release ()
+;;   ;; (z ,) ]   $ct first-release ()
+;;   ;; (z .) {   $ct first-release ()
+;;   ;; (z /) }   $ct first-release ()
+
+;;   ;; (spc j) -   $ct first-release ()
+;;   ;; (spc k) S-- $ct first-release ()
+;;   ;; (spc l) =   $ct first-release ()
+;;   ;; (spc ;) S-= $ct first-release ()
+
+;;   ;; (spc a) ;   $ct first-release ()
+;;   ;; (spc s) S-; $ct first-release ()
+;;   ;; (spc d) '   $ct first-release ()
+;;   ;; (spc f) S-' $ct first-release ()
+  
+;;   ;; (spc i) S-9 $ct first-release ()
+;;   ;; (spc o) S-0 $ct first-release ()
+
+;;   ;; (spc q) S-[ $ct first-release ()
+;;   ;; (spc w) S-] $ct first-release ()
+;;   ;; (spc e) [   $ct first-release ()
+;;   ;; (spc r) ]   $ct first-release ()
+
+
+;;   ;; (spc v) S-\ $ct first-release ()
+)
+
+(deflayer intact
+  grv       1         2         3         4         5         6         7         8         9         0         -         =         bspc
+  tab       q         w         e         r         t         y         u         i         o         p         [         ]         \
+  ctl       a         s         d         f         g         h         j         k         l         ;         '         ret
+  sft       z         x         c         v         b         n         m         ,         .         /         rsft 
+  ctl       met       alt                           spc                                     ralt      rmet      rctl
+)
