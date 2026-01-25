@@ -37,15 +37,18 @@
 ;; ============================================================================
 (defvar
   tt 0        ;; tap timeout (0 = immediate)
-  ht 200      ;; hold timeout for d/k layer activation
   ct 50       ;; chord timeout (short = fast)
   
   ;; Keys that trigger tap(d) immediately, excluding f
   not-f (a b c d e g h i j k l m n o p q r s t u v w x y z
-         1 2 3 4 5 6 7 8 9 0 spc ret tab bspc)
+         - = [ ] \ ' ; , . /
+         1 2 3 4 5 6 7 8 9 0 
+         esc grv tab caps lsft spc bspc ret rsft)
   ;; Keys that trigger tap(k) immediately, excluding j
   not-j (a b c d e f g h i k l m n o p q r s t u v w x y z
-         1 2 3 4 5 6 7 8 9 0 spc ret tab bspc)
+         - = [ ] \ ' ; , . /
+         1 2 3 4 5 6 7 8 9 0 
+         esc grv tab caps lsft spc bspc ret rsft)
 )
 
 ;; ============================================================================
@@ -75,12 +78,16 @@
 ;; - In layer: f/j = tap:sticky-shift, hold:regular-shift
 ;; ============================================================================
 (defalias
-  d-sft (tap-hold-release-keys $tt $ht d (layer-while-held d-layer) $not-f)
-  k-sft (tap-hold-release-keys $tt $ht k (layer-while-held k-layer) $not-j)
+  d-sft (tap-hold-press-timeout 0 200 d
+    (tap-hold-except-keys 0 1 d (layer-while-held d-layer) $not-f) d)
+  k-sft (tap-hold-press-timeout 0 200 k
+    (tap-hold-except-keys 0 1 k (layer-while-held k-layer) $not-j) k)
 )
 
 ;; Korean/English toggle chord
 (defchordsv2
+  (d f) @ssf $ct all-released ()
+  (j k) @ssf $ct all-released ()
   (i o) @kor $ct all-released ()
 )
 
