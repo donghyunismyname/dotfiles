@@ -2,12 +2,14 @@
 ;; Clean, minimal setup with tap-hold layers
 
 (defcfg
-  process-unmapped-keys no      ;; avoid kor/eng key issues
+  process-unmapped-keys yes
   concurrent-tap-hold yes       ;; allow multiple tap-holds simultaneously
   log-layer-changes no          ;; better performance
 )
 
-;; kor/eng key mapping
+;; ============================================================================
+;; Korean/English key mapping (platform-specific)
+;; ============================================================================
 (platform (win winiov2 wintercept)
   (defalias kor ralt)
 )
@@ -22,6 +24,7 @@
 ;; Source keys - physical keyboard layout
 ;; ============================================================================
 (defsrc
+  esc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '    ret
@@ -34,34 +37,51 @@
 ;; ============================================================================
 (defvar
   tt 0        ;; tap timeout (0 = immediate)
-  ht 1000     ;; hold timeout (large = no time-based hold)
+  ht 200      ;; hold timeout for d/k layer activation
   ct 50       ;; chord timeout (short = fast)
+  
+  ;; Keys that trigger tap(d) immediately, excluding f
+  not-f (a b c d e g h i j k l m n o p q r s t u v w x y z
+         1 2 3 4 5 6 7 8 9 0 spc ret tab bspc)
+  ;; Keys that trigger tap(k) immediately, excluding j
+  not-j (a b c d e f g h i k l m n o p q r s t u v w x y z
+         1 2 3 4 5 6 7 8 9 0 spc ret tab bspc)
 )
 
 ;; ============================================================================
 ;; Aliases - key behaviors
 ;; ============================================================================
 (defalias
-  ;; CapsLock: tap = 한영키, hold = Ctrl
-  ;; tap-hold-press: no time-based detection
-  ;;   - alone = tap (한영키)
-  ;;   - with another key = hold (Ctrl)
-  cap (tap-hold-press $tt $ht @kor lctl)
+  ;; CapsLock: tap = kor/eng toggle, hold = Ctrl
+  cap (tap-hold-press $tt 1000 @kor lctl)
 
-  esc-sft (tap-hold-press $tt $ht esc lsft)
+  ;; Left shift: tap = esc, hold = shift
+  esc-sft (tap-hold-press $tt 1000 esc lsft)
 
-  ;; Semicolon: tap = ;, hold = nav layer (ESDF = arrows)
-  ;; tap-hold-press: hold activates when another key is pressed
-  sem (tap-hold-press-timeout $tt $ht ; (layer-while-held nav) ;)
+  ;; Semicolon: tap = ;, hold = sem layer
+  sem (tap-hold-press-timeout $tt 1000 ; (layer-while-held sem) ;)
 
-  ;; Sticky shift - one-shot modifier (2초 타임아웃)
+  ;; Tab: tap = tab, hold = nav layer
+  nav (tap-hold-press $tt 1000 tab (layer-while-held nav))
+
+  ;; Sticky shift - one-shot modifier (2s timeout)
   ssf (one-shot 2000 lsft)
 )
 
-;; sticky shift
+;; ============================================================================
+;; Sticky shift: d→f, k→j using tap-hold-release-keys + layer
+;; - Exception keys (not-f/not-j): immediately trigger tap(d/k)
+;; - f/j (not in list): immediately trigger hold (layer)
+;; - In layer: f/j = tap:sticky-shift, hold:regular-shift
+;; ============================================================================
+(defalias
+  d-sft (tap-hold-release-keys $tt $ht d (layer-while-held d-layer) $not-f)
+  k-sft (tap-hold-release-keys $tt $ht k (layer-while-held k-layer) $not-j)
+)
+
+;; Korean/English toggle chord
 (defchordsv2
-  (d f) @ssf $ct all-released ()
-  (j k) @ssf $ct all-released ()
+  (i o) @kor $ct all-released ()
 )
 
 
@@ -69,21 +89,52 @@
 ;; Layers
 ;; ============================================================================
 
-;; Base layer - normal typing with modified keys
+;; Base layer
 (deflayer base
+  esc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
-  @cap a    s    d    f    g    h    j    k    l    @sem '    ret
+  @nav q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @cap a    s    @d-sft f    g    h    j    @k-sft l @sem '    ret
   @esc-sft z x   c    v    b    n    m    ,    .    /    rsft
   spc
 )
 
-;; Navigation layer (activated by holding ;)
-;; ESDF = arrow keys
-(deflayer nav
-  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
-  _    _    bspc up   del  _    _    _    tab  _    _    _    _    _
-  _    home left down right end _    lctl lsft lmet _    _    _
-  _    _    _    _    _    _    _    ret  _    _    _    _
+;; Semicolon layer
+(deflayer sem
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    bspc _    _    _    _    _
+  _    _    _    _    _    _    bspc ret  _    _    _    _
   (macro ; spc)
+)
+
+;; Navigation layer (tab hold)
+(deflayer nav
+  grv
+  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  bspc
+  _    _    lmet lsft _    _    _    home bspc del  end  _    _    _
+  _    _    _    _    _    _    left down up   right _   _    _ 
+  _    _    _    _    _    _    _    _    home end   _    _ 
+  sft
+)
+
+;; d-layer: f = tap:sticky-shift, hold:regular-shift
+(deflayer d-layer
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    @ssf _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _
+)
+
+;; k-layer: j = tap:sticky-shift, hold:regular-shift
+(deflayer k-layer
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    @ssf _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _
 )
