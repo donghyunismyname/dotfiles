@@ -88,7 +88,6 @@
 (defchordsv2
   (d f) @ssf $ct all-released ()
   (j k) @ssf $ct all-released ()
-  (i o) @kor $ct all-released ()
 )
 
 
@@ -101,7 +100,8 @@
   esc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   @tnv q    w    e    r    t    y    u    i    o    p    [    ]    \
-  @cap a    s    @d-sft f    g    h    j    @k-sft l @sem '    ret
+  ;; @cap a    s    @d-sft f    g    h    j    @k-sft l @sem '    ret
+  @cap a    s    d f    g    h    j    k l @sem '    ret
   @esc-sft z x   c    v    b    n    m    ,    .    /    rsft
   spc
 )
