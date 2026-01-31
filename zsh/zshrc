@@ -64,7 +64,7 @@ bindkey '^W' forward-word
 # ============================================
 
 alias tmux="tmux -u"
-alias cp="cp -i"
+#alias cp="cp -i"
 alias dush="du -sh -- *(D)"
 alias path='echo $PATH | tr ":" "\n" | nl'
 
