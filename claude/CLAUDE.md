@@ -27,6 +27,7 @@ Be aware that multiple agents work on the same projects.
 When your work is done, always commit the changes you made immediately.
 Multiple AI agents work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
+Do not amend commits.
 Follow the commit message style convention `{feat|fix|refactor|chore|*}: `.
 Report what you committed.
 
