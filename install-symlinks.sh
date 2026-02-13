@@ -1,71 +1,80 @@
 #!/bin/sh
 
-echo "[WARNING] Overwrite existing files by symbolic links:"
-echo "    ~/.vimrc"
-echo "    ~/.vim"
-echo "    ~/.tmux.conf"
-echo "    ~/.zshrc"
-echo "    ~/.gitconfig"
-echo "    ~/.claude/commands"
-echo "    ~/.claude/CLAUDE.md"
-read -p "Do you want to continue? (y/N): " ans
+set -e
 
-if [ $ans != "y" ]; then
-    echo "Abort installation"
-    exit 1
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Define symlinks as "source:target" pairs
+SYMLINKS="
+vim/vimrc:$HOME/.vimrc
+vim:$HOME/.vim
+nvim:$HOME/.config/nvim
+tmux/tmux.conf:$HOME/.tmux.conf
+zsh/zshrc:$HOME/.zshrc
+git/gitconfig:$HOME/.gitconfig
+claude/commands:$HOME/.claude/commands
+claude/CLAUDE.md:$HOME/.claude/CLAUDE.md
+"
+
+# Categorize each symlink
+SKIP=""
+OVERWRITE=""
+NEW=""
+
+for pair in $SYMLINKS; do
+    src="$DIR/$(echo "$pair" | cut -d: -f1)"
+    dst="$(echo "$pair" | cut -d: -f2)"
+
+    if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+        SKIP="$SKIP $dst"
+    elif [ -e "$dst" ] || [ -L "$dst" ]; then
+        OVERWRITE="$OVERWRITE $dst"
+    else
+        NEW="$NEW $dst"
+    fi
+done
+
+# Report what will happen
+if [ -n "$SKIP" ]; then
+    echo "Already linked (skip):"
+    for f in $SKIP; do echo "    $f"; done
+    echo ""
 fi
 
+if [ -n "$NEW" ]; then
+    echo "New (create):"
+    for f in $NEW; do echo "    $f"; done
+    echo ""
+fi
 
-DIR=$(pwd)
-# set -x # Show commands
+if [ -n "$OVERWRITE" ]; then
+    echo "Exists (overwrite):"
+    for f in $OVERWRITE; do echo "    $f"; done
+    echo ""
+    printf "Overwrite these files? (y/N): "
+    read ans
+    if [ "$ans" != "y" ]; then
+        echo "Aborted."
+        exit 1
+    fi
+    echo ""
+fi
 
+# Create symlinks
+for pair in $SYMLINKS; do
+    src="$DIR/$(echo "$pair" | cut -d: -f1)"
+    dst="$(echo "$pair" | cut -d: -f2)"
 
-# vim
-rm -ri                            ~/.vimrc
-rm -ri                            ~/.vim
-ln -snfF $DIR/vim/vimrc           ~/.vimrc
-ln -snfF $DIR/vim                 ~/.vim
+    # Skip already correct
+    if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+        continue
+    fi
 
-# nvim
-rm -ri                            ~/.config/nvim
-ln -snfF $DIR/nvim                ~/.config/nvim
+    mkdir -p "$(dirname "$dst")"
+    rm -rf "$dst"
+    ln -snf "$src" "$dst"
+    echo "  $dst -> $src"
+done
 
-# tmux
-rm -ri                        ~/.tmux.conf
-ln -snfF $DIR/tmux/tmux.conf  ~/.tmux.conf
-
-# zsh
-rm -ri                        ~/.zshrc
-ln -snfF $DIR/zsh/zshrc       ~/.zshrc
-
-# git
-rm -ri                        ~/.gitconfig
-ln -snfF $DIR/git/gitconfig   ~/.gitconfig
-
-# claude
-mkdir -p                      ~/.claude
-rm -ri                        ~/.claude/commands
-rm -ri                        ~/.claude/CLAUDE.md
-ln -snfF $DIR/claude/commands ~/.claude/commands
-ln -snfF $DIR/claude/CLAUDE.md ~/.claude/CLAUDE.md
-
-# i3
-# rm -ri                        ~/.config/i3/config
-# ln -snfF $DIR/i3/config       ~/.config/i3/config
-
-# emacs
-# rm -ri                        ~/.emacs.d
-# ln -snfF $DIR/emacs           ~/.emacs.d
-
-
-
-
-# spacevim easy-to-use configuration
-#ln -sni $DIR/vim/init.toml      ~/.SpaceVim.d/init.toml
-
-# spacevim vimscript custom configuration
-#mkdir -p                        ~/.SpaceVim.d/autoload
-#ln -sni $DIR/vim/myspacevim.vim ~/.SpaceVim.d/autoload/myspacevim.vim
-
-
-
+echo ""
+echo "Done."
