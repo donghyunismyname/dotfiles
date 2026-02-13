@@ -10,7 +10,7 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 
 ```sh
 sh install-tools.sh   # CLI tools (uses Homebrew)
-sh install-shell.sh   # zsh plugins, fzf, uv, cdhist
+sh install-shell.sh   # zsh, oh-my-zsh, plugins, fzf keybindings, cdhist
 sh install-symlinks.sh
 ```
 
