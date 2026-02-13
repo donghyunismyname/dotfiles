@@ -1,5 +1,36 @@
 #!/bin/sh
 
+set -e
+
+# Install zsh if not present
+if ! command -v zsh >/dev/null 2>&1; then
+    echo "=== Installing zsh ==="
+    case "$(uname -s)" in
+        Linux)
+            if command -v apt-get >/dev/null 2>&1; then
+                sudo apt-get update && sudo apt-get install -y zsh
+            else
+                brew install zsh
+            fi
+            ;;
+        Darwin)
+            brew install zsh
+            ;;
+    esac
+fi
+
+# Set zsh as default shell if it isn't already
+ZSH_PATH="$(command -v zsh)"
+if [ -n "$ZSH_PATH" ] && [ "$SHELL" != "$ZSH_PATH" ]; then
+    echo "=== Setting zsh as default shell ==="
+    if ! grep -qxF "$ZSH_PATH" /etc/shells 2>/dev/null; then
+        echo "Adding $ZSH_PATH to /etc/shells (requires sudo)"
+        echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
+    fi
+    chsh -s "$ZSH_PATH"
+    echo "Default shell changed to $ZSH_PATH"
+fi
+
 set -x # show commands
 
 # Clone if not exists, pull if exists
