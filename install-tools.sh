@@ -38,6 +38,19 @@ if [ -n "$FAILED" ]; then
     exit 1
 fi
 
+# Set zsh as default shell if it isn't already
+ZSH_PATH="$(command -v zsh)"
+if [ -n "$ZSH_PATH" ] && [ "$SHELL" != "$ZSH_PATH" ]; then
+    echo ""
+    echo "=== Setting zsh as default shell ==="
+    if ! grep -qxF "$ZSH_PATH" /etc/shells 2>/dev/null; then
+        echo "Adding $ZSH_PATH to /etc/shells (requires sudo)"
+        echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
+    fi
+    chsh -s "$ZSH_PATH"
+    echo "Default shell changed to $ZSH_PATH"
+fi
+
 echo ""
 echo "=== Done ==="
 echo "✅ All tools installed successfully!"
