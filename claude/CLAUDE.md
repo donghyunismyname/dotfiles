@@ -42,6 +42,7 @@ Multiple AI agents connect to the same browser instance concurrently.
 **Open a new tab to avoid conflicts.**
 Move back and forth between browser frontend and server logs.
 Have a close look at UI and report any slightly off behavior from user's perspective.
+Do not save screenshots to project root; Save them to `.playwright-mcp`.
 
 
 
