@@ -37,7 +37,7 @@
 ;; ============================================================================
 (defvar
   tt 0        ;; tap timeout (0 = immediate)
-  ct 50       ;; chord timeout (short = fast)
+  ct 80       ;; chord timeout (short = fast)
   
   ;; Keys that trigger tap(d) immediately, excluding f
   not-f (a b c d e g h i j k l m n o p q r s t u v w x y z
@@ -56,10 +56,11 @@
 ;; ============================================================================
 (defalias
   ;; CapsLock: tap = kor/eng toggle, hold = Ctrl
-  cap (tap-hold-press $tt 1000 @kor lctl)
+  ;; cap (tap-hold-press $tt 1000 @kor lctl)
+  cap lctl
 
-  ;; Left shift: tap = esc, hold = shift
   esc-sft (tap-hold-press $tt 1000 esc lsft)
+  kor-sft (tap-hold-press $tt 1000 @kor lsft)
 
   ;; Semicolon: tap = ;, hold = sem layer
   sem (tap-hold-press-timeout $tt 1000 ; (layer-while-held sem) ;)
@@ -68,7 +69,8 @@
   tnv (tap-hold-press $tt 1000 tab (layer-while-held nav))
 
   ;; Sticky shift - one-shot modifier (2s timeout)
-  ssf (one-shot 2000 lsft)
+  ;; ssf (one-shot 2000 lsft)
+  ssf lsft
 )
 
 ;; ============================================================================
@@ -88,6 +90,7 @@
 (defchordsv2
   (d f) @ssf $ct all-released ()
   (j k) @ssf $ct all-released ()
+  (w e r) @kor $ct first-release ()
 )
 
 
@@ -99,10 +102,9 @@
 (deflayer base
   esc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  @tnv q    w    e    r    t    y    u    i    o    p    [    ]    \
-  ;; @cap a    s    @d-sft f    g    h    j    @k-sft l @sem '    ret
-  @cap a    s    d f    g    h    j    k l @sem '    ret
-  @esc-sft z x   c    v    b    n    m    ,    .    /    rsft
+  @tnv q    w    e    r    t    y    u    i    o    p    [    ]    \ 
+  @cap a    s    d    f    g    h    j    k    l    @sem '   ret
+  lsft z x   c    v    b    n    m    ,    .    /   rsft
   spc
 )
 
@@ -111,8 +113,8 @@
   _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    bspc _    _    _    _    _
-  _    _    _    _    _    _    bspc ret  _    _    _    _
+  _    _    _    _    _    _    _    @kor _    _    _    _    _
+  _    _    _    _    _    _    @kor ret  _    _    _    _
   (macro ; spc)
 )
 
@@ -120,7 +122,7 @@
 (deflayer nav
   grv
   _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  bspc
-  _    _    lmet lsft `    S-`  _    home bspc del  end  _    _    _
+  _    lmet lsft `    S-`  _    _    home bspc del  end  _    _    _
   _    _    _    _    _    _    left down up   right _   _    _ 
   _    _    _    _    _    _    _    _    home end   _   _ 
   sft
