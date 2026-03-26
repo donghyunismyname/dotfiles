@@ -28,7 +28,8 @@ When your work is done, always commit the changes you made immediately.
 Multiple AI agents work on the same worktree concurrently.
 Commit only the changes you made, not other AI agents.
 Do not amend commits.
-Follow the commit message style convention `{feat|fix|refactor|chore|*}: `.
+Follow the commit message prefix convention `{feat|fix|refactor|chore|*}({object}): `.
+Example commit message: `feat(crawler): skip notifications`
 Report what you committed.
 
 ## Git Logs
