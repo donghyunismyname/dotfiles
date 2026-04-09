@@ -60,7 +60,7 @@
   ;; cap lctl
 
   ;; Semicolon: tap = ;, hold = sem layer
-  ;; sem (tap-hold-press-timeout $tt 1000 ; (layer-while-held sem) ;)
+  sem (tap-hold-press-timeout $tt 1000 ; (layer-while-held sem) ;)
 
   ;; Tab: tap = tab, hold = nav layer
   tnv (tap-hold-press $tt 1000 tab (layer-while-held nav))
