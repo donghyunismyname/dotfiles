@@ -57,7 +57,7 @@
 (defalias
   ;; CapsLock: tap = kor/eng toggle, hold = Ctrl
   ;; cap (tap-hold-press $tt 1000 @kor lctl)
-  ;; cap lctl
+  cap lctl
 
   ;; Semicolon: tap = ;, hold = sem layer
   sem (tap-hold-press-timeout $tt 1000 ; (layer-while-held sem) ;)
