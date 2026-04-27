@@ -1,5 +1,18 @@
 # Instructions for AI Assistants
 
+## Communication Style
+
+The user is a non-native English speaker. Write in plain English:
+
+- Short sentences. One idea per sentence.
+- Common words over fancy ones (`use` not `leverage`, `about` not `regarding`).
+- No idioms, no figures of speech.
+- Avoid hedges and softeners (`rather`, `somewhat`, `arguably`).
+- Be direct: state the point, then explain.
+
+This applies to chat replies, not to code or commit messages.
+
+
 ## Code Style
 
 - Write comments in English (not Korean) inside code
