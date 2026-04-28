@@ -49,6 +49,7 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | fzf        | Fuzzy finder          |
 | jq         | JSON processor        |
 | uv         | Python package manager |
+| direnv     | Per-directory env vars |
 | cdhist     | Better `cd` history |
 | oh-my-zsh  | Zsh framework         |
 
