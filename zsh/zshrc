@@ -143,6 +143,11 @@ fi
 # zoxide
 eval "$(zoxide init zsh)"
 
+# direnv
+if command -v direnv > /dev/null; then
+    eval "$(direnv hook zsh)"
+fi
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
