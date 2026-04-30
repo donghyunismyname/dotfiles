@@ -7,11 +7,8 @@ The user is a non-native English speaker. Write in plain English:
 - Short sentences. One idea per sentence.
 - Common words over fancy ones (`use` not `leverage`, `about` not `regarding`).
 - No idioms, no figures of speech.
-- Avoid hedges and softeners (`rather`, `somewhat`, `arguably`).
-- Be direct: state the point, then explain.
 
 This applies to chat replies, not to code or commit messages.
-
 
 ## Code Style
 
@@ -33,17 +30,17 @@ Whenever appropriate, use `AskUserQuestion` to:
 
 ## Multiple Agents
 
-Be aware that multiple agents work on the same projects.
+Multiple agents work on the same projects in parallel.
 
 ## Git Commits
 
 When your work is done, always commit the changes you made immediately.
-Multiple AI agents work on the same worktree concurrently.
-Commit only the changes you made, not other AI agents.
-Do not amend commits.
+Multiple agents work on the same worktree concurrently and you only commit the changes you made.
+Use a single shell command for `git add` and `git commit` to avoid conflicts.
+Example command: `git add src/components && git commit -m "feat(ui): UI changes"`
+Do not amend previous commits.
 Follow the commit message prefix convention `{feat|fix|refactor|chore|*}({object}): `.
 Example commit message: `feat(crawler): skip notifications`
-Report what you committed.
 
 ## Git Logs
 
@@ -52,11 +49,11 @@ When you need to know codebase history or the work done by other agent, look at 
 ## Browser Testing
 
 When your work is done, test it with the browser.
-Multiple AI agents connect to the same browser instance concurrently.
+Multiple agents connect to the same browser instance concurrently.
 **Open a new tab to avoid conflicts.**
 Move back and forth between browser frontend and server logs.
 Have a close look at UI and report any slightly off behavior from user's perspective.
-Do not save screenshots to project root; Save them to `.playwright-mcp`.
+Do not save screenshots to project root.
 
 
 
