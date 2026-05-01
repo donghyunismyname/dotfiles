@@ -79,12 +79,6 @@ set cursorline
 inoremap jk <esc>
 
 
-" use system clipboard for yank and paste
-" noremap y *y
-" noremap Y *y$
-" noremap p *p
-" noremap P *P
-
 "paste without overriding current register
 vmap p pgvy
 vmap P Pgvy
@@ -116,10 +110,6 @@ noremap L $
 noremap J 5j
 noremap K 5k
 
-
-"move with current line up/down
-" noremap U <cmd>m-2<cr>
-" noremap M <cmd>m+1<cr>
 
 
 " leader key as space
