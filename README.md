@@ -50,6 +50,9 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | jq         | JSON processor        |
 | uv         | Python package manager |
 | direnv     | Per-directory env vars |
+| sesh       | tmux session manager  |
+| timg       | Terminal image viewer |
+| chafa      | Terminal image viewer |
 | cdhist     | Better `cd` history |
 | oh-my-zsh  | Zsh framework         |
 
