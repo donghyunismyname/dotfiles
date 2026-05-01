@@ -809,10 +809,11 @@ require('lazy').setup({
   },
 
   {
-    'martinsione/darkplus.nvim',
+    'vague2k/vague.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'darkplus'
+      require('vague').setup {}
+      vim.cmd.colorscheme 'vague'
     end,
   },
 
