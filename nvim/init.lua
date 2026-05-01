@@ -809,11 +809,10 @@ require('lazy').setup({
   },
 
   {
-    'Mofiqul/vscode.nvim',
+    'martinsione/darkplus.nvim',
     priority = 1000,
     config = function()
-      require('vscode').setup { style = 'dark' }
-      vim.cmd.colorscheme 'vscode'
+      vim.cmd.colorscheme 'darkplus'
     end,
   },
 
