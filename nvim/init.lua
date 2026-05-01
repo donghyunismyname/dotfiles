@@ -98,9 +98,6 @@ vim.g.have_nerd_font = false
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
--- Use 24-bit (truecolor) so colorschemes render with their actual hex colors
-vim.o.termguicolors = true
-
 -- Make line numbers default
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -811,8 +808,17 @@ require('lazy').setup({
     },
   },
 
-  -- Local colorscheme: nvim/colors/hybrid.vim (no plugin needed)
-  -- Loaded outside of lazy because it ships with this config, not a plugin.
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'mocha',
+      }
+      vim.cmd.colorscheme 'catppuccin-mocha'
+    end,
+  },
 
   -- Highlight todo, notes, etc in comments
   {
@@ -1001,9 +1007,6 @@ require('lazy').setup({
     },
   },
 })
-
--- Colorscheme (local file at nvim/colors/hybrid.vim)
-vim.cmd.colorscheme 'hybrid'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
