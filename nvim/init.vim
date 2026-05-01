@@ -25,13 +25,6 @@ Plug 'folke/flash.nvim'
 
 
 
-" This plugin in integrated in Vim
-" TODO: add appropriate key map
-" Plug 'kqito/vim-easy-replace'
-" <leader>ra launch easy-replace
-" <leader>rc use word under current cursor
-
-
 " Plug 'michaeljsmith/vim-indent-object'
 
 
