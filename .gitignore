@@ -2,5 +2,9 @@
 *.netrwhist
 .playwright-mcp/
 
+# Vendored vim plugins: ignore their VCS metadata, keep the source files
+vim/pack/plugin/start/*/.git/
+vim/pack/plugin/start/*/git/
+
 
 
