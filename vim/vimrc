@@ -141,37 +141,6 @@ nmap ' gcc
 vmap ' gcgv
 
 
-" plugin: vim-mucomplete
-set completeopt+=menuone
-set completeopt+=noselect
-let g:mucomplete#enable_auto_at_startup = 1
-let g:mucomplete#no_mappings = 1
-
-
-"plugin: vim-airline
-let g:airline_powerline_fonts=1
-let g:airline_symbols_ascii=1
-let g:airline#extensions#whitespace#enabled=0
-
-
-" plugin: vim-easymotion
-" nmap <cr> <Plug>(easymotion-overwin-w)
-" vmap <cr> <Plug>(easymotion-bd-jk)
-
-" Better than vim default search
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
-
-
-" plugin: vim_current_word
-" let g:vim_current_word#highlight_delay = 1000 " milliseconds
-hi CurrentWord ctermbg=237
-hi CurrentWordTwins ctermbg=237
 hi Visual cterm=none ctermbg=darkgrey ctermfg=cyan
 
 
