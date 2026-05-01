@@ -242,7 +242,3 @@ true
 # bindkey
 # bindkey '^U' reverse-menu-complete
 
-
-
-# Resend CLI
-export PATH="$HOME/.resend/bin:$PATH"
