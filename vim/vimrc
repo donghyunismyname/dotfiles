@@ -141,6 +141,9 @@ nmap ' gcc
 vmap ' gcgv
 
 
+" plugin: vim_current_word
+hi CurrentWord ctermbg=237
+hi CurrentWordTwins ctermbg=237
 hi Visual cterm=none ctermbg=darkgrey ctermfg=cyan
 
 
