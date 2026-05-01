@@ -58,15 +58,6 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 
 ## Troubleshooting
 
-### Latest Neovim on Ubuntu
-
-```sh
-sudo apt-get remove neovim -y
-sudo add-apt-repository ppa:neovim-ppa/stable
-sudo apt-get update -y
-sudo apt-get install neovim -y
-```
-
 ### zsh: character not in range
 
 https://gist.github.com/jadia/1f4c2190730ef646d41823b6a6c30926
@@ -75,6 +66,4 @@ https://gist.github.com/jadia/1f4c2190730ef646d41823b6a6c30926
 
 https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-tmux
 
-### Neovim: No Python3 provider
 
-https://www.reddit.com/r/neovim/comments/i65pwd/no_python3_provider_found_run_checkhealth_provider/
