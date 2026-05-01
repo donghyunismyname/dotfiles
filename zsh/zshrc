@@ -136,6 +136,10 @@ fi
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Use fd for fzf: fast, respects .gitignore, includes hidden files
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 # fzf bindkey
 bindkey '^G' fzf-cd-widget
 
@@ -239,3 +243,6 @@ true
 # bindkey '^U' reverse-menu-complete
 
 
+
+# Resend CLI
+export PATH="$HOME/.resend/bin:$PATH"
