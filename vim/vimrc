@@ -27,9 +27,6 @@ au BufReadPost *
 \ endif
 
 
-autocmd FocusLost * silent write
-
-
 "automatically strip trailing whitespace when a file is saved
 autocmd BufWritePre * :%s/\s\+$//e
 
@@ -76,14 +73,6 @@ set gdefault        "substitute all matches in a line
 
 "display cursorline
 set cursorline
-set cursorcolumn
-
-
-"Show no cursorline on insert mode
-"autocmd insertenter * set nocursorline
-"autocmd insertleave * set cursorline
-"autocmd insertenter * set nocursorcolumn
-"autocmd insertleave * set cursorcolumn
 
 
 "jk to escape insert mode
