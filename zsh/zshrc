@@ -61,6 +61,9 @@ alias l="eza -a"
 alias ll="eza -al --git --time-style=long-iso"
 alias llm="eza -al --git --time-style=long-iso --sort modified"
 alias lt="eza -a --tree"
+alias ltl="eza -a --tree --level 1"
+alias ltll="eza -a --tree --level 2"
+alias ltlll="eza -a --tree --level 3"
 
 # git
 alias gs="git status"
