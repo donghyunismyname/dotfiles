@@ -160,10 +160,9 @@ elseif isdirectory($HOME.'/.fzf')
 endif
 
 " :Files uses $FZF_DEFAULT_COMMAND (fd) which respects .gitignore
-nmap <C-p>     :Files<cr>
 nmap <leader>o :Files<cr>
 nmap <leader>b :Buffers<cr>
-nmap <leader>fg :Rg<cr>
+nmap <leader>g :Rg<cr>
 nmap <leader><leader> :History<cr>
 
 
