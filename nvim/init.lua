@@ -135,8 +135,11 @@ require('lazy').setup({
   },
 
   -- Syntax highlighting (read-only value: just for reading code)
+  -- Pinned to master because the new `main` branch reorganized the module layout
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
+    lazy = false,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs',
     opts = {
@@ -194,7 +197,7 @@ require('lazy').setup({
     keys = {
       { '<leader>o', '<cmd>Telescope find_files<cr>', desc = 'Find files' },
       { '<leader>b', '<cmd>Telescope buffers<cr>', desc = 'Buffers' },
-      { '<leader>fg', '<cmd>Telescope live_grep<cr>', desc = 'Live grep' },
+      { '<leader>g', '<cmd>Telescope live_grep<cr>', desc = 'Live grep' },
       { '<leader><leader>', '<cmd>Telescope oldfiles<cr>', desc = 'Recent files' },
     },
     opts = {},
