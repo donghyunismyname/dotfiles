@@ -929,6 +929,32 @@ require('lazy').setup({
   -- Personal additions
   { 'folke/flash.nvim', event = 'VeryLazy', opts = {} },
 
+  -- Commenting: gcc / gc in visual; also keep ' as gcc shortcut from vim setup
+  {
+    'numToStr/Comment.nvim',
+    opts = {},
+    config = function()
+      require('Comment').setup()
+      vim.keymap.set('n', "'", 'gcc', { remap = true, desc = 'Toggle comment line' })
+      vim.keymap.set('x', "'", 'gc', { remap = true, desc = 'Toggle comment selection' })
+    end,
+  },
+
+  -- Seamless <C-h/j/k/l> navigation between vim splits and tmux panes
+  { 'christoomey/vim-tmux-navigator', lazy = false },
+
+  -- Highlight other occurrences of the word under the cursor
+  {
+    'RRethy/vim-illuminate',
+    event = 'VeryLazy',
+    config = function()
+      require('illuminate').configure {
+        delay = 200,
+        filetypes_denylist = { 'NvimTree', 'TelescopePrompt', 'lazy', 'mason' },
+      }
+    end,
+  },
+
   -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
   --
   --  Here are some example plugins that I've included in the Kickstart repository.
