@@ -221,6 +221,44 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- [[ Personal options (ported from vimrc) ]]
+vim.o.relativenumber = true
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.softtabstop = 4
+vim.o.expandtab = true
+vim.o.colorcolumn = '80'
+vim.o.autoread = true
+
+-- [[ Personal keymaps (ported from vimrc) ]]
+-- Faster motions
+vim.keymap.set({ 'n', 'v', 'o' }, 'H', '^', { desc = 'Line start' })
+vim.keymap.set({ 'n', 'v', 'o' }, 'L', '$', { desc = 'Line end' })
+vim.keymap.set({ 'n', 'v', 'o' }, 'J', '5j', { desc = 'Down 5 lines' })
+vim.keymap.set({ 'n', 'v', 'o' }, 'K', '5k', { desc = 'Up 5 lines' })
+
+-- Search same word under cursor
+vim.keymap.set('n', ',', '#', { desc = 'Search word backward' })
+vim.keymap.set('n', '.', '*', { desc = 'Search word forward' })
+
+-- j/k by display line when wrap is on
+vim.keymap.set('n', 'j', "v:count ? 'j' : 'gj'", { expr = true })
+vim.keymap.set('n', 'k', "v:count ? 'k' : 'gk'", { expr = true })
+
+-- Toggle wrap
+vim.keymap.set('n', 'zw', '<cmd>set wrap!<cr>', { desc = 'Toggle wrap' })
+
+-- Leader: save / quit / line jump
+vim.keymap.set('n', '<leader>w', '<cmd>w<cr>', { desc = 'Write' })
+vim.keymap.set('n', '<leader>h', '^', { desc = 'Line start' })
+vim.keymap.set('n', '<leader>l', '$', { desc = 'Line end' })
+vim.keymap.set('n', '<leader>j', '40j', { desc = 'Jump 40 lines down' })
+vim.keymap.set('n', '<leader>k', '40k', { desc = 'Jump 40 lines up' })
+
+-- Paste in visual without overwriting register
+vim.keymap.set('x', 'p', 'pgvy', { desc = 'Paste keeping register' })
+vim.keymap.set('x', 'P', 'Pgvy', { desc = 'Paste keeping register' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -231,6 +269,37 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function() vim.hl.on_yank() end,
+})
+
+-- Restore last cursor position when reopening a file
+vim.api.nvim_create_autocmd('BufReadPost', {
+  desc = 'Restore last cursor position',
+  group = vim.api.nvim_create_augroup('user-last-cursor', { clear = true }),
+  callback = function()
+    local mark = vim.api.nvim_buf_get_mark(0, '"')
+    local lcount = vim.api.nvim_buf_line_count(0)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
+  end,
+})
+
+-- Strip trailing whitespace on save
+vim.api.nvim_create_autocmd('BufWritePre', {
+  desc = 'Strip trailing whitespace',
+  group = vim.api.nvim_create_augroup('user-strip-trailing-ws', { clear = true }),
+  callback = function()
+    local view = vim.fn.winsaveview()
+    vim.cmd [[%s/\s\+$//e]]
+    vim.fn.winrestview(view)
+  end,
+})
+
+-- Auto-reload externally changed files
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
+  desc = 'Check if file changed on disk',
+  group = vim.api.nvim_create_augroup('user-autoread', { clear = true }),
+  command = 'silent! checktime',
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
