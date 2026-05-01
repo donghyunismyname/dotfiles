@@ -809,10 +809,11 @@ require('lazy').setup({
   },
 
   {
-    'EdenEast/nightfox.nvim',
+    'Mofiqul/vscode.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'carbonfox'
+      require('vscode').setup { style = 'dark' }
+      vim.cmd.colorscheme 'vscode'
     end,
   },
 
