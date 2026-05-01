@@ -809,14 +809,10 @@ require('lazy').setup({
   },
 
   {
-    'catppuccin/nvim',
-    name = 'catppuccin',
+    'EdenEast/nightfox.nvim',
     priority = 1000,
     config = function()
-      require('catppuccin').setup {
-        flavour = 'mocha',
-      }
-      vim.cmd.colorscheme 'catppuccin-mocha'
+      vim.cmd.colorscheme 'carbonfox'
     end,
   },
 
