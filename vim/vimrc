@@ -10,9 +10,6 @@ autocmd CursorHold,CursorHoldI * checktime
 
 
 filetype plugin on  "understand file types
-if !has('nvim')
-  set pastetoggle=<f2> "toggle paste mode (not supported in Neovim)
-endif
 autocmd FileType * set formatoptions-=o "disable autoindent
 
 
@@ -199,9 +196,9 @@ hi CurrentWordTwins ctermbg=237
 hi Visual cterm=none ctermbg=darkgrey ctermfg=cyan
 
 
-"plugin: vim-fzf
-" fzf base plugin ships with the brew fzf binary; ask brew where it lives
-" so this works on macOS Homebrew and Linuxbrew alike
+" plugin: vim-fzf
+" fzf base plugin ships with the fzf binary (separate from fzf.vim wrapper);
+" add brew prefix to rtp so :Files etc. can find fzf#run
 if executable('brew')
   let s:fzf_dir = trim(system('brew --prefix fzf 2>/dev/null'))
   if !empty(s:fzf_dir) && isdirectory(s:fzf_dir)
@@ -211,8 +208,6 @@ elseif isdirectory($HOME.'/.fzf')
   set rtp+=~/.fzf
 endif
 
-"vim-fzf settings from Wookayin
-" fzf key maps
 " :Files uses $FZF_DEFAULT_COMMAND (fd) which respects .gitignore
 nmap <C-p>     :Files<cr>
 nmap <leader>o :Files<cr>
