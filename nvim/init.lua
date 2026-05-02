@@ -137,17 +137,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  -- Colorscheme: styles both vim regex syntax groups and treesitter groups
-  {
-    'ellisonleao/gruvbox.nvim',
-    priority = 1000,
-    config = function()
-      require('gruvbox').setup {}
-      vim.o.background = 'dark'
-      vim.cmd.colorscheme 'gruvbox'
-    end,
-  },
-
   -- File tree (sidebar)
   {
     'nvim-neo-tree/neo-tree.nvim',
@@ -238,3 +227,6 @@ require('lazy').setup({
 }, {
   ui = { border = 'rounded' },
 })
+
+-- Colorscheme: local file at nvim/colors/jellybeans.vim (no plugin needed)
+vim.cmd.colorscheme 'jellybeans'
