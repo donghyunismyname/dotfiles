@@ -112,6 +112,16 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHo
   command = 'silent! checktime',
 })
 
+-- Built-in treesitter highlighting where a parser exists.
+-- nvim 0.10+ ships parsers for c, lua, vim, vimdoc, query, markdown.
+-- For other filetypes this silently no-ops and vim's regex syntax takes over.
+vim.api.nvim_create_autocmd('FileType', {
+  group = aug,
+  callback = function(args)
+    pcall(vim.treesitter.start, args.buf)
+  end,
+})
+
 -- [[ lazy.nvim bootstrap ]]
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -131,29 +141,6 @@ require('lazy').setup({
     config = function()
       require('vague').setup {}
       vim.cmd.colorscheme 'vague'
-    end,
-  },
-
-  -- Syntax highlighting via the new `main` branch of nvim-treesitter
-  {
-    'nvim-treesitter/nvim-treesitter',
-    branch = 'main',
-    lazy = false,
-    build = ':TSUpdate',
-    config = function()
-      require('nvim-treesitter').install {
-        'bash', 'css', 'go', 'html', 'javascript', 'json', 'lua',
-        'markdown', 'markdown_inline', 'python', 'rust', 'toml',
-        'tsx', 'typescript', 'vim', 'vimdoc', 'yaml',
-      }
-
-      -- Enable treesitter highlighting per-buffer when a parser exists
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('user-treesitter', { clear = true }),
-        callback = function(args)
-          pcall(vim.treesitter.start, args.buf)
-        end,
-      })
     end,
   },
 
