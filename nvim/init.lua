@@ -138,30 +138,14 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  -- Colorscheme
+  -- Colorscheme: styles both vim regex syntax groups and treesitter groups
   {
-    'vague2k/vague.nvim',
+    'ellisonleao/gruvbox.nvim',
     priority = 1000,
     config = function()
-      require('vague').setup {}
-      vim.cmd.colorscheme 'vague'
-    end,
-  },
-
-  -- Treesitter parser manager (main branch). Just installs parsers;
-  -- the FileType autocmd in this init.lua calls vim.treesitter.start()
-  -- to enable highlighting per buffer when a parser exists.
-  {
-    'nvim-treesitter/nvim-treesitter',
-    branch = 'main',
-    lazy = false,
-    build = ':TSUpdate',
-    config = function()
-      require('nvim-treesitter').install {
-        'bash', 'css', 'go', 'html', 'javascript', 'json', 'lua',
-        'markdown', 'markdown_inline', 'python', 'rust', 'toml',
-        'tsx', 'typescript', 'vim', 'vimdoc', 'yaml',
-      }
+      require('gruvbox').setup {}
+      vim.o.background = 'dark'
+      vim.cmd.colorscheme 'gruvbox'
     end,
   },
 
