@@ -141,12 +141,6 @@ nmap ' gcc
 vmap ' gcgv
 
 
-" plugin: vim_current_word
-hi CurrentWord ctermbg=237
-hi CurrentWordTwins ctermbg=237
-hi Visual cterm=none ctermbg=darkgrey ctermfg=cyan
-
-
 " plugin: vim-fzf
 " fzf base plugin ships with the fzf binary (separate from fzf.vim wrapper);
 " add brew prefix to rtp so :Files etc. can find fzf#run
