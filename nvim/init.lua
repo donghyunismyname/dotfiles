@@ -148,6 +148,23 @@ require('lazy').setup({
     end,
   },
 
+  -- Treesitter parser manager (main branch). Just installs parsers;
+  -- the FileType autocmd in this init.lua calls vim.treesitter.start()
+  -- to enable highlighting per buffer when a parser exists.
+  {
+    'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    lazy = false,
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter').install {
+        'bash', 'css', 'go', 'html', 'javascript', 'json', 'lua',
+        'markdown', 'markdown_inline', 'python', 'rust', 'toml',
+        'tsx', 'typescript', 'vim', 'vimdoc', 'yaml',
+      }
+    end,
+  },
+
   -- File tree (sidebar)
   {
     'nvim-neo-tree/neo-tree.nvim',
