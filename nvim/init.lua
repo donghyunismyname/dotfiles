@@ -7,6 +7,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Enable vim's regex syntax highlighting as a fallback for filetypes
+-- without a treesitter parser (tmux.conf, dotenv, etc.)
+vim.cmd 'syntax enable'
+
 -- [[ Options ]]
 vim.o.number = true
 vim.o.relativenumber = true
