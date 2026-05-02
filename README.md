@@ -53,6 +53,8 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | sesh       | tmux session manager  |
 | timg       | Terminal image viewer |
 | chafa      | Terminal image viewer |
+| yazi       | Terminal file manager |
+| broot      | Tree-based file navigator |
 | cdhist     | Better `cd` history |
 | oh-my-zsh  | Zsh framework         |
 
