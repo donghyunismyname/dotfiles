@@ -49,7 +49,6 @@ let &t_SI = "\e[5 q" " insert
 " various basic options
 set nocompatible    "disable compatibility to old-time vi
 set number          "line number on the left
-set relativenumber  "relative line number
 set autoindent      "autoindent
 set nohlsearch      "no highlight search (better use easymotion)
 set ignorecase      "ignore case for search
