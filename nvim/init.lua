@@ -134,24 +134,27 @@ require('lazy').setup({
     end,
   },
 
-  -- Syntax highlighting (read-only value: just for reading code)
-  -- Pinned to master because the new `main` branch reorganized the module layout
+  -- Syntax highlighting via the new `main` branch of nvim-treesitter
   {
     'nvim-treesitter/nvim-treesitter',
-    branch = 'master',
+    branch = 'main',
     lazy = false,
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs',
-    opts = {
-      ensure_installed = {
-        'lua', 'vim', 'vimdoc', 'bash', 'python', 'javascript',
-        'typescript', 'tsx', 'json', 'yaml', 'toml', 'html', 'css',
-        'markdown', 'markdown_inline', 'go', 'rust',
-      },
-      auto_install = true,
-      highlight = { enable = true },
-      indent = { enable = true },
-    },
+    config = function()
+      require('nvim-treesitter').install {
+        'bash', 'css', 'go', 'html', 'javascript', 'json', 'lua',
+        'markdown', 'markdown_inline', 'python', 'rust', 'toml',
+        'tsx', 'typescript', 'vim', 'vimdoc', 'yaml',
+      }
+
+      -- Enable treesitter highlighting per-buffer when a parser exists
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('user-treesitter', { clear = true }),
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+        end,
+      })
+    end,
   },
 
   -- File tree (sidebar)
