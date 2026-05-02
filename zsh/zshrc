@@ -7,6 +7,9 @@ if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# ~/.local/bin
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+
 # WSL
 [[ -d "/usr/lib/wsl/lib" ]] && export PATH="/usr/lib/wsl/lib:$PATH"
 
