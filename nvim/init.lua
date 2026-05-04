@@ -231,6 +231,20 @@ require('lazy').setup({
     opts = {},
   },
 
+  -- Statusline
+  {
+    'nvim-lualine/lualine.nvim',
+    event = 'VeryLazy',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        theme = 'jellybeans',
+        section_separators = '',
+        component_separators = '|',
+      },
+    },
+  },
+
   -- Highlight other occurrences of word under cursor
   {
     'RRethy/vim-illuminate',
