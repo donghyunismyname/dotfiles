@@ -68,6 +68,9 @@ vim.keymap.set('n', '<leader>l', '$')
 vim.keymap.set('n', '<leader>j', '40j')
 vim.keymap.set('n', '<leader>k', '40k')
 
+-- vv to enter visual line mode (like Shift-V)
+vim.keymap.set('n', 'vv', 'V')
+
 -- Paste in visual without overwriting register
 vim.keymap.set('x', 'p', 'pgvy')
 vim.keymap.set('x', 'P', 'Pgvy')
