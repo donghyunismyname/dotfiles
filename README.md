@@ -18,10 +18,10 @@ sh install-symlinks.sh
 
 Install on your **local machine** (where your terminal app runs), not on remote servers.
 
-| Font                                                                                                                                       | Install                                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| [DroidSansMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf) | Download                                                                         |
-| [D2Coding](https://github.com/naver/d2codingfont)                                                                                             | Download                                                                         |
+| Font | Install |
+| ---- |-------- |
+| [DroidSansMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf) | Download |
+| [D2Coding](https://github.com/naver/d2codingfont) | `brew install font-d2coding-nerd-font` |
 | JetBrains Mono                                                                                                                             | `brew install font-jetbrains-mono` / `sudo apt install fonts-jetbrains-mono` |
 
 ## CLI Tools
