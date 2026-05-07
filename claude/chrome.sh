@@ -8,7 +8,7 @@ fi
 
 "$CHROME" \
   --remote-debugging-port=9222 \
-  --user-data-dir="$HOME/workspace/playwright" \
+  --user-data-dir="$HOME/workspace/chrome-daemon" \
   --disable-backgrounding-occluded-windows \
   --disable-background-timer-throttling \
   --disable-renderer-backgrounding \
