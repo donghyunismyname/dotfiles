@@ -9,6 +9,7 @@ SYMLINKS="
 vim/vimrc:$HOME/.vimrc
 vim:$HOME/.vim
 nvim:$HOME/.config/nvim
+yazi:$HOME/.config/yazi
 tmux/tmux.conf:$HOME/.tmux.conf
 zsh/zshrc:$HOME/.zshrc
 git/gitconfig:$HOME/.gitconfig
