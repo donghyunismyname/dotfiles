@@ -10,9 +10,9 @@ vim/vimrc:$HOME/.vimrc
 vim:$HOME/.vim
 nvim:$HOME/.config/nvim
 yazi:$HOME/.config/yazi
-tmux/tmux.conf:$HOME/.tmux.conf
+tmux/tmux.conf:$HOME/.config/tmux/tmux.conf
 zsh/zshrc:$HOME/.zshrc
-git/gitconfig:$HOME/.gitconfig
+git/gitconfig:$HOME/.config/git/config
 claude/commands:$HOME/.claude/commands
 claude/CLAUDE.md:$HOME/.claude/CLAUDE.md
 "
