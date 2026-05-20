@@ -24,6 +24,8 @@ ZSH_THEME=dst
 zstyle ':omz:update' mode reminder
 zstyle ':omz:update' frequency 60
 plugins=(zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
+# Skip compaudit ownership check (brew shared install on Linux)
+ZSH_DISABLE_COMPFIX=true
 source $ZSH/oh-my-zsh.sh
 
 
