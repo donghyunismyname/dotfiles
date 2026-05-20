@@ -12,6 +12,7 @@ nvim:$HOME/.config/nvim
 yazi:$HOME/.config/yazi
 tmux:$HOME/.config/tmux
 zsh/zshrc:$HOME/.zshrc
+zsh/zshenv:$HOME/.zshenv
 git/gitconfig:$HOME/.gitconfig
 claude/commands:$HOME/.claude/commands
 claude/CLAUDE.md:$HOME/.claude/CLAUDE.md

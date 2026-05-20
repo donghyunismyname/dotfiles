@@ -1,0 +1,5 @@
+# Skip /etc/zsh/zshrc's global compinit call.
+# Reason: shared linuxbrew on Linux puts site-functions under another user's
+# ownership, which makes the early compinit prompt about insecure dirs.
+# oh-my-zsh's ZSH_DISABLE_COMPFIX=true (in zshrc) handles it later instead.
+skip_global_compinit=1
