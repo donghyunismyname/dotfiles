@@ -28,10 +28,17 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 
 echo ""
-echo "=== Installing CLI tools ==="
-brew install tmux neovim bat ripgrep fd git-delta eza zoxide \
-    btop dust duf procs witr lazygit lazydocker tokei miniserve \
-    fzf jq uv direnv sesh timg chafa yazi broot
+# Skip brew install if Cellar is not writable (brew owned by another user)
+BREW_CELLAR="$(brew --cellar)"
+if [ -w "$BREW_CELLAR" ]; then
+    echo "=== Installing CLI tools ==="
+    brew install tmux neovim bat ripgrep fd git-delta eza zoxide \
+        btop dust duf procs witr lazygit lazydocker tokei miniserve \
+        fzf jq uv direnv sesh timg chafa yazi broot
+else
+    echo "=== Brew Cellar not writable ($BREW_CELLAR), skipping install ==="
+    echo "    Will verify existing tools only. Missing tools must be installed manually."
+fi
 
 echo ""
 echo "=== Verifying installation ==="
