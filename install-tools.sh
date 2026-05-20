@@ -5,17 +5,26 @@ set -e
 
 trap 'echo ""; echo "❌ Installation failed"; exit 1' ERR
 
+# Try to load existing brew from known locations
+for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
+    if [ -x "$brew_path" ]; then
+        eval "$("$brew_path" shellenv)"
+        break
+    fi
+done
+
 # Install Homebrew if not present
 if ! command -v brew >/dev/null 2>&1; then
     echo "=== Installing Homebrew ==="
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    # Add brew to PATH for Linux
-    if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    elif [ -f "$HOME/.linuxbrew/bin/brew" ]; then
-        eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
-    fi
+    # Add brew to PATH after install
+    for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
+        if [ -x "$brew_path" ]; then
+            eval "$("$brew_path" shellenv)"
+            break
+        fi
+    done
 fi
 
 echo ""
