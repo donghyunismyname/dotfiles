@@ -1,7 +1,5 @@
-# Workarounds for shared linuxbrew on Linux (brew is single-user by design,
-# so brew's zsh site-functions end up owned by another user).
-#
-# 1. Skip /etc/zsh/zshrc's global compinit call (zsh builtin check).
+# Skip /etc/zsh/zshrc's global compinit on Linux. We run our own compinit -u
+# in .zshrc, which also handles the insecure-directory case caused by shared
+# linuxbrew (brew is single-user by design, so brew's zsh site-functions end
+# up owned by another user).
 skip_global_compinit=1
-# 2. Tell oh-my-zsh to skip its own compaudit (read later in .zshrc).
-ZSH_DISABLE_COMPFIX=true
