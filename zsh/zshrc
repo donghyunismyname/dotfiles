@@ -227,12 +227,6 @@ fi
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git . $HOME"
 
-# fzf bindkey
-bindkey '^G' fzf-cd-widget
-
-# fzf-cd-widget preview
-export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always --level=2 {} | head -200'"
-
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
   --preview 'bat -n --color=always {}'
@@ -246,14 +240,6 @@ export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
-
-# cdhist
-if command -v cdhist &>/dev/null; then
-    eval "$(cdhist -i)"
-fi
-
-# fzf and cdhist integration
-export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 
 # ff - Flexible File Finder
 source "$HOME/dotfiles/zsh/ff.sh"
