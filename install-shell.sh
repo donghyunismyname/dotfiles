@@ -58,12 +58,9 @@ clone_or_pull() {
 # cdhist (requires uv from brew)
 uv tool install cdhist
 
-# oh-my-zsh
-if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
-fi
-
-# zsh plugins (requires oh-my-zsh)
-clone_or_pull https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-clone_or_pull https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-clone_or_pull https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+# zsh plugins
+ZSH_PLUGINS="${ZSH_PLUGINS:-$HOME/.zsh/plugins}"
+mkdir -p "$ZSH_PLUGINS"
+clone_or_pull https://github.com/zsh-users/zsh-autosuggestions "$ZSH_PLUGINS/zsh-autosuggestions"
+clone_or_pull https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_PLUGINS/zsh-syntax-highlighting"
+clone_or_pull https://github.com/zsh-users/zsh-completions "$ZSH_PLUGINS/zsh-completions"
