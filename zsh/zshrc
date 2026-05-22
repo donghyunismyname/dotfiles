@@ -45,9 +45,6 @@ setopt PROMPT_SUBST
 
 ZSH_PLUGINS="${ZSH_PLUGINS:-$HOME/.zsh/plugins}"
 
-# zsh-completions: extra completions, must be added to fpath before compinit
-[[ -d "$ZSH_PLUGINS/zsh-completions/src" ]] && fpath=("$ZSH_PLUGINS/zsh-completions/src" $fpath)
-
 autoload -Uz compinit
 # -u skips the insecure-directory check (shared linuxbrew owns site-functions
 # as another user). Same effect as omz's ZSH_DISABLE_COMPFIX.
