@@ -102,9 +102,10 @@ RPROMPT='%{$fg[green]%}[%*]%{$reset_color%}'
 # ============================================
 
 autoload -Uz add-zsh-hook
-_set_term_title() { print -Pn "\e]2;${1//[^[:print:]]/}\a" }
-add-zsh-hook precmd  '_set_term_title "%~"'
-add-zsh-hook preexec '_set_term_title "$1"'
+_term_title_precmd()  { print -Pn "\e]2;%~\a" }
+_term_title_preexec() { print -Pn "\e]2;${1//[^[:print:]]/}\a" }
+add-zsh-hook precmd  _term_title_precmd
+add-zsh-hook preexec _term_title_preexec
 
 
 # ============================================
