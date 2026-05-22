@@ -55,9 +55,6 @@ clone_or_pull() {
 # fzf key bindings and completion (requires fzf from brew)
 "$(brew --prefix)/opt/fzf/install" --all --no-update-rc
 
-# cdhist (requires uv from brew)
-uv tool install cdhist
-
 # zsh plugins
 ZSH_PLUGINS="${ZSH_PLUGINS:-$HOME/.zsh/plugins}"
 mkdir -p "$ZSH_PLUGINS"
