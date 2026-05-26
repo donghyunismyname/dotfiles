@@ -136,6 +136,13 @@ alias tmux="tmux -u"
 alias dush="du -sh -- *(D)"
 alias path='echo $PATH | tr ":" "\n" | nl'
 
+# Directory navigation (replicates omz lib/directories.zsh)
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+
 # Ubuntu binary name compatibility
 command -v batcat >/dev/null && alias bat='batcat'
 command -v fdfind >/dev/null && alias fd='fdfind'
