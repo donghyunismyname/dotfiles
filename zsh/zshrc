@@ -136,12 +136,13 @@ alias tmux="tmux -u"
 alias dush="du -sh -- *(D)"
 alias path='echo $PATH | tr ":" "\n" | nl'
 
-# Directory navigation (replicates omz lib/directories.zsh)
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
-alias ......='cd ../../../../..'
+# Directory navigation: expand ... as a command argument, e.g. `cd ...`.
+# Global aliases (-g) expand anywhere on the line, not just command position.
+# `..` needs no alias since it is already a real path (`cd ..` works).
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ......='../../../../..'
 
 # Ubuntu binary name compatibility
 command -v batcat >/dev/null && alias bat='batcat'
