@@ -50,6 +50,11 @@ autoload -Uz compinit
 # as another user). Same effect as omz's ZSH_DISABLE_COMPFIX.
 compinit -u
 
+# Highlighted, arrow-navigable completion menu (was provided by omz).
+zstyle ':completion:*' menu select
+# Color completion entries by file type using LS_COLORS.
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
 
 # ============================================
 # Plugins
