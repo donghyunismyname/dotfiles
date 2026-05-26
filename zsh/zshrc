@@ -54,6 +54,11 @@ compinit -u
 zstyle ':completion:*' menu select
 # Color completion entries by file type using LS_COLORS.
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# Fuzzy matching: case-insensitive, then partial at .-_ boundaries, then substring.
+zstyle ':completion:*' matcher-list \
+    'm:{a-zA-Z}={A-Za-z}' \
+    'r:|[._-]=* r:|=*' \
+    'l:|=* r:|=*'
 
 
 # ============================================
