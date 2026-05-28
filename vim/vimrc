@@ -60,7 +60,7 @@ set sw=4            "shift width for use with >, <, or =
 set expandtab       "spaces instead of tabs; `:retab` to change taps to spaces
 set sts=4           "make spaces feel like tabs (like deleting)
 set colorcolumn=80  "show vertical line at column 80
-set nowrap          "no wraparound trailing characters
+set wrap            "wrap long lines onto the next display line
 set scrolloff=10    "show code above and below cursor
 set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
