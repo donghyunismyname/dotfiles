@@ -6,5 +6,7 @@
 vim/pack/plugin/start/*/.git/
 vim/pack/plugin/start/*/git/
 
+.antigravitycli
+
 
 
