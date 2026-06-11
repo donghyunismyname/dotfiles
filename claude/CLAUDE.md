@@ -2,11 +2,8 @@
 
 ## Communication Style
 
-The user is a non-native English speaker. Write in plain English:
-
-- Short sentences. One idea per sentence.
-- Common words over fancy ones (`use` not `leverage`, `about` not `regarding`).
-- No idioms, no figures of speech.
+The user is Korean, a non-native English speaker.
+When you talk to the user in English, use plain English.
 
 ## Code Style
 
