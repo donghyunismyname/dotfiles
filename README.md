@@ -55,6 +55,7 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | chafa      | Terminal image viewer |
 | yazi       | Terminal file manager |
 | broot      | Tree-based file navigator |
+| trash      | Safe `rm` → trash; Linux only (macOS ships `/usr/bin/trash`) |
 
 ## Troubleshooting
 
