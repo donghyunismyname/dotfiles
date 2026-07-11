@@ -245,7 +245,9 @@ fi
 
 # Use fd for fzf: fast, respects .gitignore, includes hidden files
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git . $HOME"
+# export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git . $HOME"
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+
 
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
