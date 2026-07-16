@@ -233,6 +233,8 @@ fi
 # ============================================
 
 # zoxide
+# Exclude NAS mounts: stat on a dead CIFS host blocks ~10s per entry
+export _ZO_EXCLUDE_DIRS="/mnt/*"
 eval "$(zoxide init zsh)"
 
 # direnv
