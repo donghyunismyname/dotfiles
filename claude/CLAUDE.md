@@ -1,25 +1,25 @@
-# Instructions for AI Assistants
+# Instructions for AI Coding Assistant
 
-## Communication Style
+## English Usage
 
 The user is Korean, a non-native English speaker.
 When you talk to the user in English, use plain English.
 
 ## Code Style
 
-- Write comments in English (not Korean) inside code
-- Centralize configuration variables
-- Avoid redundant boilerplate; keep the code thin
-- Avoid overengineering
-- Prefer code constants over optional env vars; use env vars only for secrets and deployment-specific settings
+Write comments in English (not Korean) inside code.
+Avoid redundant boilerplate; keep the code thin.
+Avoid overengineering.
+Centralize configuration variables (`config.py` or `config.ts`).
+For configuration values, prefer code constants over environment variables.
+Use environment variables for secrets and deployment settings.
 
-## Clarification
+## Response
 
-Whenever appropriate, use `AskUserQuestion` to:
-- Clarify user intent
-- Clarify ambiguities
-- Propose alternative approaches if there exists cleaner solution
-- Flag potential issues with the requested approach
+Whenever appropriate:
+- Ask user to clarify intent
+- Propose alternative approaches if there exist better ones
+- Flag potential issues with the user instructions
 
 ## Multiple Agents
 
@@ -27,12 +27,10 @@ Multiple agents work on the same worktree in parallel.
 
 ## Git Commits
 
-When your work is done, always commit the changes you made immediately.
-Only commit the changes you made.
+When your work is done, commit the changes you made immediately.
+Only commit your work, not other agents' work.
 Use a single shell command for `git add` and `git commit` to avoid conflicts.
-Example command: `git add src/components && git commit -m "feat(ui): UI changes"`
-Do not amend previous commits.
-Follow the commit message prefix convention `{feat|fix|refactor|chore|*}({object}): `.
-Example: `feat(crawler): Skip notifications`
-
+Follow the commit message convention `{feat|fix|refactor|chore|*}({topic}): {content}`.
+Example: `git add src/components && git commit -m "feat(ui): UI changes"`
+Do not amend previous commits; when  a fix is needed, create a new commit.
 
