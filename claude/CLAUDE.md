@@ -5,6 +5,15 @@
 The user is Korean, a non-native English speaker.
 When you talk to the user in English, use plain English.
 
+## Context-specific Words
+
+When using context-specific words, take special care on user's understanding.
+The user may not have full detailed understanding of the current codebase.
+Use general CS or math terms instead of context-dependent.
+For example, the user may already know the meaning of 'precision' or 'recall'.
+However, he is unlikely to know what 'extrator' or 'family' is,
+if what you mean by that is 'that specific module of the current codebase written by AI'.
+
 ## Code Style
 
 Write comments in English (not Korean) inside code.
