@@ -67,13 +67,22 @@ bindkey '^[[Z' reverse-menu-complete
 # Plugins
 # ============================================
 
-# zsh-autosuggestions
-[[ -f "$ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-    source "$ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh"
+# Source a plugin, or warn instead of failing silently (a missing plugin is
+# otherwise invisible: no error, the feature is just gone).
+_load_plugin() {
+    local f="$ZSH_PLUGINS/$1/$1.zsh"
+    if [[ -f "$f" ]]; then
+        source "$f"
+    else
+        print -u2 "zshrc: $1 not found in $ZSH_PLUGINS — run install-shell.sh"
+    fi
+}
 
-# zsh-syntax-highlighting (must be sourced last)
-[[ -f "$ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-    source "$ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+_load_plugin zsh-autosuggestions
+# zsh-syntax-highlighting must be sourced last
+_load_plugin zsh-syntax-highlighting
+
+unfunction _load_plugin
 
 
 # ============================================
