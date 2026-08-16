@@ -9,7 +9,7 @@ When you talk to the user in English, use plain English.
 
 When using context-specific words, take special care on user's understanding.
 The user may not have full detailed understanding of the current codebase.
-Use general CS or math terms instead of context-dependent.
+Use general CS or math terms instead of context-dependent ones.
 For example, the user may already know the meaning of 'precision' or 'recall'.
 However, he is unlikely to know what 'extrator' or 'family' is,
 if what you mean by that is 'that specific module of the current codebase written by AI'.
