@@ -12,6 +12,7 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 sh install-tools.sh   # CLI tools (uses Homebrew)
 sh install-shell.sh   # zsh, plugins, fzf keybindings
 sh install-symlinks.sh
+sh claude/install-symlinks.sh   # Claude Code config (optional)
 ```
 
 ## Fonts

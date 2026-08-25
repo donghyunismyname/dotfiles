@@ -6,14 +6,8 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Define symlinks as "source:target" pairs
 SYMLINKS="
-vim/vimrc:$HOME/.vimrc
-vim:$HOME/.vim
-nvim:$HOME/.config/nvim
-yazi:$HOME/.config/yazi
-tmux:$HOME/.config/tmux
-zsh/zshrc:$HOME/.zshrc
-zsh/zshenv:$HOME/.zshenv
-git/gitconfig:$HOME/.gitconfig
+commands:$HOME/.claude/commands
+CLAUDE.md:$HOME/.claude/CLAUDE.md
 "
 
 # Categorize each symlink
