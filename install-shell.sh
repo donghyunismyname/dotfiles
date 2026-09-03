@@ -2,6 +2,9 @@
 
 set -e
 
+# Homebrew 6+ asks "Do you want to proceed? [y/n]" by default; disable it.
+export HOMEBREW_NO_ASK=1
+
 # Try to load existing brew from known locations
 for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
     if [ -x "$brew_path" ]; then

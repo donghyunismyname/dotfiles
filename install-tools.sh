@@ -3,6 +3,9 @@
 
 set -e
 
+# Homebrew 6+ asks "Do you want to proceed? [y/n]" by default; disable it.
+export HOMEBREW_NO_ASK=1
+
 trap 'echo ""; echo "❌ Installation failed"; exit 1' ERR
 
 # Try to load existing brew from known locations
