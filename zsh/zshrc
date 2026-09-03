@@ -155,6 +155,7 @@ bindkey '^W' forward-word
 
 alias tmux="tmux -u"
 alias dush="du -sh -- *(D)"
+alias dust1="dust -d 1"
 alias path='echo $PATH | tr ":" "\n" | nl'
 
 # Directory navigation: expand ... as a command argument, e.g. `cd ...`.
