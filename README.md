@@ -39,6 +39,7 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | zoxide     | Better `cd`         |
 | btop       | Better `htop`       |
 | dust       | Better `du`         |
+| ncdu       | Interactive `du`    |
 | duf        | Better `df`         |
 | procs      | Better `ps`         |
 | witr       | Why is this running?  |
