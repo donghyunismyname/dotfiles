@@ -275,7 +275,7 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command into clipboard'"
 
 # ff - Flexible File Finder
-source "$HOME/dotfiles/zsh/ff.sh"
+source "${${(%):-%x}:A:h}/ff.sh"
 
 
 # ============================================
