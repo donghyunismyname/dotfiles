@@ -8,6 +8,18 @@
 # =============================================================================
 
 ff() {
+  # --- Check required dependencies ---
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "❌ Error: fzf is not installed" >&2
+    echo "" >&2
+    echo "fzf is required for ff to work. Please install it:" >&2
+    echo "  Ubuntu/Debian: sudo apt install fzf" >&2
+    echo "  macOS:         brew install fzf" >&2
+    echo "" >&2
+    echo "For more info: https://github.com/junegunn/fzf#installation" >&2
+    return 1
+  fi
+
   local mode="${1:-find}"
   local out key result file line target_dir
   local preview_cmd grep_base_cmd full_reload_cmd
@@ -22,8 +34,8 @@ ff() {
     --layout=reverse
     --border
     --info=inline
-    --prompt="❯  "
-    --pointer="▶"
+    --prompt=">"
+    --pointer=">"
     --marker="✓"
     --ansi
     --preview-window=right:60%
@@ -32,16 +44,25 @@ ff() {
   # --- 1. Dependency tool configuration ---
   local BAT_CMD="cat"
   local BAT_OPTS=""
-  
-  if command -v batcat >/dev/null; then 
+
+  if command -v batcat >/dev/null; then
     BAT_CMD="batcat"
     BAT_OPTS="--style=numbers --color=always"
-  elif command -v bat >/dev/null; then 
+  elif command -v bat >/dev/null; then
     BAT_CMD="bat"
     BAT_OPTS="--style=numbers --color=always"
   fi
 
-  local USE_FD=0; command -v fd >/dev/null && USE_FD=1
+  local FD_CMD=""
+  local USE_FD=0
+  if command -v fd >/dev/null; then
+    FD_CMD="fd"
+    USE_FD=1
+  elif command -v fdfind >/dev/null; then
+    FD_CMD="fdfind"
+    USE_FD=1
+  fi
+
   local USE_RG=0; command -v rg >/dev/null && USE_RG=1
   local USE_EZA=0; command -v eza >/dev/null && USE_EZA=1
   
@@ -67,15 +88,15 @@ ff() {
       fi
 
       if [[ "$USE_FD" -eq 1 ]]; then
-        find_cmd_arr=(fd . --type f --type d --follow --color=never)
+        find_cmd_arr=($FD_CMD . --type f --type d --follow --color=never)
       else
-        find_cmd_arr=(find . -name '.*' -prune -o \( -type f -o -type d \) -print)
+        find_cmd_arr=(find . \( -type d -name '.\*' \) -prune -o -print)
       fi
 
       # Apply options strictly to this command execution
       out=$("${find_cmd_arr[@]}" 2>/dev/null | \
         FZF_DEFAULT_OPTS="$base_opts" fzf --expect=tab,ctrl-o --cycle -i \
-        --prompt="🔍 FIND >  " \
+        --prompt="🔍 FIND > " \
         --header=$'TAB: switch | ENTER: cd | CTRL-O: open' \
         --bind "ctrl-u:preview-up,ctrl-d:preview-down" \
         --preview "$preview_cmd")
@@ -94,7 +115,7 @@ ff() {
       # Apply options strictly to this command execution
       out=$(echo "$MSG_GREP_GUIDE" | \
         FZF_DEFAULT_OPTS="$base_opts" fzf --expect=tab,ctrl-o --delimiter '\|' --cycle --disabled \
-        --prompt="📝 GREP >  " \
+        --prompt="📝 GREP > " \
         --header=$'TAB: switch | ENTER: cd | CTRL-O: open' \
         --bind "start:reload:$full_reload_cmd" \
         --bind "change:reload:sleep 0.1; $full_reload_cmd" \
@@ -137,39 +158,69 @@ ff() {
 
     # --- 5. Execute action based on key pressed ---
     if [[ "$key" == "ctrl-o" ]]; then
-      if [[ -f "$file" ]]; then
-        if [[ "$IS_VSCODE" -eq 1 ]]; then
-            if [[ -n "$line" ]]; then 
-              code --goto "$file:$line"
-              echo "📄 Opened: $file|$line"
-            else 
-              code "$file"
-              echo "📄 Opened: $file"
-            fi
+      if [[ ! -f "$file" ]]; then
+        echo "❌ Error: File not found: $file" >&2
+        return 1
+      fi
+
+      if [[ "$IS_VSCODE" -eq 1 ]]; then
+        if [[ -n "$line" ]]; then
+          if code --goto "$file:$line" 2>/dev/null; then
+            echo "📄 Opened: $file:$line"
+          else
+            echo "❌ Error: Failed to open file in VSCode" >&2
+            echo "   Make sure VSCode is installed and 'code' command is available" >&2
+            return 1
+          fi
         else
-          if [[ -n "$line" ]]; then 
-            $EDITOR_CMD "+$line" "$file"
-            echo "📄 Opened: $file|$line"
-          else 
-            $EDITOR_CMD "$file"
+          if code "$file" 2>/dev/null; then
             echo "📄 Opened: $file"
+          else
+            echo "❌ Error: Failed to open file in VSCode" >&2
+            return 1
+          fi
+        fi
+      else
+        if [[ -n "$line" ]]; then
+          if $EDITOR_CMD "+$line" "$file"; then
+            echo "📄 Opened: $file:$line"
+          else
+            echo "❌ Error: Failed to open file with $EDITOR_CMD" >&2
+            return 1
+          fi
+        else
+          if $EDITOR_CMD "$file"; then
+            echo "📄 Opened: $file"
+          else
+            echo "❌ Error: Failed to open file with $EDITOR_CMD" >&2
+            return 1
           fi
         fi
       fi
       return
     fi
 
-    if [[ -f "$file" ]]; then 
+    if [[ -f "$file" ]]; then
         target_dir="$(dirname "$file")"
-    elif [[ -d "$file" ]]; then 
+    elif [[ -d "$file" ]]; then
         target_dir="$file"
+    else
+        echo "❌ Error: Invalid selection: $file" >&2
+        echo "   Path does not exist or is not accessible" >&2
+        return 1
     fi
 
     if [[ -n "$target_dir" && -d "$target_dir" ]]; then
-      cd "$target_dir" || return
-      echo "📂 Moved to: $(pwd)"
+      if cd "$target_dir" 2>/dev/null; then
+        echo "📂 Moved to: $(pwd)"
+      else
+        echo "❌ Error: Failed to change directory to: $target_dir" >&2
+        echo "   Check permissions or if the directory still exists" >&2
+        return 1
+      fi
     else
-      echo "❌ Invalid path" >&2
+      echo "❌ Error: Target directory not found: $target_dir" >&2
+      return 1
     fi
     return
   done
