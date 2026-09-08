@@ -17,8 +17,12 @@ if [ "$(uname -s)" != "Linux" ]; then
 fi
 
 echo "=== Installing packages ==="
+# Ubuntu runs needrestart after every apt install. With a TTY it pops a dialog
+# with every service that links an upgraded library pre-selected, and Enter
+# restarts them all (this once restarted pm2 and took the crawlers down).
+# Mode "l" only lists them.
 sudo apt-get update -qq
-sudo apt-get install -y -qq sysstat atop earlyoom
+sudo env NEEDRESTART_MODE=l apt-get install -y -qq sysstat atop earlyoom
 
 echo ""
 echo "=== sysstat ==="
