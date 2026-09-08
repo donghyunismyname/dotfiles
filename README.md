@@ -9,6 +9,13 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 ## Quick Start
 
 ```sh
+sh install.sh           # runs the three scripts below in order
+sh install.sh --system  # ... plus install-system.sh
+```
+
+Or run them individually:
+
+```sh
 sh install-tools.sh   # CLI tools (uses Homebrew)
 sh install-shell.sh   # zsh, plugins, fzf keybindings
 sh install-symlinks.sh # Symlink zsh, vim, nvim, tmux, yazi, git configs into $HOME
