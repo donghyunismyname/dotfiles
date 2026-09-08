@@ -6,6 +6,14 @@ set -e
 # Homebrew 6+ asks "Do you want to proceed? [y/n]" by default; disable it.
 export HOMEBREW_NO_ASK=1
 
+# Keep `brew install` from touching anything but the requested tools.
+# On Linux this matters: without these, installing one tool auto-updates the
+# formula index and cascade-upgrades shared dependencies (glibc, llhttp, gcc,
+# openssl, ...), which once left node broken on a server. Run upgrades
+# deliberately with `brew upgrade` instead.
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+
 trap 'echo ""; echo "❌ Installation failed"; exit 1' ERR
 
 # Try to load existing brew from known locations
