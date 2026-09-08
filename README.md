@@ -12,6 +12,7 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 sh install-tools.sh   # CLI tools (uses Homebrew)
 sh install-shell.sh   # zsh, plugins, fzf keybindings
 sh install-symlinks.sh
+sh install-system.sh    # Linux servers only: sysstat, atop, earlyoom, sshd guard, agent memory cap (sudo)
 ```
 
 ## Fonts

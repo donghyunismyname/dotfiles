@@ -166,6 +166,14 @@ alias -g ....='../../..'
 alias -g .....='../../../..'
 alias -g ......='../../../../..'
 
+# AI agents run inside a memory-capped cgroup (agents.slice, see install-system.sh).
+# Children (lean, lake, node, ...) inherit the slice. No-op on macOS.
+if command -v systemd-run >/dev/null 2>&1 && [[ -d /run/user/$UID ]]; then
+    _agent() { systemd-run --user --quiet --scope --slice=agents.slice "$@" }
+    alias claude='_agent claude'
+    alias codex='_agent codex'
+fi
+
 # Ubuntu binary name compatibility
 command -v batcat >/dev/null && alias bat='batcat'
 command -v fdfind >/dev/null && alias fd='fdfind'
