@@ -66,6 +66,15 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 | broot      | Tree-based file navigator |
 | trash      | Safe `rm` → trash; Linux only (macOS ships `/usr/bin/trash`) |
 
+## Local overrides
+
+Machine-specific settings go in files that are sourced if present and never committed:
+
+| File | Used by |
+|------|---------|
+| `~/.zshrc.local` | zsh (sourced at the end of `.zshrc`) |
+| `~/.gitconfig.local` | git (`user.name`, `user.email`, signing keys, etc.) |
+
 ## Troubleshooting
 
 ### zsh: character not in range
