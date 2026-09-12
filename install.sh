@@ -1,14 +1,14 @@
 #!/bin/sh
 # Run all install scripts in order. Stops at the first failure.
 #
-#   sh install.sh            # tools, shell, symlinks
+#   sh install.sh            # tools, shell, configs
 #   sh install.sh --system   # also run install-system.sh (Linux servers, sudo)
 
 set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-STEPS="install-tools.sh install-shell.sh install-symlinks.sh"
+STEPS="install-tools.sh install-shell.sh install-configs.sh"
 [ "$1" = "--system" ] && STEPS="$STEPS install-system.sh"
 
 for step in $STEPS; do

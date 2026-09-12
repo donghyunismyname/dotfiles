@@ -18,7 +18,3 @@
 [delta]
     navigate = true
     line-numbers = true
-
-# Machine-specific settings (user.name, user.email, etc.); ignored if missing
-[include]
-    path = ~/.gitconfig.local

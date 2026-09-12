@@ -18,7 +18,7 @@ Or run them individually:
 ```sh
 sh install-tools.sh   # CLI tools (uses Homebrew)
 sh install-shell.sh   # zsh, plugins, fzf keybindings
-sh install-symlinks.sh # Symlink zsh, vim, nvim, tmux, yazi, git configs into $HOME
+sh install-configs.sh # Link vim, nvim, tmux, yazi, zshenv; stub ~/.zshrc and ~/.gitconfig
 sh install-system.sh    # Linux servers only: sysstat, atop, earlyoom, sshd guard, agent memory cap (sudo)
 ```
 
@@ -68,12 +68,11 @@ Install on your **local machine** (where your terminal app runs), not on remote 
 
 ## Local overrides
 
-Machine-specific settings go in files that are sourced if present and never committed:
-
-| File | Used by |
-|------|---------|
-| `~/.zshrc.local` | zsh (sourced at the end of `.zshrc`) |
-| `~/.gitconfig.local` | git (`user.name`, `user.email`, signing keys, etc.) |
+`~/.zshrc` and `~/.gitconfig` are not symlinks. They are real files owned by
+the machine whose first lines load the repo config (`source .../zsh/zshrc`,
+`[include] path = .../git/config`). Put machine-specific settings below that
+line; they override the repo. Tools that append to these files
+(`git config --global`, installers that edit `~/.zshrc`) never touch the repo.
 
 ## Troubleshooting
 
