@@ -220,11 +220,12 @@ alias gll="git log --graph --all \
 # Who git will commit as, and where each identity-related setting comes from.
 # Later lines override earlier ones (system < global < local).
 gwho() {
-  echo "effective: $(git config user.name) <$(git config user.email)>"
-  echo
   git config --list --show-origin --show-scope \
     | grep -E '\b(user|include|includeIf|gpg|credential)\.|\.gpgsign=' \
+    | awk -F'\t' -v OFS='\t' '{ print $1, $3, $2 }' \
     | column -t -s $'\t'
+  echo
+  echo "effective: $(git config user.name) <$(git config user.email)>"
 }
 
 # interactive git checkout with fzf
