@@ -32,6 +32,10 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY
 
+# Allow '#' comments on the interactive command line (zsh disables this by
+# default; oh-my-zsh used to enable it). Needed for pasting commented commands.
+setopt INTERACTIVE_COMMENTS
+
 # Emacs key bindings (zsh would otherwise pick vi mode because EDITOR=vim)
 bindkey -e
 
