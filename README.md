@@ -25,12 +25,19 @@ sh install-system.sh    # Linux servers only: sysstat, atop, earlyoom, sshd guar
 ## Fonts
 
 Install on your **local machine** (where your terminal app runs), not on remote servers.
+A [Nerd Font](https://www.nerdfonts.com/) is required for the icons in tmux, vim/nvim, and yazi.
+`vscode/settings.json` uses `DroidSansM Nerd Font Mono` for the integrated terminal.
 
-| Font | Install |
-| ---- |-------- |
-| [DroidSansMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DroidSansMono/DroidSansMNerdFontMono-Regular.otf) | Download |
-| [D2Coding](https://github.com/naver/d2codingfont) | `brew install font-d2coding-nerd-font` |
-| JetBrains Mono                                                                                                                             | `brew install font-jetbrains-mono` / `sudo apt install fonts-jetbrains-mono` |
+| Font | Download | Homebrew (macOS) | apt (Debian/Ubuntu) |
+| ---- | -------- | ---------------- | ------------------- |
+| DroidSansM Nerd Font (recommended) | [DroidSansMono.zip](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/DroidSansMono.zip) | `brew install --cask font-droid-sans-mono-nerd-font` | - |
+| D2Coding Nerd Font (Korean) | [D2Coding.zip](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/D2Coding.zip) · [original](https://github.com/naver/d2codingfont/releases) | `brew install --cask font-d2coding-nerd-font` | - |
+| JetBrainsMono Nerd Font | [JetBrainsMono.zip](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip) | `brew install --cask font-jetbrains-mono-nerd-font` | - |
+| JetBrains Mono (no icons) | [jetbrains.com](https://www.jetbrains.com/lp/mono/) · [GitHub](https://github.com/JetBrains/JetBrainsMono/releases) | `brew install --cask font-jetbrains-mono` | `sudo apt install fonts-jetbrains-mono` |
+
+Manual install: unzip, then double-click the `.ttf`/`.otf` files (macOS/Windows),
+or copy them to `~/.local/share/fonts/` and run `fc-cache -fv` (Linux).
+All Nerd Font variants: https://www.nerdfonts.com/font-downloads
 
 ## CLI Tools
 
