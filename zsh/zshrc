@@ -253,7 +253,6 @@ gcm() {
 # Python
 # ============================================
 
-alias python='uv run python'
 alias py='uv run python'
 
 if command -v uv > /dev/null; then
