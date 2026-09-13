@@ -24,19 +24,13 @@ sh install-system.sh    # Linux servers only: sysstat, atop, earlyoom, sshd guar
 
 ## Fonts
 
-Install on your **local machine** (where your terminal app runs), not on remote servers.
-A [Nerd Font](https://www.nerdfonts.com/) is required for the icons in tmux, vim/nvim, and yazi.
-`vscode/settings.json` uses `DroidSansM Nerd Font Mono` for the integrated terminal.
+Install a [Nerd Font](https://www.nerdfonts.com/font-downloads) on your **local machine** (where your terminal app runs), not on remote servers.
 
 | Font | Download | Homebrew (macOS) |
 | ---- | -------- | ---------------- |
 | DroidSansM Nerd Font (recommended) | [DroidSansMono.zip](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/DroidSansMono.zip) | `brew install --cask font-droid-sans-mono-nerd-font` |
 | D2Coding Nerd Font (Korean) | [D2Coding.zip](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/D2Coding.zip) · [original](https://github.com/naver/d2codingfont/releases) | `brew install --cask font-d2coding-nerd-font` |
 | JetBrainsMono Nerd Font | [JetBrainsMono.zip](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip) | `brew install --cask font-jetbrains-mono-nerd-font` |
-
-Manual install: unzip, then double-click the `.ttf`/`.otf` files (macOS/Windows),
-or copy them to `~/.local/share/fonts/` and run `fc-cache -fv` (Linux).
-All Nerd Font variants: https://www.nerdfonts.com/font-downloads
 
 ## CLI Tools
 
