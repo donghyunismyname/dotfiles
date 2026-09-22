@@ -15,6 +15,19 @@ fi
 
 
 # ============================================
+# SSH agent forwarding
+# ============================================
+
+# Keep a stable path to the forwarded SSH agent socket, so shells already
+# running inside tmux keep working after a reconnect (sshd creates a new
+# socket path on every login).
+if [[ -n "$SSH_CONNECTION" && -S "$SSH_AUTH_SOCK" && "$SSH_AUTH_SOCK" != "$HOME/.ssh/agent.sock" ]]; then
+    ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/agent.sock"
+fi
+[[ -n "$SSH_CONNECTION" ]] && export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+
+
+# ============================================
 # Zsh basics
 # ============================================
 
