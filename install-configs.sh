@@ -15,6 +15,11 @@ tmux:$HOME/.config/tmux
 zsh/zshenv:$HOME/.zshenv
 "
 
+# Linux only: memory cap for claude/codex (see the _agent alias in zsh/zshrc)
+command -v systemctl >/dev/null 2>&1 && SYMLINKS="$SYMLINKS
+systemd/agents.slice:$HOME/.config/systemd/user/agents.slice
+"
+
 # Stubs as "source:target" pairs. The target is a real file owned by this
 # machine whose first lines load the repo config. Tools that append to it
 # (git config --global, installers editing ~/.zshrc) never touch the repo,
@@ -110,6 +115,8 @@ for kind in link stub; do
         echo "  $dst -> $src"
     done
 done
+
+command -v systemctl >/dev/null 2>&1 && { systemctl --user daemon-reload || true; }
 
 echo ""
 echo "Done."

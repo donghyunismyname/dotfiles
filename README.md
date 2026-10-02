@@ -17,7 +17,7 @@ Or run them individually:
 ```sh
 sh install-tools.sh   # CLI tools (uses Homebrew)
 sh install-shell.sh   # zsh, plugins, fzf keybindings
-sh install-configs.sh # Link vim, nvim, tmux, yazi, zshenv; stub ~/.zshrc and ~/.gitconfig
+sh install-configs.sh # Link vim, nvim, tmux, yazi, zshenv, agents.slice (Linux); stub ~/.zshrc and ~/.gitconfig
 ```
 
 ## Fonts

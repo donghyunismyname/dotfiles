@@ -1,0 +1,7 @@
+# Memory cap for claude/codex started via the _agent alias in zsh/zshrc (Linux only).
+# Percentages are of physical RAM. MemoryHigh throttles, MemoryMax kills the
+# biggest process inside the slice.
+[Slice]
+MemoryHigh=70%
+MemoryMax=80%
+MemorySwapMax=0
