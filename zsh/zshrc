@@ -183,7 +183,8 @@ alias -g ....='../../..'
 alias -g .....='../../../..'
 alias -g ......='../../../../..'
 
-# AI agents run inside a memory-capped cgroup (agents.slice, see install-system.sh).
+# AI agents run inside a memory-capped cgroup (agents.slice, set up by
+# servers/system/install-system.sh in the infra-operation repo).
 # Children (lean, lake, node, ...) inherit the slice. No-op on macOS.
 if command -v systemd-run >/dev/null 2>&1 && [[ -d /run/user/$UID ]]; then
     _agent() { systemd-run --user --quiet --scope --slice=agents.slice "$@" }

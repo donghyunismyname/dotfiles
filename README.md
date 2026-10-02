@@ -10,7 +10,6 @@ Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 
 ```sh
 sh install.sh           # runs the three scripts below in order
-sh install.sh --system  # ... plus install-system.sh
 ```
 
 Or run them individually:
@@ -19,7 +18,6 @@ Or run them individually:
 sh install-tools.sh   # CLI tools (uses Homebrew)
 sh install-shell.sh   # zsh, plugins, fzf keybindings
 sh install-configs.sh # Link vim, nvim, tmux, yazi, zshenv; stub ~/.zshrc and ~/.gitconfig
-sh install-system.sh    # Linux servers only: sysstat, atop, earlyoom, sshd guard, agent memory cap (sudo)
 ```
 
 ## Fonts
