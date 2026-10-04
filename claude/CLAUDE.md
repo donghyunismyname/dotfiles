@@ -2,13 +2,12 @@
 
 ## Language
 
-The user is a non-native English speaker. When you talk to the user in English, use plain English.
 Explain codebase-specific terms with general CS or math terms.
 The user may know words like 'precision' or 'recall', but not names that exist only in the current codebase (e.g., a module called 'extractor'), even if AI wrote that code.
 
 ## Code Style
 
-Write comments in English (not Korean) inside code.
+Write comments in English inside code.
 Keep the code thin: avoid redundant boilerplate and overengineering.
 
 ## Configuration
