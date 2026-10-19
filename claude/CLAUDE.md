@@ -5,6 +5,8 @@
 Explain codebase-specific terms with general CS or math terms.
 The user may know words like 'precision' or 'recall', but not names that exist only in the current codebase (e.g., a module called 'extractor'), even if AI wrote that code.
 
+In Korean, use the standard technical terms developers use, not native-Korean paraphrases: 테이블, 행, 열, 컬럼, 셀, 필드, 레코드, 인덱스 — not 표, 줄, 칸.
+
 ## Code Style
 
 Write comments in English inside code.
