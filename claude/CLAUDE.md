@@ -9,7 +9,7 @@ In Korean, use the standard technical terms developers use, not native-Korean pa
 
 ## Code Style
 
-Write comments in English inside code.
+Write code comments in English, even when the conversation is in Korean.
 Keep the code thin: avoid redundant boilerplate and overengineering.
 
 ## Configuration
