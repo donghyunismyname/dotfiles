@@ -26,8 +26,7 @@ DetectHiddenWindows(false)
 ;                     Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
-;   drag Right (gestures, sent to the window under the cursor): down = Ctrl+W (close tab),
-;                     up-left = Ctrl+Shift+T (reopen closed tab), up-right = Ctrl+T (new tab)
+;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -49,9 +48,16 @@ MOUSE_PICK := "RButton & LButton"  ; rocker; a plain right-click still works, ri
 MOUSE_NEXT_TAB := "RButton & WheelDown"
 MOUSE_PREV_TAB := "RButton & WheelUp"
 GESTURE_PX := 80          ; a right-drag shorter than this is a plain right-click
-GESTURE_DOWN := "^w"
-GESTURE_UP_LEFT := "^+t"
-GESTURE_UP_RIGHT := "^t"
+GESTURES := Map(          ; drag direction -> keys to send, or a function called with the window
+    "N",  (hwnd) => (WinGetMinMax(hwnd) = 1 ? WinRestore(hwnd) : WinMaximize(hwnd), WinActivate(hwnd)),  ; maximize or restore, and focus
+    "S",  WinMinimize,
+    "NW", "^+t",          ; reopen closed tab
+    "NE", "^t",           ; new tab
+    "W",  "^c",           ; copy
+    "E",  "^v",           ; paste
+    "SW", "^w",           ; close tab
+    "SE", "{Enter}",
+)
 KEY_PROMOTE := "^+Space"
 GAP := 2                 ; px each zone edge is inset, so neighboring zones are 2 * GAP apart
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
@@ -77,7 +83,7 @@ Hotkey(MOUSE_PICK, (*) => PickAndPlace())
 Hotkey(MOUSE_NEXT_TAB, (*) => WheelTab("{Tab}"))
 Hotkey(MOUSE_PREV_TAB, (*) => WheelTab("+{Tab}"))
 cancelOverlay := ""  ; set while the overlay is open
-rightStart := {x: 0, y: 0}
+rightStart := {x: 0, y: 0, hwnd: 0}
 SetTimer(TrackRightStart, 20)
 Hotkey("RButton", OnRightRelease)
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
@@ -139,30 +145,32 @@ WheelTab(keys) {
 TrackRightStart() {
     global rightStart
     if !GetKeyState("RButton", "P")
-        MouseGetPos(&x, &y), rightStart := {x: x, y: y}
+        MouseGetPos(&x, &y, &hwnd), rightStart := {x: x, y: y, hwnd: hwnd}
 }
 
 ; A lone right press: cancels the overlay, right-clicks when short, or runs a drag gesture.
 OnRightRelease(*) {
     if cancelOverlay
         return cancelOverlay()
-    MouseGetPos(&x, &y, &hwnd)
-    dx := x - rightStart.x, dy := y - rightStart.y
+    MouseGetPos(&x, &y)
+    dx := x - rightStart.x, dy := y - rightStart.y, hwnd := rightStart.hwnd  ; the window where the drag began
     if Max(Abs(dx), Abs(dy)) < GESTURE_PX
         return Send("{RButton}")
-    if keys := GestureKeys(dx, dy) {
-        try WinActivate(hwnd)
-        Send(keys)
+    if !IsAppWindow(hwnd) || !(action := GESTURES.Get(GestureDir(dx, dy), ""))
+        return
+    try {
+        if action is String
+            WinActivate(hwnd), WinWaitActive(hwnd, , 1) && Send(action)  ; never send to another window
+        else
+            action(hwnd)
     }
 }
 
-; Keys for a drag direction: mostly down, or up at roughly 45 degrees either way; "" for any other.
-GestureKeys(dx, dy) {
-    if dy > Abs(dx)
-        return GESTURE_DOWN
-    if dy < 0 && Abs(dx) >= -dy / 2 && Abs(dx) <= -dy * 2
-        return dx < 0 ? GESTURE_UP_LEFT : GESTURE_UP_RIGHT
-    return ""
+; Nearest of 8 compass directions for a drag; screen y grows downward, so north is dy < 0.
+GestureDir(dx, dy) {
+    static names := ["E", "SE", "S", "SW", "W", "NW", "N", "NE"]
+    angle := DllCall("msvcrt\atan2", "double", dy, "double", dx, "double")
+    return names[Mod(Round(angle / ATan(1)) + 8, 8) + 1]  ; ATan(1): 45 degrees
 }
 
 PromoteActive() {
@@ -186,10 +194,15 @@ Place(hwnd, target) {
     }
 }
 
+; Minimizes every window whose center is in the zone, so a whole-monitor zone clears that monitor.
 MinimizeZone(zone) {
+    r := ZoneRect(zone)
     for hwnd in Windows()
-        if ZoneOf(hwnd) == zone
-            try WinMinimize(hwnd)
+        try {
+            f := FrameRect(hwnd), cx := f.x + f.w // 2, cy := f.y + f.h // 2
+            if cx >= r.x && cx < r.x + r.w && cy >= r.y && cy < r.y + r.h
+                WinMinimize(hwnd)
+        }
 }
 
 TopWindowIn(zone, exclude) {
