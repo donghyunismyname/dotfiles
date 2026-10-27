@@ -62,6 +62,25 @@ setopt PROMPT_SUBST
 
 ZSH_PLUGINS="${ZSH_PLUGINS:-$HOME/.zsh/plugins}"
 
+# MSYS2: autoloading a function searches all ~20 fpath dirs at ~5ms per
+# function, so the first Tab took ~0.5s. Compile every fpath function into one
+# digest placed first in fpath; rebuild when any fpath dir changes.
+if [[ $OSTYPE == (cygwin|msys) ]]; then
+    _fpath_zwc=$HOME/.cache/zsh/fpath.zwc
+    _fpath_new=(${^fpath}(N/e:'[[ $REPLY -nt $_fpath_zwc ]]':))
+    if [[ ! -s $_fpath_zwc ]] || (( $#_fpath_new )); then
+        typeset -A _fpath_fns
+        for _f in ${^fpath}/*(N.); do
+            [[ $_f == *.zwc || -n $_fpath_fns[${_f:t}] ]] || _fpath_fns[${_f:t}]=$_f
+        done
+        mkdir -p ${_fpath_zwc:h}
+        zcompile -Uz $_fpath_zwc ${(v)_fpath_fns}
+        unset _fpath_fns _f
+    fi
+    fpath=($_fpath_zwc $fpath)
+    unset _fpath_zwc _fpath_new
+fi
+
 autoload -Uz compinit
 # -u skips the insecure-directory check (shared linuxbrew owns site-functions
 # as another user). Same effect as omz's ZSH_DISABLE_COMPFIX.
@@ -109,6 +128,8 @@ _load_plugin() {
 }
 
 _load_plugin zsh-autosuggestions
+# MSYS2: async mode forks per keystroke (~45ms each); sync search takes ~1ms
+[[ $OSTYPE == (cygwin|msys) ]] && unset ZSH_AUTOSUGGEST_USE_ASYNC
 # zsh-syntax-highlighting must be sourced last
 _load_plugin zsh-syntax-highlighting
 
