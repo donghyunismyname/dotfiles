@@ -70,9 +70,9 @@ Hotkey(MOUSE_PICK, (*) => PickAndPlace())
 Hotkey(MOUSE_NEXT_TAB, (*) => WheelTab("{Tab}"))
 Hotkey(MOUSE_PREV_TAB, (*) => WheelTab("+{Tab}"))
 cancelOverlay := ""  ; set while the overlay is open
-HotIf((*) => cancelOverlay)  ; a right-click then cancels; RButton is a rocker prefix, so the overlay never sees it
-Hotkey("RButton", (*) => cancelOverlay())
-HotIf()
+; RButton is a prefix of the mouse combos, so a lone right-click lands here on release:
+; it cancels the overlay when one is open, and is passed on as a normal right-click otherwise.
+Hotkey("RButton", (*) => cancelOverlay ? cancelOverlay() : Send("{RButton}"))
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 
 ; Focus border: four click-through bars just inside the active window's visible frame.
@@ -116,8 +116,11 @@ PickAndPlace() {
 
 ; Keeps Ctrl down until Right is released, like holding Ctrl and pressing Tab on the keyboard,
 ; so apps with a recent-tabs switcher (Ctrl+Tab picks on Ctrl release) keep moving through it.
+; The window under the cursor is activated first, so the wheel switches tabs where it points.
 WheelTab(keys) {
     if !GetKeyState("Ctrl") {
+        MouseGetPos(, , &hwnd)
+        try WinActivate(hwnd)
         Send("{Ctrl down}")
         SetTimer(() => (KeyWait("RButton"), Send("{Ctrl up}")), -1)
     }
