@@ -45,7 +45,10 @@ MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
 ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
 TILE_H := 84
-BORDER_COLOR := "2D6CDF" ; focus border around the active window
+; Colors, RGB hex
+ACCENT_COLOR := "1E4AA0" ; focus border and zone bands
+BACK_COLOR := "1F1F1F"   ; zone overlays
+TEXT_COLOR := "E6E6E6"
 BORDER_WIDTH := 4
 BORDER_POLL_MS := 100
 
@@ -60,7 +63,7 @@ Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 borderBars := []
 loop 4 {
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x80020")  ; layered + transparent: clicks pass through
-    g.BackColor := BORDER_COLOR
+    g.BackColor := ACCENT_COLOR
     WinSetTransparent(255, g)
     borderBars.Push(g)
 }
@@ -283,15 +286,15 @@ ShowZoneOverlay(z, zones, items, onClick) {
     r := OverlayRect(z, zones, items.Length), h := r.h
     band := IsContainer(z, zones)
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
-    g.BackColor := band ? "2D6CDF" : "1F1F1F"
+    g.BackColor := band ? ACCENT_COLOR : BACK_COLOR
     ; A band starts its tile grid below the zone name; other zones center it.
     cols := TileColumns(r.w)
     rows := Ceil(items.Length / cols)
     x0 := Max(12, (r.w - Min(items.Length, cols) * TILE_W) // 2)
     y0 := band ? 44 : (h - rows * TILE_H) // 2
-    g.SetFont("s16 bold cWhite", "Segoe UI")
+    g.SetFont("s16 bold c" TEXT_COLOR, "Segoe UI")
     g.AddText("x" x0 " y" y0 - 40, z.name)
-    g.SetFont("s9 norm cE6E6E6")
+    g.SetFont("s9 norm c" TEXT_COLOR)
     for i, item in items {
         x := x0 + Mod(i - 1, cols) * TILE_W, y := y0 + (i - 1) // cols * TILE_H
         if item.hwnd {
