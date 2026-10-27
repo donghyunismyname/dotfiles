@@ -31,7 +31,7 @@ mode), so re-run `install-configs.ps1` after changing them in the repo.
 
 | Path | What | Apply |
 | ---- | ---- | ----- |
-| `terminal.sh`, `terminal/` | Windows Terminal `settings.json`, including the "MSYS2 zsh" profile | `sh terminal.sh` (repo → app), `sh terminal.sh backup` (app → repo), from Git Bash |
+| `terminal.ps1`, `terminal/` | Windows Terminal `settings.json`, including the "MSYS2 zsh" profile | `.\terminal.ps1` (repo → app), `.\terminal.ps1 backup` (app → repo) |
 | `keyboard/` | Key remaps via the registry `Scancode Map` | Double-click a `.reg`, then reboot |
 | `wsl/.wslconfig` | WSL2 memory limit | Copy to `%USERPROFILE%\.wslconfig`, then `wsl --shutdown` |
 | `wsl/sshserver.ps1` | Starts sshd in WSL and forwards Windows port 2222 to it | Copy to Desktop |
