@@ -46,8 +46,8 @@ ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
 TILE_H := 84
 ; Colors, RGB hex
-ACCENT_COLOR := "1E4AA0" ; focus border and zone bands
-BACK_COLOR := "1F1F1F"   ; zone overlays
+BORDER_COLOR := "14357A" ; focus border
+BACK_COLOR := "1F1F1F"   ; zone overlays, bands included
 TEXT_COLOR := "E6E6E6"
 BORDER_WIDTH := 4
 BORDER_POLL_MS := 100
@@ -63,7 +63,7 @@ Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 borderBars := []
 loop 4 {
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x80020")  ; layered + transparent: clicks pass through
-    g.BackColor := ACCENT_COLOR
+    g.BackColor := BORDER_COLOR
     WinSetTransparent(255, g)
     borderBars.Push(g)
 }
@@ -286,7 +286,7 @@ ShowZoneOverlay(z, zones, items, onClick) {
     r := OverlayRect(z, zones, items.Length), h := r.h
     band := IsContainer(z, zones)
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
-    g.BackColor := band ? ACCENT_COLOR : BACK_COLOR
+    g.BackColor := BACK_COLOR
     ; A band starts its tile grid below the zone name; other zones center it.
     cols := TileColumns(r.w)
     rows := Ceil(items.Length / cols)
