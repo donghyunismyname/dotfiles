@@ -287,8 +287,8 @@ if command -v direnv > /dev/null; then
     eval "$(direnv hook zsh)"
 fi
 
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf (0.48+ prints its own key bindings and completion)
+command -v fzf >/dev/null && source <(fzf --zsh 2>/dev/null)
 
 # Use fd for fzf: fast, respects .gitignore, includes hidden files
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
