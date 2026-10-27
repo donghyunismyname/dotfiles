@@ -334,6 +334,41 @@ gcm() {
   fi
 }
 
+# Open a directory (default: cwd) in the OS file manager; for a file, open its
+# folder with the file selected. Refuses over SSH, where the window would
+# appear on the remote machine's screen instead of yours.
+e() {
+  local target=${1:-.}
+  [[ -e $target ]] || { print -u2 "e: no such file or directory: $target"; return 1 }
+  if [[ -n $SSH_CONNECTION ]]; then
+    print -u2 "e: SSH session, no local desktop to open a file manager on"
+    return 1
+  fi
+  target=${target:A}
+  if [[ $OSTYPE == darwin* ]]; then
+    if [[ -d $target ]]; then open $target; else open -R $target; fi
+  elif [[ $OSTYPE == (cygwin|msys) || -n $WSL_DISTRO_NAME ]]; then
+    local win
+    if [[ -n $WSL_DISTRO_NAME ]]; then win=$(wslpath -w $target); else win=$(cygpath -w $target); fi
+    # Pass the path as its own argument: a quoted "/select,C:\a b" (what a
+    # path with spaces becomes) makes Explorer open Documents instead.
+    # MSYS2_ARG_CONV_EXCL keeps MSYS2 from rewriting /select as a POSIX path.
+    # explorer.exe exits 1 even on success, so ignore its status.
+    if [[ -d $target ]]; then
+      explorer.exe $win
+    else
+      MSYS2_ARG_CONV_EXCL='*' explorer.exe /select, $win
+    fi
+    return 0
+  elif [[ -n $DISPLAY || -n $WAYLAND_DISPLAY ]]; then
+    [[ -d $target ]] || target=${target:h}
+    xdg-open $target
+  else
+    print -u2 "e: no graphical session (DISPLAY and WAYLAND_DISPLAY are unset)"
+    return 1
+  fi
+}
+
 
 # ============================================
 # Python
