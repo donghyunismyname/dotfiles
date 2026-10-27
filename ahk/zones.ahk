@@ -22,8 +22,8 @@ DetectHiddenWindows(false)
 ; Zone-based window placement.
 ;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there,
 ;                     or the first tile to minimize every window in that zone. Clicking a zone's
-;                     background brings that zone's top window to the active window's zone (swap)
-;                     and focuses it. Right-click, Esc, or any key cancels
+;                     background moves the active window there (swapping with the window there).
+;                     Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
@@ -96,8 +96,10 @@ PickAndPlace() {
     try {
         if !(pick := PickZoneAndWindow())
             return
-        if pick.HasOwnProp("swap")
-            SwapIntoActiveZone(pick.zone, active)
+        if pick.HasOwnProp("background") {
+            if active && WinExist(active) && IsAppWindow(active)
+                Place(active, pick.zone)
+        }
         else if pick.hwnd
             Place(pick.hwnd, pick.zone)
         else
@@ -126,12 +128,6 @@ Place(hwnd, target) {
     } catch as e {
         TrayTip("Could not move the window (admin app?)`n" e.Message, "zones")
     }
-}
-
-; Moves the zone's top window to where the active window is (swapping them) and focuses it.
-SwapIntoActiveZone(zone, active) {
-    if active && WinExist(active) && (src := ZoneOf(active)) && src != zone && (top := TopWindowIn(zone, active))
-        Place(top, src)
 }
 
 MinimizeZone(zone) {
@@ -223,7 +219,7 @@ MoveTo(hwnd, r) {
 ; ---- Zone overlay ----
 
 ; Shows every zone with a tile per open window. Returns {zone, hwnd} for a clicked tile,
-; {zone, swap} for a click on a zone's background, or "" when cancelled by right-click or any key.
+; {zone, background} for a click on a zone's background, or "" when cancelled by right-click or any key.
 PickZoneAndWindow() {
     state := {pick: ""}
     ih := InputHook("L1 T30", "{Esc}")
@@ -255,7 +251,7 @@ OverlayClicked(overlays, items, state, ih, wParam, lParam, msg, hwnd) {
             if x >= o.x0 && y >= o.y0 && col < o.cols && i <= items.Length
                 state.pick := {zone: o.zone, hwnd: items[i].hwnd}
             else
-                state.pick := {zone: o.zone, swap: true}
+                state.pick := {zone: o.zone, background: true}
             ih.Stop()
         }
 }
