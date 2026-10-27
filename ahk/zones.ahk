@@ -11,11 +11,11 @@ if !A_IsAdmin && !InStr(DllCall("GetCommandLine", "str"), " /restart") {
 }
 
 ; Zone-based window placement.
-;   Ctrl+Space        choose a zone on the overlay (number key or click), then a window or app in the picker
+;   Ctrl+Space        choose a zone on the overlay (number key or click), then a window in the picker
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
-; otherwise (overlapping zones, new app, window not in any zone) the target's windows just stay behind.
+; otherwise (overlapping zones, window not in any zone) the target's windows just stay behind.
 
 ; ---- Config ----
 ZONES := [
@@ -27,20 +27,15 @@ ZONES := [
     {key: "6", name: "Tall",   mon: 2, x: 0,   y: 0,   w: 1,   h: 1},
 ]
 MAIN_ZONE := ZONES[1]
-APPS := [
-    {name: "Chrome",   cmd: "chrome.exe --new-window"},
-    {name: "Terminal", cmd: "wt.exe"},
-    {name: "Explorer", cmd: "explorer.exe"},
-    {name: "Notepad",  cmd: "notepad.exe"},
-]
 KEY_PICK := "^Space"
 KEY_PROMOTE := "^+Space"
 GAP := 6                 ; px between a zone edge and its window
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
-OVERLAY_ALPHA := 170
+OVERLAY_ALPHA := 210
 BAND_HEIGHT := 90        ; a zone that contains other zones is drawn as a band at its top edge
-LAUNCH_TIMEOUT_MS := 10000
 PICKER_TITLE := "zones-picker"
+PICKER_WIDTH := 640
+PICKER_ROWS := 10        ; max visible rows before the list scrolls
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
@@ -56,12 +51,8 @@ Down::MovePickerSelection(1)
 PickAndPlace() {
     if !(zone := PickZone())
         return
-    if !(item := PickItem(zone))
-        return
-    if item.HasOwnProp("hwnd")
-        Place(item.hwnd, zone)
-    else
-        Launch(item.app, zone)
+    if hwnd := PickWindow(zone)
+        Place(hwnd, zone)
 }
 
 PromoteActive() {
@@ -83,29 +74,6 @@ Place(hwnd, target) {
     } catch as e {
         TrayTip("Could not move the window (admin app?)`n" e.Message, "zones")
     }
-}
-
-; Runs the app and places the first new window that appears.
-Launch(app, zone) {
-    before := Map()
-    for hwnd in Windows()
-        before[hwnd] := true
-    try {
-        Run(app.cmd)
-    } catch as e {
-        MsgBox("Could not run " app.cmd "`n" e.Message, "zones")
-        return
-    }
-    deadline := A_TickCount + LAUNCH_TIMEOUT_MS
-    while A_TickCount < deadline {
-        Sleep(100)
-        for hwnd in Windows()
-            if !before.Has(hwnd) {
-                Sleep(300)  ; let the app finish restoring its own size first
-                return Place(hwnd, zone)
-            }
-    }
-    TrayTip("No new window from " app.name, "zones")
 }
 
 TopWindowIn(zone, exclude) {
@@ -231,7 +199,7 @@ ShowZoneOverlay(z, band, onClick) {
     r := ZoneRect(z)
     h := band ? BAND_HEIGHT : r.h
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
-    g.BackColor := band ? "8A3FD1" : "2D6CDF"
+    g.BackColor := band ? "2D6CDF" : "1F1F1F"
     g.SetFont("s24 bold cWhite", "Segoe UI")
     g.AddText("x0 y0 w" r.w " h" h " Center 0x200", z.key "  " z.name).OnEvent("Click", onClick)  ; 0x200: center vertically
     g.Show("NA x" r.x " y" r.y " w" r.w " h" h)
@@ -241,45 +209,104 @@ ShowZoneOverlay(z, band, onClick) {
 
 ; ---- Picker ----
 
-; Lists open windows and launchable apps, filtered by the typed text; returns the chosen item or "".
-PickItem(zone) {
+; Lists open windows with their icons, filtered by the typed text; returns the chosen window or 0.
+PickWindow(zone) {
     global pickerList
+    icons := IL_Create(10, 10, true)  ; large (32 px) icons
     items := []
     for hwnd in Windows() {
         z := ZoneOf(hwnd)
-        try items.Push({hwnd: hwnd, label: WinGetTitle(hwnd) "  ·  " WinGetProcessName(hwnd), where: z ? z.name : ""})
+        try items.Push({hwnd: hwnd, title: WinGetTitle(hwnd), exe: WinGetProcessName(hwnd)
+            , where: z ? z.name : "", icon: AddWindowIcon(icons, hwnd)})
     }
-    for app in APPS
-        items.Push({app: app, label: "Open " app.name, where: "new"})
 
-    state := {shown: [], choice: ""}
-    g := Gui("+AlwaysOnTop -Caption +Border", PICKER_TITLE)
-    g.SetFont("s11", "Segoe UI")
-    g.AddText("w640", "Put into " zone.name)
-    query := g.AddEdit("w640")
-    pickerList := g.AddListView("w640 r15 -Hdr -Multi +0x8", ["Name", "Zone"])  ; 0x8: keep selection visible
-    pickerList.ModifyCol(1, 520)
-    pickerList.ModifyCol(2, 100)
-    query.OnEvent("Change", (*) => FillPicker(pickerList, items, query.Value, state))
-    pickerList.OnEvent("DoubleClick", (*) => SubmitPicker(g, pickerList, state))
+    state := {shown: [], choice: 0}
+    g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale", PICKER_TITLE)
+    g.BackColor := "1F1F1F"
+    g.MarginX := 14, g.MarginY := 12
+    DllCall("dwmapi\DwmSetWindowAttribute", "ptr", g.Hwnd, "uint", 33, "int*", 2, "uint", 4)  ; rounded corners (Win11)
+    g.SetFont("s10 c9A9A9A", "Segoe UI")
+    g.AddText("w" PICKER_WIDTH, "Put into " zone.name)
+    g.SetFont("s13 cF0F0F0")
+    query := g.AddEdit("w" PICKER_WIDTH " -E0x200 Background2B2B2B")
+    SendMessage(0x1501, true, StrPtr("Type to filter windows"), query)  ; EM_SETCUEBANNER
+    SendMessage(0xD3, 3, 10 | 10 << 16, query)  ; EM_SETMARGINS: 10 px left and right
+    g.SetFont("s11 cE6E6E6")
+    ; LV0x10000: double buffering against flicker.
+    pickerList := g.AddListView("w" PICKER_WIDTH " -Hdr -Multi -E0x200 +LV0x10000 Background1F1F1F", ["Window"])
+    pickerList.SetImageList(icons, 1)
+    DllCall("uxtheme\SetWindowTheme", "ptr", pickerList.Hwnd, "str", "DarkMode_Explorer", "ptr", 0)
+    refill := (*) => FillPicker(pickerList, items, query.Value, state)
+    query.OnEvent("Change", refill)
+    pickerList.OnEvent("Click", (*) => SubmitPicker(g, pickerList, state))
     g.AddButton("Default Hidden", "OK").OnEvent("Click", (*) => SubmitPicker(g, pickerList, state))
     g.OnEvent("Escape", (*) => g.Destroy())
-    FillPicker(pickerList, items, "", state)
+    refill()
+    SendMessage(0x127, 0x10001, 0, pickerList)  ; WM_CHANGEUISTATE: hide the dotted focus rectangle
+
+    ; The list keeps focus so its selection is clearly highlighted; typed characters go to the filter box.
+    onChar := (wParam, lParam, msg, hwnd) => hwnd = pickerList.Hwnd ? ForwardChar(query, wParam, refill) : ""
+    OnMessage(0x102, onChar)  ; WM_CHAR
+
+    ; Row heights are only known once the window exists; then fit the list and center on the target zone.
+    g.Show("Hide")
+    FitListHeight(pickerList, items.Length)
+    g.Show("AutoSize Hide")
+    WinGetPos(, , &w, &h, g)
+    r := ZoneRect(zone)
+    WinMove(r.x + (r.w - w) // 2, r.y + (r.h - h) // 2, , , g)
     g.Show()
+    pickerList.Focus()
     WinWaitClose(g)
+    OnMessage(0x102, onChar, 0)
     return state.choice
+}
+
+; Sizes the list to its rows, up to PICKER_ROWS.
+FitListHeight(lv, count) {
+    rect := Buffer(16, 0)  ; LVIR_BOUNDS
+    SendMessage(0x100E, 0, rect, lv)  ; LVM_GETITEMRECT of the first row
+    rowHeight := NumGet(rect, 12, "int") - NumGet(rect, 4, "int")
+    lv.Move(, , , Max(1, Min(count, PICKER_ROWS)) * rowHeight + 4)
+    lv.ModifyCol(1, "AutoHdr")
+}
+
+ForwardChar(query, char, refill) {
+    if char = 8  ; Backspace
+        query.Value := SubStr(query.Value, 1, -1)
+    else if char >= 32
+        query.Value .= Chr(char)
+    else
+        return ""  ; let Enter and Esc through
+    refill()
+    return 0
+}
+
+; Adds the window's own icon (the one the taskbar shows) to the image list; returns its 1-based index.
+AddWindowIcon(il, hwnd) {
+    for size in [1, 2, 0] {  ; WM_GETICON: ICON_BIG, ICON_SMALL2, ICON_SMALL
+        h := 0
+        try h := SendMessage(0x7F, size, 0, , hwnd, , , , 200)
+        if h
+            return DllCall("comctl32\ImageList_ReplaceIcon", "ptr", il, "int", -1, "ptr", h) + 1
+    }
+    if h := DllCall("GetClassLongPtr", "ptr", hwnd, "int", -14, "ptr")  ; GCLP_HICON
+        return DllCall("comctl32\ImageList_ReplaceIcon", "ptr", il, "int", -1, "ptr", h) + 1
+    try return IL_Add(il, WinGetProcessPath(hwnd))
+    return 0
 }
 
 FillPicker(lv, items, text, state) {
     lv.Delete()
     state.shown := []
     for item in items
-        if Matches(item.label, text) {
+        if Matches(item.title " " item.exe, text) {
             state.shown.Push(item)
-            lv.Add(, item.label, item.where)
+            lv.Add("Icon" item.icon, item.where ? item.title "   ·   " item.where : item.title)
         }
     if state.shown.Length
         lv.Modify(1, "Select Focus Vis")
+    lv.ModifyCol(1, "AutoHdr")  ; fill the width left by the scrollbar, if any
 }
 
 ; Every space-separated term must appear in the label.
@@ -292,7 +319,7 @@ Matches(label, text) {
 
 SubmitPicker(g, lv, state) {
     if row := lv.GetNext()
-        state.choice := state.shown[row]
+        state.choice := state.shown[row].hwnd
     g.Destroy()
 }
 
