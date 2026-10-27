@@ -2,8 +2,8 @@
 #SingleInstance Force
 
 ; Zone-based window placement.
-;   Alt+`        choose a zone on the overlay (number key or click), then a window or app in the picker
-;   Alt+Shift+`  move the active window to MAIN_ZONE
+;   Ctrl+Space        choose a zone on the overlay (number key or click), then a window or app in the picker
+;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
 ; otherwise (overlapping zones, new app, window not in any zone) the target's windows just stay behind.
@@ -24,8 +24,8 @@ APPS := [
     {name: "Explorer", cmd: "explorer.exe"},
     {name: "Notepad",  cmd: "notepad.exe"},
 ]
-KEY_PICK := "!SC029"     ; Alt+`
-KEY_PROMOTE := "!+SC029" ; Alt+Shift+`
+KEY_PICK := "^Space"
+KEY_PROMOTE := "^+Space"
 GAP := 6                 ; px between a zone edge and its window
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
 OVERLAY_ALPHA := 170
