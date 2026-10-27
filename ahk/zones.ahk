@@ -49,7 +49,7 @@ TILE_H := 84
 BAND_HEIGHT := TILE_H + 56  ; a zone that contains other zones is drawn as a band at its top edge
 BORDER_COLOR := "2D6CDF" ; focus border around the active window
 BORDER_WIDTH := 4
-BORDER_POLL_MS := 50
+BORDER_POLL_MS := 100
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
