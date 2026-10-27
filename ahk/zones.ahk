@@ -26,6 +26,7 @@ DetectHiddenWindows(false)
 ;                     Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
+;   drag Right downward: Ctrl+W (close tab) in the window under the cursor
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -46,6 +47,7 @@ TAP_MAX_MS := 300        ; a longer press is not a tap
 MOUSE_PICK := "RButton & LButton"  ; rocker; a plain right-click still works, right-drag does not
 MOUSE_NEXT_TAB := "RButton & WheelDown"
 MOUSE_PREV_TAB := "RButton & WheelUp"
+GESTURE_PX := 80          ; a right-drag at least this far down, mostly vertical, closes the tab
 KEY_PROMOTE := "^+Space"
 GAP := 2                 ; px each zone edge is inset, so neighboring zones are 2 * GAP apart
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
@@ -63,6 +65,7 @@ BORDER_POLL_MS := 100
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
+CoordMode("Mouse", "Screen")  ; gesture start and end are compared across windows
 A_IconTip := "zones"
 InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
@@ -70,9 +73,9 @@ Hotkey(MOUSE_PICK, (*) => PickAndPlace())
 Hotkey(MOUSE_NEXT_TAB, (*) => WheelTab("{Tab}"))
 Hotkey(MOUSE_PREV_TAB, (*) => WheelTab("+{Tab}"))
 cancelOverlay := ""  ; set while the overlay is open
-; RButton is a prefix of the mouse combos, so a lone right-click lands here on release:
-; it cancels the overlay when one is open, and is passed on as a normal right-click otherwise.
-Hotkey("RButton", (*) => cancelOverlay ? cancelOverlay() : Send("{RButton}"))
+rightStart := {x: 0, y: 0}
+SetTimer(TrackRightStart, 20)
+Hotkey("RButton", OnRightRelease)
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 
 ; Focus border: four click-through bars just inside the active window's visible frame.
@@ -125,6 +128,27 @@ WheelTab(keys) {
         SetTimer(() => (KeyWait("RButton"), Send("{Ctrl up}")), -1)
     }
     Send("{Blind}" keys)  ; Blind: keep the held Ctrl
+}
+
+; Remembers the cursor position while Right is up, so a release knows where the press began:
+; RButton is a prefix of the mouse combos, so the script only hears about a lone press on release.
+TrackRightStart() {
+    global rightStart
+    if !GetKeyState("RButton", "P")
+        MouseGetPos(&x, &y), rightStart := {x: x, y: y}
+}
+
+; A lone right press: cancels the overlay, closes the tab after a downward drag, or right-clicks.
+OnRightRelease(*) {
+    if cancelOverlay
+        return cancelOverlay()
+    MouseGetPos(&x, &y, &hwnd)
+    dy := y - rightStart.y
+    if dy >= GESTURE_PX && Abs(x - rightStart.x) < dy {
+        try WinActivate(hwnd)
+        Send("^w")
+    } else
+        Send("{RButton}")
 }
 
 PromoteActive() {
