@@ -20,8 +20,8 @@ for hwnd in WinGetList(A_ScriptFullPath " - AutoHotkey ahk_class AutoHotkey")
 DetectHiddenWindows(false)
 
 ; Zone-based window placement.
-;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there.
-;                     Esc (or any key) cancels
+;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there,
+;                     or the first tile to minimize every window in that zone. Esc (or any key) cancels
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -46,7 +46,6 @@ OVERLAY_ALPHA := 210
 ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
 TILE_H := 84
-BAND_HEIGHT := TILE_H + 56  ; a zone that contains other zones is drawn as a band at its top edge
 BORDER_COLOR := "2D6CDF" ; focus border around the active window
 BORDER_WIDTH := 4
 BORDER_POLL_MS := 100
@@ -76,8 +75,12 @@ OnPickKey(*) {
 }
 
 PickAndPlace() {
-    if pick := PickZoneAndWindow()
+    if !(pick := PickZoneAndWindow())
+        return
+    if pick.hwnd
         Place(pick.hwnd, pick.zone)
+    else
+        MinimizeZone(pick.zone)
 }
 
 PromoteActive() {
@@ -99,6 +102,12 @@ Place(hwnd, target) {
     } catch as e {
         TrayTip("Could not move the window (admin app?)`n" e.Message, "zones")
     }
+}
+
+MinimizeZone(zone) {
+    for hwnd in Windows()
+        if ZoneOf(hwnd) == zone
+            try WinMinimize(hwnd)
 }
 
 TopWindowIn(zone, exclude) {
@@ -190,6 +199,7 @@ PickZoneAndWindow() {
     ih := InputHook("L1 T30", "{Esc}")
     zones := ConnectedZones()
     items := WindowItems()
+    items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the zone's windows
     guis := []
     for z in zones
         guis.Push(ShowZoneOverlay(z, zones, items, TileClicked.Bind(state, ih, z)))
@@ -255,25 +265,28 @@ IsContainer(z, zones) {
     return false
 }
 
-; Overlays never overlap: a zone that contains other zones gets a band at its top,
-; and a zone inside it that starts at the same top edge gets the area below the band.
-OverlayRect(z, zones) {
+; Overlays never overlap: a zone that contains other zones gets a band at its top, tall enough for
+; n tiles, and a zone inside it that starts at the same top edge gets the area below the band.
+OverlayRect(z, zones, n) {
     r := ZoneRect(z)
     if IsContainer(z, zones)
-        return {x: r.x, y: r.y, w: r.w, h: BAND_HEIGHT}
+        return {x: r.x, y: r.y, w: r.w, h: BandHeight(r.w, n)}
     for other in zones
-        if other != z && Encloses(ZoneRect(other), r) && ZoneRect(other).y = r.y
-            return {x: r.x, y: r.y + BAND_HEIGHT + GAP, w: r.w, h: r.h - BAND_HEIGHT - GAP}
+        if other != z && Encloses(c := ZoneRect(other), r) && c.y = r.y
+            return {x: r.x, y: r.y + BandHeight(c.w, n) + GAP, w: r.w, h: r.h - BandHeight(c.w, n) - GAP}
     return r
 }
 
+TileColumns(w) => Max(1, (w - 24) // TILE_W)
+BandHeight(w, n) => 56 + Ceil(n / TileColumns(w)) * TILE_H
+
 ShowZoneOverlay(z, zones, items, onClick) {
-    r := OverlayRect(z, zones), h := r.h
+    r := OverlayRect(z, zones, items.Length), h := r.h
     band := IsContainer(z, zones)
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
     g.BackColor := band ? "2D6CDF" : "1F1F1F"
-    ; A band holds one row of tiles; other zones center a grid of tiles.
-    cols := band ? items.Length : Max(1, (r.w - 24) // TILE_W)
+    ; A band starts its tile grid below the zone name; other zones center it.
+    cols := TileColumns(r.w)
     rows := Ceil(items.Length / cols)
     x0 := Max(12, (r.w - Min(items.Length, cols) * TILE_W) // 2)
     y0 := band ? 44 : (h - rows * TILE_H) // 2
@@ -282,8 +295,15 @@ ShowZoneOverlay(z, zones, items, onClick) {
     g.SetFont("s9 norm cE6E6E6")
     for i, item in items {
         x := x0 + Mod(i - 1, cols) * TILE_W, y := y0 + (i - 1) // cols * TILE_H
-        try g.AddPicture("x" x + (TILE_W - ICON_SIZE) // 2 " y" y " w" ICON_SIZE " h" ICON_SIZE, item.icon)
-            .OnEvent("Click", onClick.Bind(item.hwnd))
+        if item.hwnd {
+            try g.AddPicture("x" x + (TILE_W - ICON_SIZE) // 2 " y" y " w" ICON_SIZE " h" ICON_SIZE, item.icon)
+                .OnEvent("Click", onClick.Bind(item.hwnd))
+        } else {
+            g.SetFont("s20", "Segoe MDL2 Assets")
+            g.AddText("x" x " y" y " w" TILE_W " h" ICON_SIZE " Center", Chr(0xE921))  ; minimize glyph
+                .OnEvent("Click", onClick.Bind(0))
+            g.SetFont("s9", "Segoe UI")
+        }
         g.AddText("x" x " y" y + ICON_SIZE + 4 " w" TILE_W " r2 Center", item.title)
             .OnEvent("Click", onClick.Bind(item.hwnd))
     }
