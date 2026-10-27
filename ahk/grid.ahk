@@ -3,9 +3,8 @@
 
 ; Keyboard mouse jump.
 ;   Ctrl+Space  splits each of AREAS into 3x3 BLOCKS of 3x3 cells (ROWS), each labeled with three keys:
-;               area, block, cell. Typed keys narrow the labels and move the cursor to the center of what
-;               is left; once one cell is left, it splits into the ROWS grid again, so later keys refine.
-;               A CLICKS key clicks where the cursor is; any other key stops.
+;               area, block, cell. Typing a label moves the cursor to the center of its cell.
+;               A key that fits no label cancels.
 ; Keys are read by their physical position (virtual key), so the Hangul input mode does not matter,
 ; and Ctrl may still be held from the hotkey.
 
@@ -17,8 +16,7 @@ AREAS := [  ; first key, as the disjoint zones in zones.ahk; fractions of the wh
     {key: ";", mon: 2, x: 0,   y: 0.5, w: 1,   h: 0.5},  ; portrait, bottom half
 ]
 BLOCKS := ["wer", "sdf", "xcv"]  ; second key: a block of the area
-ROWS := ["uio", "jkl", "m,."]    ; third key: a cell of the block; later keys split the cell into this grid again
-CLICKS := Map("Space", "Left", "Enter", "Right")  ; key -> mouse button
+ROWS := ["uio", "jkl", "m,."]    ; third key: a cell of the block
 KEY_SHOW := "^Space"
 TIMEOUT_S := 10
 FONT_SIZE := 28          ; shrinks to fit smaller cells
@@ -36,32 +34,18 @@ A_IconTip := "grid"
 Hotkey(KEY_SHOW, (*) => Jump())
 
 Jump() {
-    cells := StartCells(), typed := ""
-    loop {
-        guis := ShowCells(cells, StrLen(typed))
-        key := ReadKey()
-        for g in guis
-            g.Destroy()
-        next := []
-        for c in cells
-            if SubStr(c.label, StrLen(typed) + 1, 1) = key
-                next.Push(c)
-        if !next.Length
-            break
+    cells := StartCells(), guis := ShowCells(cells), typed := ""
+    while StrLen(typed) < 3 && (key := ReadKey()) != "" && StartsAny(cells, typed key)  ; 3: area, block, cell
         typed .= key
-        box := Bounds(next)
-        MouseMove((box.l + box.r) // 2, (box.t + box.b) // 2, 0)
-        if next.Length = 1
-            cells := Split(next[1], ROWS), typed := ""
-        else
-            cells := next
-    }
-    if CLICKS.Has(key)
-        Click(CLICKS[key])
+    for g in guis
+        g.Destroy()
+    if cells.Has(typed)
+        c := cells[typed], MouseMove((c.l + c.r) // 2, (c.t + c.b) // 2, 0)
 }
 
+; Label -> cell rectangle in screen pixels, for every cell of every connected area.
 StartCells() {
-    cells := []
+    cells := Map()
     for a in AREAS
         if a.mon <= MonitorGetCount() {
             MonitorGet(a.mon, &l, &t, &r, &b)
@@ -69,13 +53,13 @@ StartCells() {
             area := {l: l + Round(a.x * w), t: t + Round(a.y * h), r: l + Round((a.x + a.w) * w), b: t + Round((a.y + a.h) * h), mon: a.mon}
             for i, block in Split(area, BLOCKS, a.key)
                 for c in Split(block, ROWS, block.label, Mod(i, 2) ? BACK_COLOR : BACK_ALT_COLOR)
-                    cells.Push(c)
+                    cells[c.label] := c
         }
     return cells
 }
 
-; Splits rectangle r into the rows grid: cells labeled prefix + key, in screen pixels.
-Split(r, rows, prefix := "", back := BACK_COLOR) {
+; Splits rectangle r into the rows grid: cells labeled prefix + key.
+Split(r, rows, prefix, back := BACK_COLOR) {
     cells := [], cw := (r.r - r.l) / StrLen(rows[1]), ch := (r.b - r.t) / rows.Length
     for i, row in rows
         for j, key in StrSplit(row)
@@ -84,29 +68,31 @@ Split(r, rows, prefix := "", back := BACK_COLOR) {
     return cells
 }
 
-Bounds(cells) {
-    box := {l: cells[1].l, t: cells[1].t, r: cells[1].r, b: cells[1].b}
-    for c in cells
-        box.l := Min(box.l, c.l), box.t := Min(box.t, c.t), box.r := Max(box.r, c.r), box.b := Max(box.b, c.b)
-    return box
+StartsAny(cells, prefix) {
+    for label in cells
+        if InStr(label, prefix) = 1
+            return true
+    return false
 }
 
-; One translucent, click-through window per monitor, labeling each cell with its keys after the first skip.
-ShowCells(cells, skip) {
+; One translucent, click-through window per monitor, labeling every cell.
+ShowCells(cells) {
     groups := Map()
-    for c in cells
+    for label, c in cells
         groups.Has(c.mon) ? groups[c.mon].Push(c) : (groups[c.mon] := [c])
     guis := []
     for mon, list in groups {
-        box := Bounds(list), c := list[1], n := StrLen(c.label) - skip
+        l := t := 1e9, r := b := -1e9
+        for c in list
+            l := Min(l, c.l), t := Min(t, c.t), r := Max(r, c.r), b := Max(b, c.b)
         g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x20")  ; click-through once layered
         g.BackColor := LINE_COLOR
-        px := Min((c.b - c.t) * 0.5, (c.r - c.l) / (0.8 * n))  ; text height that fits the cell
+        c := list[1], px := Min((c.b - c.t) * 0.5, (c.r - c.l) / (0.8 * StrLen(c.label)))  ; text height that fits a cell
         g.SetFont("s" Max(1, Min(FONT_SIZE, Round(px * 72 / A_ScreenDPI))) " bold c" TEXT_COLOR, "Segoe UI")
         for c in list
-            g.AddText("x" c.l - box.l + 1 " y" c.t - box.t + 1 " w" Max(1, c.r - c.l - 1) " h" Max(1, c.b - c.t - 1)
-                " Center 0x200 Background" c.back, StrUpper(SubStr(c.label, skip + 1)))  ; 0x200: vertically centered
-        g.Show("NA x" box.l " y" box.t " w" box.r - box.l " h" box.b - box.t)
+            g.AddText("x" c.l - l + 1 " y" c.t - t + 1 " w" c.r - c.l - 1 " h" c.b - c.t - 1
+                " Center 0x200 Background" c.back, StrUpper(c.label))  ; 0x200: vertically centered
+        g.Show("NA x" l " y" t " w" r - l " h" b - t)
         WinSetTransparent(BACK_ALPHA, g)
         guis.Push(g)
     }
