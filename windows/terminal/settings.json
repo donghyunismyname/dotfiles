@@ -55,7 +55,7 @@
     ],
     "copyFormatting": "none",
     "copyOnSelect": true,
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "defaultProfile": "{8935cf20-dd16-4b5e-812a-5d373000ce23}",
     "focusFollowMouse": false,
     "keybindings": 
     [
@@ -105,8 +105,7 @@
                 "taskbar"
             ],
             "colorScheme": "Dark+",
-            "elevate": true,
-            "font": 
+            "font":
             {
                 "face": "DroidSansM Nerd Font Mono",
                 "size": 10
@@ -145,6 +144,7 @@
                 "commandline": "%USERPROFILE%\\scoop\\apps\\msys2\\current\\usr\\bin\\env.exe MSYSTEM=UCRT64 MSYS2_PATH_TYPE=inherit CHERE_INVOKING=1 /usr/bin/zsh --login -i",
                 "guid": "{8935cf20-dd16-4b5e-812a-5d373000ce23}",
                 "hidden": false,
+                "icon": "%USERPROFILE%\\scoop\\apps\\msys2\\current\\ucrt64.ico",
                 "name": "MSYS2 zsh"
             },
             {
