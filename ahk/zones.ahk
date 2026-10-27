@@ -20,7 +20,8 @@ for hwnd in WinGetList(A_ScriptFullPath " - AutoHotkey ahk_class AutoHotkey")
 DetectHiddenWindows(false)
 
 ; Zone-based window placement.
-;   Ctrl+Space        choose a zone on the overlay (number key or click), then a window in the picker
+;   tap Left Ctrl     choose a zone on the overlay (number key or click), then a window in the picker;
+;                     tapping it again while choosing cancels, like Esc
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -36,7 +37,8 @@ ZONES := [
     {key: "6", name: "Tall",   mon: 2, x: 0,   y: 0,   w: 1,   h: 1},
 ]
 MAIN_ZONE := ZONES[1]
-KEY_PICK := "^Space"
+KEY_PICK := "LControl"   ; tapped alone
+TAP_MAX_MS := 300        ; a longer press is not a tap
 KEY_PROMOTE := "^+Space"
 GAP := 6                 ; px between a zone edge and its window
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
@@ -49,14 +51,29 @@ PICKER_HEIGHT := 400
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 A_IconTip := "zones"
-Hotkey(KEY_PICK, (*) => PickAndPlace())
+picking := false
+InstallMouseHook()  ; so Ctrl+click is not taken for a tap
+Hotkey("~" KEY_PICK, OnPickKey)
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 
-PickAndPlace() {
-    if !(zone := PickZone())
+OnPickKey(*) {
+    KeyWait(KEY_PICK)
+    if A_PriorKey != KEY_PICK || A_TimeSinceThisHotkey > TAP_MAX_MS
         return
-    if hwnd := PickWindow(zone)
-        Place(hwnd, zone)
+    if picking
+        Send("{Esc}")
+    else
+        SetTimer(PickAndPlace, -1)  ; run in its own thread so the next tap can cancel it
+}
+
+PickAndPlace() {
+    global picking := true
+    try {
+        if (zone := PickZone()) && (hwnd := PickWindow(zone))
+            Place(hwnd, zone)
+    } finally {
+        picking := false
+    }
 }
 
 PromoteActive() {
