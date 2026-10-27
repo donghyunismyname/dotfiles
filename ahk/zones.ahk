@@ -21,7 +21,9 @@ DetectHiddenWindows(false)
 
 ; Zone-based window placement.
 ;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there,
-;                     or the first tile to minimize every window in that zone. Esc (or any key) cancels
+;                     or the first tile to minimize every window in that zone. Clicking a zone's
+;                     background brings that zone's top window to the active window's zone (swap)
+;                     and focuses it. Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
@@ -50,7 +52,9 @@ TILE_H := 84
 ; Colors, RGB hex
 BORDER_COLOR := "14357A" ; focus border
 BACK_COLOR := "1F1F1F"   ; zone overlays, bands included
+KEY_COLOR := "1F1F1E"    ; never drawn: keyed out so the translucent backdrop shows through
 TEXT_COLOR := "E6E6E6"
+BACK_ALPHA := 200        ; overlay backdrop opacity, 0-255; icons and text stay opaque
 BORDER_WIDTH := 4
 BORDER_POLL_MS := 100
 
@@ -60,6 +64,10 @@ A_IconTip := "zones"
 InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
 Hotkey(MOUSE_PICK, (*) => PickAndPlace())
+cancelOverlay := ""  ; set while the overlay is open
+HotIf((*) => cancelOverlay)  ; a right-click then cancels; RButton is a rocker prefix, so the overlay never sees it
+Hotkey("RButton", (*) => cancelOverlay())
+HotIf()
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 
 ; Focus border: four click-through bars just inside the active window's visible frame.
@@ -84,10 +92,15 @@ PickAndPlace() {
     if busy
         return
     busy := true
+    active := WinExist("A")  ; before the overlay takes focus
     try {
-        if (pick := PickZoneAndWindow()) && pick.hwnd
+        if !(pick := PickZoneAndWindow())
+            return
+        if pick.HasOwnProp("swap")
+            SwapIntoActiveZone(pick.zone, active)
+        else if pick.hwnd
             Place(pick.hwnd, pick.zone)
-        else if pick
+        else
             MinimizeZone(pick.zone)
     } finally {
         busy := false
@@ -113,6 +126,12 @@ Place(hwnd, target) {
     } catch as e {
         TrayTip("Could not move the window (admin app?)`n" e.Message, "zones")
     }
+}
+
+; Moves the zone's top window to where the active window is (swapping them) and focuses it.
+SwapIntoActiveZone(zone, active) {
+    if active && WinExist(active) && (src := ZoneOf(active)) && src != zone && (top := TopWindowIn(zone, active))
+        Place(top, src)
 }
 
 MinimizeZone(zone) {
@@ -203,37 +222,42 @@ MoveTo(hwnd, r) {
 
 ; ---- Zone overlay ----
 
-; Shows every zone with a tile per open window; returns {zone, hwnd} for the clicked tile, or "".
-; Any key (e.g. Esc) or a click on an overlay outside the tiles cancels.
+; Shows every zone with a tile per open window. Returns {zone, hwnd} for a clicked tile,
+; {zone, swap} for a click on a zone's background, or "" when cancelled by right-click or any key.
 PickZoneAndWindow() {
     state := {pick: ""}
     ih := InputHook("L1 T30", "{Esc}")
     zones := ConnectedZones()
     items := WindowItems()
     items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the zone's windows
-    guis := []
+    overlays := []
     for z in zones
-        guis.Push(ShowZoneOverlay(z, zones, items, TileClicked.Bind(state, ih, z)))
-    backClick := BackgroundClicked.Bind(guis, ih)
-    OnMessage(0x201, backClick)  ; WM_LBUTTONDOWN
+        overlays.Push(ShowZoneOverlay(z, zones, items))
+    leftClick := OverlayClicked.Bind(overlays, items, state, ih)
+    OnMessage(0x201, leftClick)  ; WM_LBUTTONDOWN
+    global cancelOverlay := () => ih.Stop()
     ih.Start()
     ih.Wait()
-    OnMessage(0x201, backClick, 0)
-    for g in guis
-        g.Destroy()
+    OnMessage(0x201, leftClick, 0)
+    cancelOverlay := ""
+    for o in overlays
+        o.front.Destroy(), o.back.Destroy()
     return state.pick
 }
 
-TileClicked(state, ih, z, hwnd, *) {
-    state.pick := {zone: z, hwnd: hwnd}
-    ih.Stop()
-}
-
-; Tiles take their own clicks, so a click that reaches the overlay window itself is on its background.
-BackgroundClicked(guis, ih, wParam, lParam, msg, hwnd) {
-    for g in guis
-        if hwnd = g.Hwnd
+; Every click lands on a backdrop, since the layer with the tiles is click-through.
+; A click inside the tile grid picks that tile; anywhere else is a click on the zone's background.
+OverlayClicked(overlays, items, state, ih, wParam, lParam, msg, hwnd) {
+    for o in overlays
+        if hwnd = o.back.Hwnd {
+            x := lParam & 0xFFFF, y := lParam >> 16 & 0xFFFF
+            col := (x - o.x0) // TILE_W, row := (y - o.y0) // TILE_H, i := row * o.cols + col + 1
+            if x >= o.x0 && y >= o.y0 && col < o.cols && i <= items.Length
+                state.pick := {zone: o.zone, hwnd: items[i].hwnd}
+            else
+                state.pick := {zone: o.zone, swap: true}
             ih.Stop()
+        }
 }
 
 ; Open windows sorted by process name, then taskbar group ID (separate per Chrome profile and web app);
@@ -301,11 +325,17 @@ OverlayRect(z, zones, n) {
 TileColumns(w) => Max(1, (w - 24) // TILE_W)
 BandHeight(w, n) => 56 + Ceil(n / TileColumns(w)) * TILE_H
 
-ShowZoneOverlay(z, zones, items, onClick) {
+; Draws the zone as a translucent backdrop with a click-through layer on top holding the opaque
+; tiles; that layer's background color is keyed out. Returns both windows and the tile grid layout.
+ShowZoneOverlay(z, zones, items) {
     r := OverlayRect(z, zones, items.Length), h := r.h
     band := IsContainer(z, zones)
-    g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
-    g.BackColor := BACK_COLOR
+    back := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
+    back.BackColor := BACK_COLOR
+    WinSetTransparent(BACK_ALPHA, back)
+    back.Show("NA x" r.x " y" r.y " w" r.w " h" h)
+    g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x20 +Owner" back.Hwnd)  ; owned: stays above its backdrop
+    g.BackColor := KEY_COLOR
     ; A band starts its tile grid below the zone name; other zones center it.
     cols := TileColumns(r.w)
     rows := Ceil(items.Length / cols)
@@ -318,18 +348,16 @@ ShowZoneOverlay(z, zones, items, onClick) {
         x := x0 + Mod(i - 1, cols) * TILE_W, y := y0 + (i - 1) // cols * TILE_H
         if item.hwnd {
             try g.AddPicture("x" x + (TILE_W - ICON_SIZE) // 2 " y" y " w" ICON_SIZE " h" ICON_SIZE, item.icon)
-                .OnEvent("Click", onClick.Bind(item.hwnd))
         } else {
             g.SetFont("s20", "Segoe MDL2 Assets")
             g.AddText("x" x " y" y " w" TILE_W " h" ICON_SIZE " Center", Chr(0xE921))  ; minimize glyph
-                .OnEvent("Click", onClick.Bind(0))
             g.SetFont("s9", "Segoe UI")
         }
         g.AddText("x" x " y" y + ICON_SIZE + 4 " w" TILE_W " r2 Center", item.title)
-            .OnEvent("Click", onClick.Bind(item.hwnd))
     }
     g.Show("NA x" r.x " y" r.y " w" r.w " h" h)
-    return g
+    WinSetTransColor(KEY_COLOR, g)
+    return {zone: z, back: back, front: g, x0: x0, y0: y0, cols: cols}
 }
 
 ; ---- Focus border ----
