@@ -1,6 +1,8 @@
 " Vim < 9.1 does not read ~/.config/vim; ~/.vimrc symlink loads this file,
 " so add the config dir to runtimepath by hand (colors/, plugins).
+" pack/*/start plugins load from packpath, which does not follow runtimepath.
 set runtimepath^=~/.config/vim
+set packpath^=~/.config/vim
 
 " colorscheme
 syntax enable "make colorscheme work on mac
