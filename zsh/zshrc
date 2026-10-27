@@ -67,6 +67,19 @@ autoload -Uz compinit
 # as another user). Same effect as omz's ZSH_DISABLE_COMPFIX.
 compinit -u
 
+# Source the init script a tool prints (`zoxide init zsh`, ...), cached until
+# the tool's binary changes. A process spawn costs ~50ms on MSYS2, and these
+# would otherwise run on every shell start. Delete ~/.cache/zsh to regenerate.
+_cached_init() {
+    local bin=${commands[$1]} cache=$HOME/.cache/zsh/$1.zsh
+    [[ -n $bin ]] || return 0
+    if [[ ! -s $cache || $cache -ot $bin ]]; then
+        mkdir -p ${cache:h}
+        "$@" >| $cache 2>/dev/null
+    fi
+    source $cache
+}
+
 # Highlighted, arrow-navigable completion menu (was provided by omz).
 zstyle ':completion:*' menu select
 # Color completion entries by file type using LS_COLORS.
@@ -111,15 +124,20 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}!"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
 
+# One git call per prompt: branch and dirty state both come from status v2.
 git_prompt_info() {
-    local ref
-    ref=$(command git symbolic-ref --short HEAD 2>/dev/null) \
-        || ref=$(command git rev-parse --short HEAD 2>/dev/null) \
-        || return 0
-    local dirty=""
-    if [[ -n $(command git status --porcelain --ignore-submodules 2>/dev/null) ]]; then
-        dirty="$ZSH_THEME_GIT_PROMPT_DIRTY"
+    local st
+    st=$(command git status --porcelain=v2 --branch --ignore-submodules 2>/dev/null) || return 0
+    local lines=("${(@f)st}")
+    local ref=${${(M)lines:#\# branch.head *}#\# branch.head }
+    # Detached HEAD: show the short commit hash instead
+    if [[ $ref == '(detached)' ]]; then
+        ref=${${(M)lines:#\# branch.oid *}#\# branch.oid }
+        ref=${ref[1,7]}
     fi
+    # Lines not starting with '#' are changed or untracked files
+    local changed=(${lines:#\#*}) dirty=""
+    (( $#changed )) && dirty="$ZSH_THEME_GIT_PROMPT_DIRTY"
     echo "${ZSH_THEME_GIT_PROMPT_PREFIX}${ref}${dirty}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
 }
 
@@ -268,9 +286,7 @@ gcm() {
 
 alias py='uv run python'
 
-if command -v uv > /dev/null; then
-    eval "$(uv generate-shell-completion zsh)"
-fi
+_cached_init uv generate-shell-completion zsh
 
 
 # ============================================
@@ -280,18 +296,16 @@ fi
 # zoxide
 # Exclude NAS mounts: stat on a dead CIFS host blocks ~10s per entry
 export _ZO_EXCLUDE_DIRS="/mnt/*"
-eval "$(zoxide init zsh)"
+_cached_init zoxide init zsh
 # MSYS2: zoxide 0.10's Windows build drops the $(...) around pwd, so every cd
 # fails with "not a directory: C:\builtin pwd -L".
 (( $+commands[cygpath] )) && __zoxide_pwd() { \command cygpath -w "$(\builtin pwd -L)" }
 
 # direnv
-if command -v direnv > /dev/null; then
-    eval "$(direnv hook zsh)"
-fi
+_cached_init direnv hook zsh
 
 # fzf (0.48+ prints its own key bindings and completion)
-command -v fzf >/dev/null && source <(fzf --zsh 2>/dev/null)
+_cached_init fzf --zsh
 
 # Use fd for fzf: fast, respects .gitignore, includes hidden files
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'

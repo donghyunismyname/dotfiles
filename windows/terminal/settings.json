@@ -142,7 +142,7 @@
                 "source": "Git"
             },
             {
-                "commandline": "%USERPROFILE%\\scoop\\apps\\msys2\\current\\msys2_shell.cmd -defterm -here -no-start -ucrt64 -full-path -shell zsh",
+                "commandline": "%USERPROFILE%\\scoop\\apps\\msys2\\current\\usr\\bin\\env.exe MSYSTEM=UCRT64 MSYS2_PATH_TYPE=inherit CHERE_INVOKING=1 /usr/bin/zsh --login -i",
                 "guid": "{8935cf20-dd16-4b5e-812a-5d373000ce23}",
                 "hidden": false,
                 "name": "MSYS2 zsh"
