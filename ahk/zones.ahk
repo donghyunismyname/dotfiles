@@ -64,11 +64,16 @@ PromoteActive() {
 
 Place(hwnd, target) {
     src := ZoneOf(hwnd)
-    if src && src != target && !Intersects(ZoneRect(src), ZoneRect(target))
-        if top := TopWindowIn(target, hwnd)
-            MoveTo(top, ZoneRect(src))
-    MoveTo(hwnd, ZoneRect(target))
-    WinActivate(hwnd)
+    ; Windows of elevated (admin) apps refuse moves from a non-admin script.
+    try {
+        if src && src != target && !Intersects(ZoneRect(src), ZoneRect(target))
+            if top := TopWindowIn(target, hwnd)
+                MoveTo(top, ZoneRect(src))
+        MoveTo(hwnd, ZoneRect(target))
+        WinActivate(hwnd)
+    } catch as e {
+        TrayTip("Could not move the window (admin app?)`n" e.Message, "zones")
+    }
 }
 
 ; Runs the app and places the first new window that appears.
