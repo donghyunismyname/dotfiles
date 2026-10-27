@@ -50,7 +50,7 @@ ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
 TILE_H := 84
 ; Colors, RGB hex
-BORDER_COLOR := "14357A" ; focus border
+BORDER_COLOR := "2A5CC8" ; focus border
 BACK_COLOR := "1F1F1F"   ; zone overlays, bands included
 KEY_COLOR := "1F1F1E"    ; never drawn: keyed out so the translucent backdrop shows through
 TEXT_COLOR := "E6E6E6"
