@@ -44,18 +44,13 @@ OVERLAY_ALPHA := 210
 BAND_HEIGHT := 90        ; a zone that contains other zones is drawn as a band at its top edge
 PICKER_TITLE := "zones-picker"
 PICKER_WIDTH := 640
-PICKER_ROWS := 10        ; max visible rows before the list scrolls
+PICKER_HEIGHT := 400
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 A_IconTip := "zones"
 Hotkey(KEY_PICK, (*) => PickAndPlace())
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
-
-#HotIf WinActive(PICKER_TITLE " ahk_class AutoHotkeyGUI")
-Up::MovePickerSelection(-1)
-Down::MovePickerSelection(1)
-#HotIf
 
 PickAndPlace() {
     if !(zone := PickZone())
@@ -220,7 +215,6 @@ ShowZoneOverlay(z, band, onClick) {
 
 ; Lists open windows with their icons, filtered by the typed text; returns the chosen window or 0.
 PickWindow(zone) {
-    global pickerList
     icons := IL_Create(10, 10, true)  ; large (32 px) icons
     items := []
     for hwnd in Windows() {
@@ -230,54 +224,29 @@ PickWindow(zone) {
     }
 
     state := {shown: [], choice: 0}
-    g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale", PICKER_TITLE)
+    g := Gui("+AlwaysOnTop -Caption +ToolWindow", PICKER_TITLE)
     g.BackColor := "1F1F1F"
-    g.MarginX := 14, g.MarginY := 12
-    DllCall("dwmapi\DwmSetWindowAttribute", "ptr", g.Hwnd, "uint", 33, "int*", 2, "uint", 4)  ; rounded corners (Win11)
-    g.SetFont("s10 c9A9A9A", "Segoe UI")
+    g.SetFont("s11 cE6E6E6", "Segoe UI")
     g.AddText("w" PICKER_WIDTH, "Put into " zone.name)
-    g.SetFont("s13 cF0F0F0")
     query := g.AddEdit("w" PICKER_WIDTH " -E0x200 Background2B2B2B")
-    SendMessage(0x1501, true, StrPtr("Type to filter windows"), query)  ; EM_SETCUEBANNER
-    SendMessage(0xD3, 3, 10 | 10 << 16, query)  ; EM_SETMARGINS: 10 px left and right
-    g.SetFont("s11 cE6E6E6")
-    ; LV0x10000: double buffering against flicker.
-    pickerList := g.AddListView("w" PICKER_WIDTH " -Hdr -Multi -E0x200 +LV0x10000 Background1F1F1F", ["Window"])
-    pickerList.SetImageList(icons, 1)
-    DllCall("uxtheme\SetWindowTheme", "ptr", pickerList.Hwnd, "str", "DarkMode_Explorer", "ptr", 0)
-    refill := (*) => FillPicker(pickerList, items, query.Value, state)
+    lv := g.AddListView("w" PICKER_WIDTH " h" PICKER_HEIGHT " -Hdr -Multi -E0x200 Background1F1F1F", ["Window"])
+    lv.SetImageList(icons, 1)
+    lv.ModifyCol(1, PICKER_WIDTH - 30)  ; leave room for the scrollbar
+    refill := (*) => FillPicker(lv, items, query.Value, state)
     query.OnEvent("Change", refill)
-    pickerList.OnEvent("Click", (*) => SubmitPicker(g, pickerList, state))
-    g.AddButton("Default Hidden", "OK").OnEvent("Click", (*) => SubmitPicker(g, pickerList, state))
+    lv.OnEvent("Click", (*) => SubmitPicker(g, lv, state))
+    g.AddButton("Default Hidden", "OK").OnEvent("Click", (*) => SubmitPicker(g, lv, state))
     g.OnEvent("Escape", (*) => g.Destroy())
     refill()
-    SendMessage(0x127, 0x10001, 0, pickerList)  ; WM_CHANGEUISTATE: hide the dotted focus rectangle
 
-    ; The list keeps focus so its selection is clearly highlighted; typed characters go to the filter box.
-    onChar := (wParam, lParam, msg, hwnd) => hwnd = pickerList.Hwnd ? ForwardChar(query, wParam, refill) : ""
+    ; The list keeps focus so arrow keys move a visible selection; typed characters go to the filter box.
+    onChar := (wParam, lParam, msg, hwnd) => hwnd = lv.Hwnd ? ForwardChar(query, wParam, refill) : ""
     OnMessage(0x102, onChar)  ; WM_CHAR
-
-    ; Row heights are only known once the window exists; then fit the list and center on the target zone.
-    g.Show("Hide")
-    FitListHeight(pickerList, items.Length)
-    g.Show("AutoSize Hide")
-    WinGetPos(, , &w, &h, g)
-    r := ZoneRect(zone)
-    WinMove(r.x + (r.w - w) // 2, r.y + (r.h - h) // 2, , , g)
     g.Show()
-    pickerList.Focus()
+    lv.Focus()
     WinWaitClose(g)
     OnMessage(0x102, onChar, 0)
     return state.choice
-}
-
-; Sizes the list to its rows, up to PICKER_ROWS.
-FitListHeight(lv, count) {
-    rect := Buffer(16, 0)  ; LVIR_BOUNDS
-    SendMessage(0x100E, 0, rect, lv)  ; LVM_GETITEMRECT of the first row
-    rowHeight := NumGet(rect, 12, "int") - NumGet(rect, 4, "int")
-    lv.Move(, , , Max(1, Min(count, PICKER_ROWS)) * rowHeight + 4)
-    lv.ModifyCol(1, "AutoHdr")
 }
 
 ForwardChar(query, char, refill) {
@@ -315,7 +284,6 @@ FillPicker(lv, items, text, state) {
         }
     if state.shown.Length
         lv.Modify(1, "Select Focus Vis")
-    lv.ModifyCol(1, "AutoHdr")  ; fill the width left by the scrollbar, if any
 }
 
 ; Every space-separated term must appear in the label.
@@ -330,12 +298,4 @@ SubmitPicker(g, lv, state) {
     if row := lv.GetNext()
         state.choice := state.shown[row].hwnd
     g.Destroy()
-}
-
-MovePickerSelection(delta) {
-    if !(n := pickerList.GetCount())
-        return
-    row := Max(1, Min(n, pickerList.GetNext() + delta))
-    pickerList.Modify(0, "-Select")
-    pickerList.Modify(row, "Select Focus Vis")
 }
