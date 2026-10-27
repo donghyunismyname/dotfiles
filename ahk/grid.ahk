@@ -2,28 +2,32 @@
 #Include %A_LineFile%\..\lib\admin.ahk
 
 ; Keyboard mouse jump.
-;   Ctrl+Space  labels each of AREAS with its key. A key moves the cursor to the center of its cell and
-;               splits that cell into the ROWS grid, so each key narrows the target.
+;   Ctrl+Space  splits each of AREAS into 3x3 BLOCKS of 3x3 cells (ROWS), each labeled with three keys:
+;               area, block, cell. Typed keys narrow the labels and move the cursor to the center of what
+;               is left; once one cell is left, it splits into the ROWS grid again, so later keys refine.
 ;               A CLICKS key clicks where the cursor is; any other key stops.
 ; Keys are read by their physical position (virtual key), so the Hangul input mode does not matter,
 ; and Ctrl may still be held from the hotkey.
 
 ; ---- Config ----
-AREAS := [  ; the first pick, as the disjoint zones in zones.ahk; fractions of the whole monitor
+AREAS := [  ; first key, as the disjoint zones in zones.ahk; fractions of the whole monitor
     {key: "j", mon: 1, x: 0,   y: 0,   w: 0.5, h: 1},    ; landscape, left half
     {key: "k", mon: 1, x: 0.5, y: 0,   w: 0.5, h: 1},    ; landscape, right half
     {key: "l", mon: 2, x: 0,   y: 0,   w: 1,   h: 0.5},  ; portrait, top half
     {key: ";", mon: 2, x: 0,   y: 0.5, w: 1,   h: 0.5},  ; portrait, bottom half
 ]
-ROWS := ["uio", "jkl", "m,."]  ; every later pick splits the cell into this grid
+BLOCKS := ["wer", "sdf", "xcv"]  ; second key: a block of the area
+ROWS := ["uio", "jkl", "m,."]    ; third key: a cell of the block; later keys split the cell into this grid again
 CLICKS := Map("Space", "Left", "Enter", "Right")  ; key -> mouse button
 KEY_SHOW := "^Space"
 TIMEOUT_S := 10
 FONT_SIZE := 28          ; shrinks to fit smaller cells
 ; Colors, RGB hex
+LINE_COLOR := "5A5A5A"   ; 1px grid lines: the gaps between cells
 BACK_COLOR := "1F1F1F"
+BACK_ALT_COLOR := "383838"  ; every other block, so blocks stand apart
 TEXT_COLOR := "E6E6E6"
-BACK_ALPHA := 150        ; overlay opacity, 0-255
+BACK_ALPHA := 170        ; overlay opacity, 0-255
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
@@ -32,47 +36,77 @@ A_IconTip := "grid"
 Hotkey(KEY_SHOW, (*) => Jump())
 
 Jump() {
-    cells := Map()
-    for a in AREAS
-        if a.mon <= MonitorGetCount() {
-            MonitorGet(a.mon, &l, &t, &r, &b)
-            w := r - l, h := b - t
-            cells[a.key] := {l: l + Round(a.x * w), t: t + Round(a.y * h), r: l + Round((a.x + a.w) * w), b: t + Round((a.y + a.h) * h)}
-        }
+    cells := StartCells(), typed := ""
     loop {
-        guis := ShowCells(cells)
+        guis := ShowCells(cells, StrLen(typed))
         key := ReadKey()
         for g in guis
             g.Destroy()
-        if !cells.Has(key)
+        next := []
+        for c in cells
+            if SubStr(c.label, StrLen(typed) + 1, 1) = key
+                next.Push(c)
+        if !next.Length
             break
-        c := cells[key]
-        MouseMove((c.l + c.r) // 2, (c.t + c.b) // 2, 0)
-        cells := Split(c)
+        typed .= key
+        box := Bounds(next)
+        MouseMove((box.l + box.r) // 2, (box.t + box.b) // 2, 0)
+        if next.Length = 1
+            cells := Split(next[1], ROWS), typed := ""
+        else
+            cells := next
     }
     if CLICKS.Has(key)
         Click(CLICKS[key])
 }
 
-; Splits a cell into the ROWS grid: key -> cell rectangle in screen pixels.
-Split(c) {
-    cells := Map(), cw := (c.r - c.l) / StrLen(ROWS[1]), ch := (c.b - c.t) / ROWS.Length
-    for i, row in ROWS
-        for j, key in StrSplit(row)
-            cells[key] := {l: c.l + Round((j - 1) * cw), t: c.t + Round((i - 1) * ch), r: c.l + Round(j * cw), b: c.t + Round(i * ch)}
+StartCells() {
+    cells := []
+    for a in AREAS
+        if a.mon <= MonitorGetCount() {
+            MonitorGet(a.mon, &l, &t, &r, &b)
+            w := r - l, h := b - t
+            area := {l: l + Round(a.x * w), t: t + Round(a.y * h), r: l + Round((a.x + a.w) * w), b: t + Round((a.y + a.h) * h), mon: a.mon}
+            for i, block in Split(area, BLOCKS, a.key)
+                for c in Split(block, ROWS, block.label, Mod(i, 2) ? BACK_COLOR : BACK_ALT_COLOR)
+                    cells.Push(c)
+        }
     return cells
 }
 
-; One translucent, click-through window per cell, inset 1px so the screen shows between cells.
-ShowCells(cells) {
+; Splits rectangle r into the rows grid: cells labeled prefix + key, in screen pixels.
+Split(r, rows, prefix := "", back := BACK_COLOR) {
+    cells := [], cw := (r.r - r.l) / StrLen(rows[1]), ch := (r.b - r.t) / rows.Length
+    for i, row in rows
+        for j, key in StrSplit(row)
+            cells.Push({label: prefix key, back: back, mon: r.mon,
+                l: r.l + Round((j - 1) * cw), t: r.t + Round((i - 1) * ch), r: r.l + Round(j * cw), b: r.t + Round(i * ch)})
+    return cells
+}
+
+Bounds(cells) {
+    box := {l: cells[1].l, t: cells[1].t, r: cells[1].r, b: cells[1].b}
+    for c in cells
+        box.l := Min(box.l, c.l), box.t := Min(box.t, c.t), box.r := Max(box.r, c.r), box.b := Max(box.b, c.b)
+    return box
+}
+
+; One translucent, click-through window per monitor, labeling each cell with its keys after the first skip.
+ShowCells(cells, skip) {
+    groups := Map()
+    for c in cells
+        groups.Has(c.mon) ? groups[c.mon].Push(c) : (groups[c.mon] := [c])
     guis := []
-    for key, c in cells {
-        w := Max(1, c.r - c.l - 2), h := Max(1, c.b - c.t - 2)
+    for mon, list in groups {
+        box := Bounds(list), c := list[1], n := StrLen(c.label) - skip
         g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x20")  ; click-through once layered
-        g.BackColor := BACK_COLOR
-        g.SetFont("s" Max(1, Min(FONT_SIZE, Round(Min(w, h) * 36 / A_ScreenDPI))) " bold c" TEXT_COLOR, "Segoe UI")  ; about half the cell
-        g.AddText("x0 y0 w" w " h" h " Center 0x200", StrUpper(key))  ; 0x200: vertically centered
-        g.Show("NA x" c.l + 1 " y" c.t + 1 " w" w " h" h)
+        g.BackColor := LINE_COLOR
+        px := Min((c.b - c.t) * 0.5, (c.r - c.l) / (0.8 * n))  ; text height that fits the cell
+        g.SetFont("s" Max(1, Min(FONT_SIZE, Round(px * 72 / A_ScreenDPI))) " bold c" TEXT_COLOR, "Segoe UI")
+        for c in list
+            g.AddText("x" c.l - box.l + 1 " y" c.t - box.t + 1 " w" Max(1, c.r - c.l - 1) " h" Max(1, c.b - c.t - 1)
+                " Center 0x200 Background" c.back, StrUpper(SubStr(c.label, skip + 1)))  ; 0x200: vertically centered
+        g.Show("NA x" box.l " y" box.t " w" box.r - box.l " h" box.b - box.t)
         WinSetTransparent(BACK_ALPHA, g)
         guis.Push(g)
     }
