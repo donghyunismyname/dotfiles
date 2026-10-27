@@ -111,7 +111,7 @@
                 "size": 10
             },
             "opacity": 90,
-            "startingDirectory": "%USERPROFILE%/repo",
+            "startingDirectory": "%USERPROFILE%",
             "useAcrylic": false
         },
         "list": 
