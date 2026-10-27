@@ -275,7 +275,7 @@ OverlayRect(z, zones, n) {
         return {x: r.x, y: r.y, w: r.w, h: BandHeight(r.w, n)}
     for other in zones
         if other != z && Encloses(c := ZoneRect(other), r) && c.y = r.y
-            return {x: r.x, y: r.y + BandHeight(c.w, n) + GAP, w: r.w, h: r.h - BandHeight(c.w, n) - GAP}
+            return {x: r.x, y: r.y + BandHeight(c.w, n) + 2 * GAP, w: r.w, h: r.h - BandHeight(c.w, n) - 2 * GAP}
     return r
 }
 
