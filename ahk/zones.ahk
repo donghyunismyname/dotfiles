@@ -1,5 +1,7 @@
 #Requires AutoHotkey v2.0
-#SingleInstance Force
+; Single-instance is handled below: a non-admin instance cannot close an elevated one,
+; so #SingleInstance Force would get stuck asking whether to keep waiting.
+#SingleInstance Off
 
 ; Relaunch elevated so admin windows (e.g. an elevated terminal) can be moved too.
 ; If the UAC prompt is declined, keep running without admin; /restart prevents a relaunch loop.
@@ -9,6 +11,13 @@ if !A_IsAdmin && !InStr(DllCall("GetCommandLine", "str"), " /restart") {
         ExitApp()
     }
 }
+
+; Replace any older instance of this script.
+DetectHiddenWindows(true)
+for hwnd in WinGetList(A_ScriptFullPath " - AutoHotkey ahk_class AutoHotkey")
+    if (pid := WinGetPID(hwnd)) != ProcessExist()
+        try ProcessClose(pid)
+DetectHiddenWindows(false)
 
 ; Zone-based window placement.
 ;   Ctrl+Space        choose a zone on the overlay (number key or click), then a window in the picker
