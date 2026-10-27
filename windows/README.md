@@ -5,7 +5,8 @@ since symlinks need admin rights or developer mode on Windows.
 
 | Path | What | Apply |
 | ---- | ---- | ----- |
-| `git.sh` | Global git settings | `sh git.sh` |
+| `install-tools.ps1` | CLI tools via Scoop (counterpart of `../install-tools.sh`) | `.\install-tools.ps1` in PowerShell |
+| `git.sh` | Makes `~/.gitconfig` include `../git/config` | `sh git.sh` |
 | `vim.sh` | Copies `../vim` to `~/.config/vim` and `~/.vimrc` | `sh vim.sh` |
 | `terminal.sh`, `terminal/` | Windows Terminal `settings.json` | `sh terminal.sh` (repo → app), `sh terminal.sh backup` (app → repo) |
 | `keyboard/` | Key remaps via the registry `Scancode Map` | Double-click a `.reg`, then reboot |
