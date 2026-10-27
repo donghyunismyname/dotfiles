@@ -42,7 +42,6 @@ TAP_MAX_MS := 300        ; a longer press is not a tap
 KEY_PROMOTE := "^+Space"
 GAP := 6                 ; px between a zone edge and its window
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
-OVERLAY_ALPHA := 210
 ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
 TILE_H := 84
@@ -308,7 +307,6 @@ ShowZoneOverlay(z, zones, items, onClick) {
             .OnEvent("Click", onClick.Bind(item.hwnd))
     }
     g.Show("NA x" r.x " y" r.y " w" r.w " h" h)
-    WinSetTransparent(OVERLAY_ALPHA, g)
     return g
 }
 
