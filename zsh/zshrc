@@ -145,9 +145,43 @@ prompt_char() {
     if [ $UID -eq 0 ]; then echo "%{$fg[red]%}#%{$reset_color%}"; else echo '$'; fi
 }
 
+# Async git info: the prompt shows at once and the branch fills in when
+# git_prompt_info finishes in the background (~100ms per call on Windows).
+_git_prompt=""
+_git_prompt_fd=""
+_git_prompt_dir=""
+
+_git_prompt_start() {
+    # Drop a request still running from the previous prompt
+    if [[ -n $_git_prompt_fd ]]; then
+        zle -F $_git_prompt_fd 2>/dev/null
+        exec {_git_prompt_fd}<&-
+    fi
+    # Keep the last value in the same directory; clear it after a cd
+    [[ $PWD == $_git_prompt_dir ]] || _git_prompt=""
+    _git_prompt_dir=$PWD
+    exec {_git_prompt_fd}< <(git_prompt_info)
+    zle -F $_git_prompt_fd _git_prompt_done
+}
+
+_git_prompt_done() {
+    local out
+    IFS= read -r -u $1 out
+    zle -F $1
+    exec {_git_prompt_fd}<&-
+    _git_prompt_fd=""
+    if [[ $out != $_git_prompt ]]; then
+        _git_prompt=$out
+        zle reset-prompt
+    fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _git_prompt_start
+
 PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}
 )
-%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}: %{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info)
+%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}: %{$fg_bold[blue]%}%~%{$reset_color%}${_git_prompt}
 $(prompt_char) '
 
 RPROMPT='%{$fg[green]%}[%*]%{$reset_color%}'
