@@ -20,8 +20,8 @@ for hwnd in WinGetList(A_ScriptFullPath " - AutoHotkey ahk_class AutoHotkey")
 DetectHiddenWindows(false)
 
 ; Zone-based window placement.
-;   tap Left Ctrl     choose a zone on the overlay (number key or click), then a window in the picker;
-;                     tapping it again while choosing cancels, like Esc
+;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there.
+;                     Esc (or any key) cancels
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -29,51 +29,55 @@ DetectHiddenWindows(false)
 
 ; ---- Config ----
 ZONES := [
-    {key: "1", name: "Left",   mon: 1, x: 0,   y: 0,   w: 0.5, h: 1},
-    {key: "2", name: "Right",  mon: 1, x: 0.5, y: 0,   w: 0.5, h: 1},
-    {key: "3", name: "Top",    mon: 2, x: 0,   y: 0,   w: 1,   h: 0.5},
-    {key: "4", name: "Bottom", mon: 2, x: 0,   y: 0.5, w: 1,   h: 0.5},
-    {key: "5", name: "Wide",   mon: 1, x: 0,   y: 0,   w: 1,   h: 1},
-    {key: "6", name: "Tall",   mon: 2, x: 0,   y: 0,   w: 1,   h: 1},
+    {name: "Left",   mon: 1, x: 0,   y: 0,   w: 0.5, h: 1},
+    {name: "Right",  mon: 1, x: 0.5, y: 0,   w: 0.5, h: 1},
+    {name: "Top",    mon: 2, x: 0,   y: 0,   w: 1,   h: 0.5},
+    {name: "Bottom", mon: 2, x: 0,   y: 0.5, w: 1,   h: 0.5},
+    {name: "Wide",   mon: 1, x: 0,   y: 0,   w: 1,   h: 1},
+    {name: "Tall",   mon: 2, x: 0,   y: 0,   w: 1,   h: 1},
 ]
 MAIN_ZONE := ZONES[1]
-KEY_PICK := "LControl"   ; tapped alone
+KEY_PICK := "LShift"     ; tapped alone
 TAP_MAX_MS := 300        ; a longer press is not a tap
 KEY_PROMOTE := "^+Space"
 GAP := 6                 ; px between a zone edge and its window
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
 OVERLAY_ALPHA := 210
-BAND_HEIGHT := 90        ; a zone that contains other zones is drawn as a band at its top edge
-PICKER_TITLE := "zones-picker"
-PICKER_WIDTH := 640
-PICKER_HEIGHT := 400
+ICON_SIZE := 32
+TILE_W := 110            ; px per window tile: icon with its title below
+TILE_H := 84
+BAND_HEIGHT := TILE_H + 56  ; a zone that contains other zones is drawn as a band at its top edge
+BORDER_COLOR := "2D6CDF" ; focus border around the active window
+BORDER_WIDTH := 4
+BORDER_POLL_MS := 50
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 A_IconTip := "zones"
-cancelPick := ""  ; closes the open overlay or picker; empty when neither is open
-InstallMouseHook()  ; so Ctrl+click is not taken for a tap
+InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
+
+; Focus border: four click-through bars just inside the active window's visible frame.
+borderBars := []
+loop 4 {
+    g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x80020")  ; layered + transparent: clicks pass through
+    g.BackColor := BORDER_COLOR
+    WinSetTransparent(255, g)
+    borderBars.Push(g)
+}
+SetTimer(UpdateBorder, BORDER_POLL_MS)
 
 OnPickKey(*) {
     KeyWait(KEY_PICK)
     if A_PriorKey != KEY_PICK || A_TimeSinceThisHotkey > TAP_MAX_MS
         return
-    if cancelPick
-        cancelPick()
-    else
-        SetTimer(PickAndPlace, -1)  ; run in its own thread so the next tap can cancel it
+    PickAndPlace()  ; taps while it runs are ignored: a hotkey runs one thread at a time
 }
 
 PickAndPlace() {
-    global cancelPick
-    try {
-        if (zone := PickZone()) && (hwnd := PickWindow(zone))
-            Place(hwnd, zone)
-    } finally {
-        cancelPick := ""
-    }
+    if pick := PickZoneAndWindow()
+        Place(pick.hwnd, pick.zone)
 }
 
 PromoteActive() {
@@ -179,34 +183,68 @@ MoveTo(hwnd, r) {
 
 ; ---- Zone overlay ----
 
-; Shows every zone as a labeled overlay; returns the zone chosen by key or click, or "".
-PickZone() {
-    state := {zone: ""}
-    ih := InputHook("L1 T15", "{Esc}")
+; Shows every zone with a tile per open window; returns {zone, hwnd} for the clicked tile, or "".
+; Any key (e.g. Esc) cancels.
+PickZoneAndWindow() {
+    state := {pick: ""}
+    ih := InputHook("L1 T30", "{Esc}")
     zones := ConnectedZones()
-    ; Draw containing zones last, as a band, so the zones inside them stay visible and clickable.
+    items := WindowItems()
     guis := []
-    for band in [false, true]
-        for z in zones
-            if IsContainer(z, zones) = band
-                guis.Push(ShowZoneOverlay(z, band, ZoneClicked.Bind(state, ih, z)))
-    global cancelPick := () => ih.Stop()
+    for z in zones
+        guis.Push(ShowZoneOverlay(z, zones, items, TileClicked.Bind(state, ih, z)))
     ih.Start()
     ih.Wait()
     for g in guis
         g.Destroy()
-    if state.zone
-        return state.zone
-    if ih.EndReason = "Max"
-        for z in zones
-            if z.key = ih.Input
-                return z
-    return ""
+    return state.pick
 }
 
-ZoneClicked(state, ih, z, *) {
-    state.zone := z
+TileClicked(state, ih, z, hwnd, *) {
+    state.pick := {zone: z, hwnd: hwnd}
     ih.Stop()
+}
+
+; Open windows sorted by process name, then taskbar group ID (separate per Chrome profile and web app);
+; windows of the same group keep a fixed order by handle.
+WindowItems() {
+    list := Windows(), lines := ""
+    for i, hwnd in list
+        try lines .= WinGetProcessName(hwnd) " " AppId(hwnd) " " Format("{:012}", hwnd) "`t" i "`n"
+    items := []
+    for line in StrSplit(Sort(RTrim(lines, "`n")), "`n") {
+        hwnd := list[Integer(StrSplit(line, "`t")[2])]
+        try items.Push({hwnd: hwnd, title: WinGetTitle(hwnd), icon: WindowIcon(hwnd)})
+    }
+    return items
+}
+
+; Taskbar grouping ID (AppUserModelID) of a window, or "" when it has none of its own.
+AppId(hwnd) {
+    iid := Buffer(16), pkey := Buffer(20)
+    DllCall("ole32\CLSIDFromString", "str", "{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}", "ptr", iid)  ; IPropertyStore
+    DllCall("ole32\CLSIDFromString", "str", "{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}", "ptr", pkey)
+    NumPut("uint", 5, pkey, 16)  ; PKEY_AppUserModel_ID
+    if DllCall("shell32\SHGetPropertyStoreForWindow", "ptr", hwnd, "ptr", iid, "ptr*", &store := 0)
+        return ""
+    pv := Buffer(24, 0)
+    ComCall(5, store, "ptr", pkey, "ptr", pv)  ; IPropertyStore::GetValue
+    id := NumGet(pv, 0, "ushort") = 31 ? StrGet(NumGet(pv, 8, "ptr")) : ""  ; VT_LPWSTR
+    DllCall("ole32\PropVariantClear", "ptr", pv), ObjRelease(store)
+    return id
+}
+
+; The window's own icon (the one the taskbar shows) as a Picture source, falling back to its executable.
+WindowIcon(hwnd) {
+    for size in [1, 2, 0] {  ; WM_GETICON: ICON_BIG, ICON_SMALL2, ICON_SMALL
+        h := 0
+        try h := SendMessage(0x7F, size, 0, , hwnd, , , , 200)
+        if h
+            return "HICON:*" h  ; *: the window owns the icon, so don't destroy it
+    }
+    if h := DllCall("GetClassLongPtr", "ptr", hwnd, "int", -14, "ptr")  ; GCLP_HICON
+        return "HICON:*" h
+    return WinGetProcessPath(hwnd)
 }
 
 IsContainer(z, zones) {
@@ -217,104 +255,63 @@ IsContainer(z, zones) {
     return false
 }
 
-ShowZoneOverlay(z, band, onClick) {
+; Overlays never overlap: a zone that contains other zones gets a band at its top,
+; and a zone inside it that starts at the same top edge gets the area below the band.
+OverlayRect(z, zones) {
     r := ZoneRect(z)
-    h := band ? BAND_HEIGHT : r.h
+    if IsContainer(z, zones)
+        return {x: r.x, y: r.y, w: r.w, h: BAND_HEIGHT}
+    for other in zones
+        if other != z && Encloses(ZoneRect(other), r) && ZoneRect(other).y = r.y
+            return {x: r.x, y: r.y + BAND_HEIGHT + GAP, w: r.w, h: r.h - BAND_HEIGHT - GAP}
+    return r
+}
+
+ShowZoneOverlay(z, zones, items, onClick) {
+    r := OverlayRect(z, zones), h := r.h
+    band := IsContainer(z, zones)
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
     g.BackColor := band ? "2D6CDF" : "1F1F1F"
-    g.SetFont("s24 bold cWhite", "Segoe UI")
-    g.AddText("x0 y0 w" r.w " h" h " Center 0x200", z.key "  " z.name).OnEvent("Click", onClick)  ; 0x200: center vertically
+    ; A band holds one row of tiles; other zones center a grid of tiles.
+    cols := band ? items.Length : Max(1, (r.w - 24) // TILE_W)
+    rows := Ceil(items.Length / cols)
+    x0 := Max(12, (r.w - Min(items.Length, cols) * TILE_W) // 2)
+    y0 := band ? 44 : (h - rows * TILE_H) // 2
+    g.SetFont("s16 bold cWhite", "Segoe UI")
+    g.AddText("x" x0 " y" y0 - 40, z.name)
+    g.SetFont("s9 norm cE6E6E6")
+    for i, item in items {
+        x := x0 + Mod(i - 1, cols) * TILE_W, y := y0 + (i - 1) // cols * TILE_H
+        try g.AddPicture("x" x + (TILE_W - ICON_SIZE) // 2 " y" y " w" ICON_SIZE " h" ICON_SIZE, item.icon)
+            .OnEvent("Click", onClick.Bind(item.hwnd))
+        g.AddText("x" x " y" y + ICON_SIZE + 4 " w" TILE_W " r2 Center", item.title)
+            .OnEvent("Click", onClick.Bind(item.hwnd))
+    }
     g.Show("NA x" r.x " y" r.y " w" r.w " h" h)
     WinSetTransparent(OVERLAY_ALPHA, g)
     return g
 }
 
-; ---- Picker ----
+; ---- Focus border ----
 
-; Lists open windows with their icons, filtered by the typed text; returns the chosen window or 0.
-PickWindow(zone) {
-    icons := IL_Create(10, 10, true)  ; large (32 px) icons
-    items := []
-    for hwnd in Windows() {
-        z := ZoneOf(hwnd)
-        try items.Push({hwnd: hwnd, title: WinGetTitle(hwnd), exe: WinGetProcessName(hwnd)
-            , where: z ? z.name : "", icon: AddWindowIcon(icons, hwnd)})
+UpdateBorder() {
+    static last := ""
+    r := ""
+    try {
+        hwnd := WinExist("A")
+        if hwnd && IsAppWindow(hwnd) && WinGetMinMax(hwnd) != -1
+            r := FrameRect(hwnd)
     }
-
-    state := {shown: [], choice: 0}
-    g := Gui("+AlwaysOnTop -Caption +ToolWindow", PICKER_TITLE)
-    g.BackColor := "1F1F1F"
-    g.SetFont("s11 cE6E6E6", "Segoe UI")
-    g.AddText("w" PICKER_WIDTH, "Put into " zone.name)
-    query := g.AddEdit("w" PICKER_WIDTH " -E0x200 Background2B2B2B")
-    lv := g.AddListView("w" PICKER_WIDTH " h" PICKER_HEIGHT " -Hdr -Multi -E0x200 Background1F1F1F", ["Window"])
-    lv.SetImageList(icons, 1)
-    lv.ModifyCol(1, PICKER_WIDTH - 30)  ; leave room for the scrollbar
-    refill := (*) => FillPicker(lv, items, query.Value, state)
-    query.OnEvent("Change", refill)
-    lv.OnEvent("Click", (*) => SubmitPicker(g, lv, state))
-    g.AddButton("Default Hidden", "OK").OnEvent("Click", (*) => SubmitPicker(g, lv, state))
-    g.OnEvent("Escape", (*) => g.Destroy())
-    refill()
-
-    ; The list keeps focus so arrow keys move a visible selection; typed characters go to the filter box.
-    onChar := (wParam, lParam, msg, hwnd) => hwnd = lv.Hwnd ? ForwardChar(query, wParam, refill) : ""
-    OnMessage(0x102, onChar)  ; WM_CHAR
-    global cancelPick := () => g.Destroy()
-    g.Show()
-    lv.Focus()
-    WinWaitClose(g)
-    OnMessage(0x102, onChar, 0)
-    return state.choice
-}
-
-ForwardChar(query, char, refill) {
-    if char = 8  ; Backspace
-        query.Value := SubStr(query.Value, 1, -1)
-    else if char >= 32
-        query.Value .= Chr(char)
-    else
-        return ""  ; let Enter and Esc through
-    refill()
-    return 0
-}
-
-; Adds the window's own icon (the one the taskbar shows) to the image list; returns its 1-based index.
-AddWindowIcon(il, hwnd) {
-    for size in [1, 2, 0] {  ; WM_GETICON: ICON_BIG, ICON_SMALL2, ICON_SMALL
-        h := 0
-        try h := SendMessage(0x7F, size, 0, , hwnd, , , , 200)
-        if h
-            return DllCall("comctl32\ImageList_ReplaceIcon", "ptr", il, "int", -1, "ptr", h) + 1
+    key := r ? r.x "," r.y "," r.w "," r.h : ""
+    if key = last
+        return
+    last := key
+    if !r {
+        for g in borderBars
+            g.Hide()
+        return
     }
-    if h := DllCall("GetClassLongPtr", "ptr", hwnd, "int", -14, "ptr")  ; GCLP_HICON
-        return DllCall("comctl32\ImageList_ReplaceIcon", "ptr", il, "int", -1, "ptr", h) + 1
-    try return IL_Add(il, WinGetProcessPath(hwnd))
-    return 0
-}
-
-FillPicker(lv, items, text, state) {
-    lv.Delete()
-    state.shown := []
-    for item in items
-        if Matches(item.title " " item.exe, text) {
-            state.shown.Push(item)
-            lv.Add("Icon" item.icon, item.where ? item.title "   ·   " item.where : item.title)
-        }
-    if state.shown.Length
-        lv.Modify(1, "Select Focus Vis")
-}
-
-; Every space-separated term must appear in the label.
-Matches(label, text) {
-    for term in StrSplit(Trim(text), " ")
-        if term != "" && !InStr(label, term)
-            return false
-    return true
-}
-
-SubmitPicker(g, lv, state) {
-    if row := lv.GetNext()
-        state.choice := state.shown[row].hwnd
-    g.Destroy()
+    t := BORDER_WIDTH
+    for i, b in [[r.x, r.y, r.w, t], [r.x, r.y + r.h - t, r.w, t], [r.x, r.y, t, r.h], [r.x + r.w - t, r.y, t, r.h]]
+        borderBars[i].Show("NA x" b[1] " y" b[2] " w" b[3] " h" b[4])
 }
