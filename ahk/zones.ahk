@@ -26,7 +26,8 @@ DetectHiddenWindows(false)
 ;                     Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
-;   drag Right downward: Ctrl+W (close tab) in the window under the cursor
+;   drag Right (gestures, sent to the window under the cursor): down = Ctrl+W (close tab),
+;                     up-left = Ctrl+Shift+T (reopen closed tab), up-right = Ctrl+T (new tab)
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -47,7 +48,10 @@ TAP_MAX_MS := 300        ; a longer press is not a tap
 MOUSE_PICK := "RButton & LButton"  ; rocker; a plain right-click still works, right-drag does not
 MOUSE_NEXT_TAB := "RButton & WheelDown"
 MOUSE_PREV_TAB := "RButton & WheelUp"
-GESTURE_PX := 80          ; a right-drag at least this far down, mostly vertical, closes the tab
+GESTURE_PX := 80          ; a right-drag shorter than this is a plain right-click
+GESTURE_DOWN := "^w"
+GESTURE_UP_LEFT := "^+t"
+GESTURE_UP_RIGHT := "^t"
 KEY_PROMOTE := "^+Space"
 GAP := 2                 ; px each zone edge is inset, so neighboring zones are 2 * GAP apart
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
@@ -138,17 +142,27 @@ TrackRightStart() {
         MouseGetPos(&x, &y), rightStart := {x: x, y: y}
 }
 
-; A lone right press: cancels the overlay, closes the tab after a downward drag, or right-clicks.
+; A lone right press: cancels the overlay, right-clicks when short, or runs a drag gesture.
 OnRightRelease(*) {
     if cancelOverlay
         return cancelOverlay()
     MouseGetPos(&x, &y, &hwnd)
-    dy := y - rightStart.y
-    if dy >= GESTURE_PX && Abs(x - rightStart.x) < dy {
+    dx := x - rightStart.x, dy := y - rightStart.y
+    if Max(Abs(dx), Abs(dy)) < GESTURE_PX
+        return Send("{RButton}")
+    if keys := GestureKeys(dx, dy) {
         try WinActivate(hwnd)
-        Send("^w")
-    } else
-        Send("{RButton}")
+        Send(keys)
+    }
+}
+
+; Keys for a drag direction: mostly down, or up at roughly 45 degrees either way; "" for any other.
+GestureKeys(dx, dy) {
+    if dy > Abs(dx)
+        return GESTURE_DOWN
+    if dy < 0 && Abs(dx) >= -dy / 2 && Abs(dx) <= -dy * 2
+        return dx < 0 ? GESTURE_UP_LEFT : GESTURE_UP_RIGHT
+    return ""
 }
 
 PromoteActive() {
