@@ -49,7 +49,7 @@ EXTRA_TOOLS=""
 
 if [ -w "$BREW_CELLAR" ]; then
     echo "=== Installing CLI tools ==="
-    brew install tmux neovim bat ripgrep fd git-delta eza zoxide \
+    brew install tmux vim bat ripgrep fd git-delta eza zoxide \
         btop dust ncdu duf procs witr lazygit lazydocker tokei miniserve \
         fzf jq uv direnv sesh timg chafa yazi broot $EXTRA_TOOLS
 else
@@ -60,7 +60,7 @@ fi
 echo ""
 echo "=== Verifying installation ==="
 FAILED=""
-VERIFY_CMDS="tmux nvim bat rg fd delta eza zoxide btop dust ncdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv sesh timg chafa yazi broot"
+VERIFY_CMDS="tmux vim bat rg fd delta eza zoxide btop dust ncdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv sesh timg chafa yazi broot"
 [ "$(uname -s)" = "Linux" ] && VERIFY_CMDS="$VERIFY_CMDS trash"
 for cmd in $VERIFY_CMDS; do
     if ! command -v $cmd >/dev/null 2>&1; then

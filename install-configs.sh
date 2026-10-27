@@ -9,7 +9,6 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 SYMLINKS="
 vim:$HOME/.config/vim
 vim/vimrc:$HOME/.vimrc
-nvim:$HOME/.config/nvim
 yazi:$HOME/.config/yazi
 tmux:$HOME/.config/tmux
 zsh/zshenv:$HOME/.zshenv

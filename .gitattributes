@@ -1,0 +1,4 @@
+# Check out LF even with core.autocrlf=true (Git for Windows' default):
+# zsh, vim and sh under MSYS2 fail on CRLF scripts.
+* text=auto eol=lf
+vscode/settings.json -text

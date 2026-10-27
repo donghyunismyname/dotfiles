@@ -16,8 +16,8 @@ Or run them individually:
 
 ```sh
 sh install-tools.sh   # CLI tools (uses Homebrew)
-sh install-shell.sh   # zsh, plugins, fzf keybindings
-sh install-configs.sh # Link vim, nvim, tmux, yazi, zshenv, agents.slice (Linux); stub ~/.zshrc and ~/.gitconfig
+sh install-shell.sh   # zsh, plugins
+sh install-configs.sh # Link vim, tmux, yazi, zshenv, agents.slice (Linux); stub ~/.zshrc and ~/.gitconfig
 ```
 
 On Windows, see [windows/README.md](windows/README.md).
@@ -38,7 +38,7 @@ Install a [Nerd Font](https://www.nerdfonts.com/font-downloads) on your **local 
 | ---------- | --------------------- |
 | zsh        | Shell                 |
 | tmux       | Terminal multiplexer  |
-| neovim     | Editor                |
+| vim        | Editor                |
 | bat        | Better `cat`        |
 | ripgrep    | Better `grep`       |
 | fd         | Better `find`       |
