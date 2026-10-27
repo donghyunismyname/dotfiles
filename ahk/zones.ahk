@@ -22,6 +22,7 @@ DetectHiddenWindows(false)
 ; Zone-based window placement.
 ;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there,
 ;                     or the first tile to minimize every window in that zone. Esc (or any key) cancels
+;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -39,6 +40,7 @@ ZONES := [
 MAIN_ZONE := ZONES[1]
 KEY_PICK := "LShift"     ; tapped alone
 TAP_MAX_MS := 300        ; a longer press is not a tap
+MOUSE_PICK := "RButton & LButton"  ; rocker; a plain right-click still works, right-drag does not
 KEY_PROMOTE := "^+Space"
 GAP := 2                 ; px each zone edge is inset, so neighboring zones are 2 * GAP apart
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
@@ -57,6 +59,7 @@ DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 A_IconTip := "zones"
 InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
+Hotkey(MOUSE_PICK, (*) => PickAndPlace())
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 
 ; Focus border: four click-through bars just inside the active window's visible frame.
@@ -73,16 +76,22 @@ OnPickKey(*) {
     KeyWait(KEY_PICK)
     if A_PriorKey != KEY_PICK || A_TimeSinceThisHotkey > TAP_MAX_MS
         return
-    PickAndPlace()  ; taps while it runs are ignored: a hotkey runs one thread at a time
+    PickAndPlace()
 }
 
 PickAndPlace() {
-    if !(pick := PickZoneAndWindow())
+    static busy := false  ; both hotkeys open the overlay; only one at a time
+    if busy
         return
-    if pick.hwnd
-        Place(pick.hwnd, pick.zone)
-    else
-        MinimizeZone(pick.zone)
+    busy := true
+    try {
+        if (pick := PickZoneAndWindow()) && pick.hwnd
+            Place(pick.hwnd, pick.zone)
+        else if pick
+            MinimizeZone(pick.zone)
+    } finally {
+        busy := false
+    }
 }
 
 PromoteActive() {
@@ -195,7 +204,7 @@ MoveTo(hwnd, r) {
 ; ---- Zone overlay ----
 
 ; Shows every zone with a tile per open window; returns {zone, hwnd} for the clicked tile, or "".
-; Any key (e.g. Esc) cancels.
+; Any key (e.g. Esc) or a click on an overlay outside the tiles cancels.
 PickZoneAndWindow() {
     state := {pick: ""}
     ih := InputHook("L1 T30", "{Esc}")
@@ -205,8 +214,11 @@ PickZoneAndWindow() {
     guis := []
     for z in zones
         guis.Push(ShowZoneOverlay(z, zones, items, TileClicked.Bind(state, ih, z)))
+    backClick := BackgroundClicked.Bind(guis, ih)
+    OnMessage(0x201, backClick)  ; WM_LBUTTONDOWN
     ih.Start()
     ih.Wait()
+    OnMessage(0x201, backClick, 0)
     for g in guis
         g.Destroy()
     return state.pick
@@ -215,6 +227,13 @@ PickZoneAndWindow() {
 TileClicked(state, ih, z, hwnd, *) {
     state.pick := {zone: z, hwnd: hwnd}
     ih.Stop()
+}
+
+; Tiles take their own clicks, so a click that reaches the overlay window itself is on its background.
+BackgroundClicked(guis, ih, wParam, lParam, msg, hwnd) {
+    for g in guis
+        if hwnd = g.Hwnd
+            ih.Stop()
 }
 
 ; Open windows sorted by process name, then taskbar group ID (separate per Chrome profile and web app);
