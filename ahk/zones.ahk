@@ -25,6 +25,7 @@ DetectHiddenWindows(false)
 ;                     background moves the active window there (swapping with the window there).
 ;                     Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
+;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
@@ -43,6 +44,8 @@ MAIN_ZONE := ZONES[1]
 KEY_PICK := "LShift"     ; tapped alone
 TAP_MAX_MS := 300        ; a longer press is not a tap
 MOUSE_PICK := "RButton & LButton"  ; rocker; a plain right-click still works, right-drag does not
+MOUSE_NEXT_TAB := "RButton & WheelDown"
+MOUSE_PREV_TAB := "RButton & WheelUp"
 KEY_PROMOTE := "^+Space"
 GAP := 2                 ; px each zone edge is inset, so neighboring zones are 2 * GAP apart
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
@@ -64,6 +67,8 @@ A_IconTip := "zones"
 InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
 Hotkey(MOUSE_PICK, (*) => PickAndPlace())
+Hotkey(MOUSE_NEXT_TAB, (*) => WheelTab("{Tab}"))
+Hotkey(MOUSE_PREV_TAB, (*) => WheelTab("+{Tab}"))
 cancelOverlay := ""  ; set while the overlay is open
 HotIf((*) => cancelOverlay)  ; a right-click then cancels; RButton is a rocker prefix, so the overlay never sees it
 Hotkey("RButton", (*) => cancelOverlay())
@@ -107,6 +112,16 @@ PickAndPlace() {
     } finally {
         busy := false
     }
+}
+
+; Keeps Ctrl down until Right is released, like holding Ctrl and pressing Tab on the keyboard,
+; so apps with a recent-tabs switcher (Ctrl+Tab picks on Ctrl release) keep moving through it.
+WheelTab(keys) {
+    if !GetKeyState("Ctrl") {
+        Send("{Ctrl down}")
+        SetTimer(() => (KeyWait("RButton"), Send("{Ctrl up}")), -1)
+    }
+    Send("{Blind}" keys)  ; Blind: keep the held Ctrl
 }
 
 PromoteActive() {
