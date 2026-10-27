@@ -1,6 +1,15 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+; Relaunch elevated so admin windows (e.g. an elevated terminal) can be moved too.
+; If the UAC prompt is declined, keep running without admin; /restart prevents a relaunch loop.
+if !A_IsAdmin && !InStr(DllCall("GetCommandLine", "str"), " /restart") {
+    try {
+        Run('*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"')
+        ExitApp()
+    }
+}
+
 ; Zone-based window placement.
 ;   Ctrl+Space        choose a zone on the overlay (number key or click), then a window or app in the picker
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
