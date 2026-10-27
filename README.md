@@ -20,6 +20,8 @@ sh install-shell.sh   # zsh, plugins, fzf keybindings
 sh install-configs.sh # Link vim, nvim, tmux, yazi, zshenv, agents.slice (Linux); stub ~/.zshrc and ~/.gitconfig
 ```
 
+On Windows, see [windows/README.md](windows/README.md).
+
 ## Fonts
 
 Install a [Nerd Font](https://www.nerdfonts.com/font-downloads) on your **local machine** (where your terminal app runs), not on remote servers.
