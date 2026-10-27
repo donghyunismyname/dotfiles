@@ -51,7 +51,7 @@ PICKER_HEIGHT := 400
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 A_IconTip := "zones"
-picking := false
+cancelPick := ""  ; closes the open overlay or picker; empty when neither is open
 InstallMouseHook()  ; so Ctrl+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
@@ -60,19 +60,19 @@ OnPickKey(*) {
     KeyWait(KEY_PICK)
     if A_PriorKey != KEY_PICK || A_TimeSinceThisHotkey > TAP_MAX_MS
         return
-    if picking
-        Send("{Esc}")
+    if cancelPick
+        cancelPick()
     else
         SetTimer(PickAndPlace, -1)  ; run in its own thread so the next tap can cancel it
 }
 
 PickAndPlace() {
-    global picking := true
+    global cancelPick
     try {
         if (zone := PickZone()) && (hwnd := PickWindow(zone))
             Place(hwnd, zone)
     } finally {
-        picking := false
+        cancelPick := ""
     }
 }
 
@@ -190,6 +190,7 @@ PickZone() {
         for z in zones
             if IsContainer(z, zones) = band
                 guis.Push(ShowZoneOverlay(z, band, ZoneClicked.Bind(state, ih, z)))
+    global cancelPick := () => ih.Stop()
     ih.Start()
     ih.Wait()
     for g in guis
@@ -259,6 +260,7 @@ PickWindow(zone) {
     ; The list keeps focus so arrow keys move a visible selection; typed characters go to the filter box.
     onChar := (wParam, lParam, msg, hwnd) => hwnd = lv.Hwnd ? ForwardChar(query, wParam, refill) : ""
     OnMessage(0x102, onChar)  ; WM_CHAR
+    global cancelPick := () => g.Destroy()
     g.Show()
     lv.Focus()
     WinWaitClose(g)
