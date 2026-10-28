@@ -2,6 +2,9 @@
 
 Personal dotfiles for `zsh`, `vim`, `tmux`, and modern CLI tools.
 
+`zsh`, `vim`, and `tmux` combine together to create an awesome
+development environment.
+
 (no, modern GUI-based AI-assisted editors are better)
 
 (terminal utilities are still useful, though...)
@@ -83,5 +86,3 @@ https://gist.github.com/jadia/1f4c2190730ef646d41823b6a6c30926
 ### Special characters break on tmux
 
 https://askubuntu.com/questions/410048/utf-8-character-not-showing-properly-in-tmux
-
-
