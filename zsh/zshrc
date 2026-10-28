@@ -274,7 +274,7 @@ command -v fdfind >/dev/null && alias fd='fdfind'
 # eza
 alias l="eza -a"
 alias ll="eza -al --git --time-style=long-iso"
-alias llm="eza -al --git --time-style=long-iso --sort modified"
+alias lm="eza -al --git --time-style=long-iso --sort modified"
 alias lt="eza -a --tree"
 for _n in 1 2 3 4; do alias lt$_n="eza -a --tree --level $_n"; done
 unset _n
