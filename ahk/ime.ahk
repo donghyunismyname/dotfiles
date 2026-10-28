@@ -9,8 +9,10 @@
 ; Kept apart from zones.ahk: its calls into other apps can block for a while, and AHK has one thread,
 ; so inside zones.ahk they would stall the mouse hook.
 ; Updated on window events (caret moved, text changed, focus or foreground changed) and the 한/영 key.
+; Tap Left Shift alone for English, Right Shift for Hangul; held, they stay plain Shift keys.
 
 ; ---- Config ----
+TAP_MAX_MS := 300         ; a longer press is not a tap
 HANGUL_COLOR := "2A5CC8"  ; RGB hex
 ENGLISH_COLOR := "4A4A4A"
 TEXT_COLOR := "E6E6E6"
@@ -27,7 +29,27 @@ HookWinEvents([EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MOVESIZEEND, EVENT_OBJECT_S
     EVENT_OBJECT_FOCUS, EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_TEXTSELECTIONCHANGED,
     IA2_EVENT_TEXT_CARET_MOVED, IA2_EVENT_TEXT_INSERTED, IA2_EVENT_TEXT_REMOVED], OnImeEvent)
 Hotkey("~vk15", (*) => SetTimer(UpdateImeTip, -UPDATE_DELAY_MS))  ; 한/영 key
+Hotkey("~LShift", (*) => OnShiftTap("LShift", false))
+Hotkey("~RShift", (*) => OnShiftTap("RShift", true))
 UpdateImeTip()
+
+; Sets the mode when the Shift key is released quickly with no key or mouse button used meanwhile.
+; Mouse buttons are polled: a mouse hook here would stall the mouse while an IME call blocks.
+OnShiftTap(key, hangul) {
+    start := A_TickCount
+    while GetKeyState(key, "P") {
+        if A_TickCount - start > TAP_MAX_MS || GetKeyState("LButton", "P") || GetKeyState("RButton", "P")
+            return
+        Sleep(10)
+    }
+    if A_PriorKey != key
+        return
+    try {
+        if c := FocusCaret()
+            SetHangul(c.focus, hangul)
+    }
+    SetTimer(UpdateImeTip, -UPDATE_DELAY_MS)
+}
 
 ; Location changes come from every window and the cursor; only the caret's matter.
 OnImeEvent(event, hwnd, idObject) {

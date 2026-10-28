@@ -10,11 +10,10 @@
 #Include %A_LineFile%\..\zones\border.ahk
 
 ; Zone-based window placement.
-;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there,
-;                     or the first tile to minimize every window in that zone. Clicking a zone's
-;                     background moves the active window there.
+;   hold Right, click Left (rocker): every zone shows a tile per open window; click a tile to put that
+;                     window there, or the first tile to minimize every window in that zone. Clicking a
+;                     zone's background moves the active window there.
 ;                     Right-click, Esc, or any key cancels
-;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   drag Right out of the window onto a zone: move the window there, like a pick from the overlay
@@ -40,8 +39,6 @@ ZONES.Push(WHOLES*)
 HOME_TILE := TILES[1]      ; where windows restored from minimized and newly opened app windows go
 RESTORE_DELAY_MS := 100    ; after a window is minimized or restored, before acting on it
 NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
-KEY_PICK := "LShift"     ; tapped alone
-TAP_MAX_MS := 300        ; a longer press is not a tap
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
     "LButton",   PickAndPlace,              ; rocker
     "WheelDown", () => WheelTab("{Tab}"),   ; next tab
@@ -75,22 +72,13 @@ BORDER_WIDTH := MARGIN   ; drawn outside the active window, so it fills the marg
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 CoordMode("Mouse", "Screen")  ; gesture start and end are compared across windows
 A_IconTip := "zones"
-InstallMouseHook()  ; so Shift+click is not taken for a tap
-Hotkey("~" KEY_PICK, OnPickKey)
 SnapToZones()
 StartMouse()
 StartBorder()
 StartAutoPlace()
 
-OnPickKey(*) {
-    KeyWait(KEY_PICK)
-    if A_PriorKey != KEY_PICK || A_TimeSinceThisHotkey > TAP_MAX_MS
-        return
-    PickAndPlace()
-}
-
 PickAndPlace() {
-    static busy := false  ; the key and the rocker both open the overlay; only one at a time
+    static busy := false  ; the rocker may fire again while the overlay is open; only one at a time
     if busy
         return
     busy := true
