@@ -4,6 +4,7 @@
 #Include %A_LineFile%\..\lib\winevent.ahk
 #Include %A_LineFile%\..\zones\windows.ahk
 #Include %A_LineFile%\..\zones\placement.ahk
+#Include %A_LineFile%\..\zones\autoplace.ahk
 #Include %A_LineFile%\..\zones\overlay.ahk
 #Include %A_LineFile%\..\zones\mouse.ahk
 #Include %A_LineFile%\..\zones\border.ahk
@@ -21,7 +22,8 @@
 ; Zones are fractions of a monitor's work area: tiles, which hold one window each, and whole monitors.
 ; Placing a window in a tile moves the tile's window out: to the placed window's old tile, else to the
 ; first empty tile, else it is minimized. A whole-monitor zone takes any number of windows.
-; A window restored from minimized comes back in RESTORED_TILE, moving that tile's window out.
+; A window restored from minimized, or a newly opened app window, goes to HOME_TILE, moving that
+; tile's window out. Dialogs and popups stay where their app puts them.
 ; The active window also gets a colored border.
 
 ; ---- Config ----
@@ -38,8 +40,9 @@ WHOLES := [
 ZONES := TILES.Clone()
 ZONES.Push(WHOLES*)
 MAIN_ZONE := TILES[1]
-RESTORED_TILE := TILES[1]  ; where windows restored from minimized come back
+HOME_TILE := TILES[1]      ; where windows restored from minimized and newly opened app windows go
 RESTORE_DELAY_MS := 100    ; after a window is minimized or restored, before acting on it
+NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
 KEY_PICK := "LShift"     ; tapped alone
 TAP_MAX_MS := 300        ; a longer press is not a tap
 KEY_PROMOTE := "^+Space"
@@ -82,7 +85,7 @@ Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 SnapToZones()
 StartMouse()
 StartBorder()
-StartRestorePlacement()
+StartAutoPlace()
 
 OnPickKey(*) {
     KeyWait(KEY_PICK)

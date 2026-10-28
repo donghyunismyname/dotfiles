@@ -35,32 +35,6 @@ SnapToZones() {
         }
 }
 
-; A window restored from minimized comes back in RESTORED_TILE.
-StartRestorePlacement() {
-    HookWinEvents([EVENT_SYSTEM_MINIMIZESTART], (event, hwnd, *) => SetTimer(AimRestore.Bind(hwnd), -RESTORE_DELAY_MS))
-    HookWinEvents([EVENT_SYSTEM_MINIMIZEEND], (event, hwnd, *) => SetTimer(PlaceRestored.Bind(hwnd), -RESTORE_DELAY_MS))
-}
-
-; Points a minimized window's restore position at RESTORED_TILE, so Windows brings it back there
-; instead of where it was. Needs the window's border widths, measured while it was shown.
-AimRestore(hwnd) {
-    try {
-        if IsAppWindow(hwnd) && WinGetMinMax(hwnd) = -1
-            SetNormalRect(hwnd, ZoneRect(RESTORED_TILE), 7)  ; SW_SHOWMINNOACTIVE: stay minimized
-    }
-}
-
-; Moves the tile's window out, as placing does; also places the window when AimRestore could not.
-PlaceRestored(hwnd) {
-    global restoring
-    if hwnd = restoring
-        return restoring := 0
-    try {
-        if IsAppWindow(hwnd) && WinGetMinMax(hwnd) != -1
-            Place(hwnd, RESTORED_TILE)
-    }
-}
-
 IsTile(z) {
     for t in TILES
         if t == z
