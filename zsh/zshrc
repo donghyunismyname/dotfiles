@@ -268,6 +268,9 @@ fi
 command -v batcat >/dev/null && alias bat='batcat'
 command -v fdfind >/dev/null && alias fd='fdfind'
 
+# Windows: `sudo` would hit System32's built-in sudo (often disabled); use gsudo
+[[ $OSTYPE == (cygwin|msys) ]] && command -v gsudo >/dev/null && alias sudo='gsudo'
+
 # eza
 alias l="eza -a"
 alias ll="eza -al --git --time-style=long-iso"

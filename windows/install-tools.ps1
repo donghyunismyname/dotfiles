@@ -5,7 +5,8 @@
 #
 # Not installed, no Windows build: tmux, sesh, timg.
 # gdu stands in for ncdu; btop is the btop4win port; trashy (`trash`) for
-# trash-cli, sending files to the Windows Recycle Bin.
+# trash-cli, sending files to the Windows Recycle Bin. gsudo runs one command
+# elevated, since Terminal tabs open non-elevated.
 # vim comes from MSYS2 (install-shell.ps1) so it reads the same config as Unix.
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
@@ -25,7 +26,7 @@ if (-not (scoop bucket list | Where-Object Name -eq extras)) {
 
 Write-Host "`n=== Installing CLI tools ==="
 scoop install bat ripgrep fd delta eza zoxide btop dust gdu duf procs witr `
-    lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trashy
+    lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trashy gsudo
 
 # Nerd Font that terminal/settings.json uses; skip if already installed by
 # hand (overwriting a font Terminal has open fails)
@@ -42,7 +43,7 @@ if (-not $hasFont) {
 }
 
 Write-Host "`n=== Verifying installation ==="
-$cmds = 'bat rg fd delta eza zoxide btop dust gdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trash' -split ' '
+$cmds = 'bat rg fd delta eza zoxide btop dust gdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trash gsudo' -split ' '
 $failed = $cmds | Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) }
 
 if ($failed) {
