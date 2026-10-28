@@ -5,7 +5,7 @@
 const { join } = require("node:path");
 
 const AUTOHOTKEY = join(process.env.LOCALAPPDATA, "Programs/AutoHotkey/v2/AutoHotkey64.exe");
-const SCRIPTS = ["zones", "ime", "nav"];
+const SCRIPTS = ["zones", "ime"];
 
 module.exports = {
   apps: SCRIPTS.map((script) => ({
