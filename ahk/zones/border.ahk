@@ -1,4 +1,4 @@
-; Focus border: four click-through bars just inside the active window's visible frame,
+; Focus border: four click-through bars just outside the active window's visible frame,
 ; moved on window events instead of polling.
 
 StartBorder() {
@@ -33,7 +33,7 @@ UpdateBorder() {
             g.Hide()
         return
     }
-    t := BORDER_WIDTH
-    for i, b in [[r.x, r.y, r.w, t], [r.x, r.y + r.h - t, r.w, t], [r.x, r.y, t, r.h], [r.x + r.w - t, r.y, t, r.h]]
+    t := BORDER_WIDTH, x := r.x - t, y := r.y - t, w := r.w + 2 * t, h := r.h + 2 * t
+    for i, b in [[x, y, w, t], [x, y + h - t, w, t], [x, y, t, h], [x + w - t, y, t, h]]
         bars[i].Show("NA x" b[1] " y" b[2] " w" b[3] " h" b[4])
 }

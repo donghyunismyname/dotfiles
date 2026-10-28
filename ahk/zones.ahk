@@ -18,21 +18,28 @@
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   drag Right out of the window onto a zone: move the window there, like a pick from the overlay
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
-; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
-; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;
-; otherwise (overlapping zones, window not in any zone) the target's windows just stay behind.
+; Zones are fractions of a monitor's work area: tiles, which hold one window each, and whole monitors.
+; Placing a window in a tile moves the tile's window out: to the placed window's old tile, else to the
+; first empty tile, else it is minimized. A whole-monitor zone takes any number of windows.
+; A window restored from minimized comes back in RESTORED_TILE, moving that tile's window out.
 ; The active window also gets a colored border.
 
 ; ---- Config ----
-ZONES := [
+TILES := [  ; in the order a window moved out of its tile looks for an empty one
     {name: "Left",   mon: 1, x: 0,   y: 0,   w: 0.5, h: 1},
     {name: "Right",  mon: 1, x: 0.5, y: 0,   w: 0.5, h: 1},
     {name: "Top",    mon: 2, x: 0,   y: 0,   w: 1,   h: 0.5},
     {name: "Bottom", mon: 2, x: 0,   y: 0.5, w: 1,   h: 0.5},
+]
+WHOLES := [
     {name: "Wide",   mon: 1, x: 0,   y: 0,   w: 1,   h: 1},
     {name: "Tall",   mon: 2, x: 0,   y: 0,   w: 1,   h: 1},
 ]
-MAIN_ZONE := ZONES[1]
+ZONES := TILES.Clone()
+ZONES.Push(WHOLES*)
+MAIN_ZONE := TILES[1]
+RESTORED_TILE := TILES[1]  ; where windows restored from minimized come back
+RESTORE_DELAY_MS := 100    ; after a window is minimized or restored, before acting on it
 KEY_PICK := "LShift"     ; tapped alone
 TAP_MAX_MS := 300        ; a longer press is not a tap
 KEY_PROMOTE := "^+Space"
@@ -52,7 +59,7 @@ GESTURES := Map(          ; drag direction -> keys to send, or a function called
     "SW", "^w",           ; close tab
     "SE", "{Enter}",
 )
-GAP := 2                 ; px each zone edge is inset, so neighboring zones are 2 * GAP apart
+MARGIN := 6              ; px between zones, and between a zone and the work area's edge
 MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
 ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
@@ -63,7 +70,7 @@ BACK_COLOR := "1F1F1F"   ; zone overlays, bands included
 KEY_COLOR := "1F1F1E"    ; never drawn: keyed out so the translucent backdrop shows through
 TEXT_COLOR := "E6E6E6"
 BACK_ALPHA := 200        ; overlay backdrop opacity, 0-255; icons and text stay opaque
-BORDER_WIDTH := 4
+BORDER_WIDTH := MARGIN   ; drawn outside the active window, so it fills the margin around a zone
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
@@ -72,8 +79,10 @@ A_IconTip := "zones"
 InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
 Hotkey(KEY_PROMOTE, (*) => PromoteActive())
+SnapToZones()
 StartMouse()
 StartBorder()
+StartRestorePlacement()
 
 OnPickKey(*) {
     KeyWait(KEY_PICK)

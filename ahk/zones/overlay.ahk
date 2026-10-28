@@ -8,12 +8,12 @@ PickZoneAndWindow() {
     global cancelOverlay
     state := {pick: ""}
     ih := InputHook("L1 T30", "{Esc}")
-    zones := ConnectedZones()
+    shown := Connected(ZONES)  ; not "zones": AHK names ignore case, so it would hide ZONES
     items := WindowItems()
     items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the zone's windows
     overlays := []
-    for z in zones
-        overlays.Push(ShowZoneOverlay(z, zones, items))
+    for z in shown
+        overlays.Push(ShowZoneOverlay(z, shown, items))
     leftClick := OverlayClicked.Bind(overlays, items, state, ih)
     OnMessage(0x201, leftClick)  ; WM_LBUTTONDOWN
     cancelOverlay := () => ih.Stop()
@@ -99,7 +99,7 @@ OverlayRect(z, zones, n) {
         return {x: r.x, y: r.y, w: r.w, h: BandHeight(r.w, n)}
     for other in zones
         if other != z && Encloses(c := ZoneRect(other), r) && c.y = r.y
-            return {x: r.x, y: r.y + BandHeight(c.w, n) + 2 * GAP, w: r.w, h: r.h - BandHeight(c.w, n) - 2 * GAP}
+            return {x: r.x, y: r.y + BandHeight(c.w, n) + MARGIN, w: r.w, h: r.h - BandHeight(c.w, n) - MARGIN}
     return r
 }
 

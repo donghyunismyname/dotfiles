@@ -22,22 +22,43 @@ IsAppWindow(hwnd) {
     return false
 }
 
-; Visible frame, without the invisible resize borders that WinGetPos includes.
+frameInsets := Map()  ; hwnd -> widths of its invisible resize borders, see FrameRect
+
+; Visible frame, without the invisible resize borders that WinGetPos includes. The border widths are
+; remembered while the window is shown normally, since a minimized window has no frame to measure.
 FrameRect(hwnd) {
+    WinGetPos(&x, &y, &w, &h, hwnd)
     buf := Buffer(16)
-    if DllCall("dwmapi\DwmGetWindowAttribute", "ptr", hwnd, "uint", 9, "ptr", buf, "uint", 16) {
-        WinGetPos(&x, &y, &w, &h, hwnd)
+    if DllCall("dwmapi\DwmGetWindowAttribute", "ptr", hwnd, "uint", 9, "ptr", buf, "uint", 16)
         return {x: x, y: y, w: w, h: h}
-    }
-    l := NumGet(buf, 0, "int"), t := NumGet(buf, 4, "int")
-    return {x: l, y: t, w: NumGet(buf, 8, "int") - l, h: NumGet(buf, 12, "int") - t}
+    l := NumGet(buf, 0, "int"), t := NumGet(buf, 4, "int"), r := NumGet(buf, 8, "int"), b := NumGet(buf, 12, "int")
+    if WinGetMinMax(hwnd) = 0
+        frameInsets[hwnd] := {l: l - x, t: t - y, r: x + w - r, b: y + h - b}
+    return {x: l, y: t, w: r - l, h: b - t}
 }
 
-; Moves the window so its visible frame fills r.
+; Moves the window so its visible frame fills r. A minimized or maximized window is restored straight
+; into r, so the restore animation ends there.
 MoveTo(hwnd, r) {
-    if WinGetMinMax(hwnd) != 0
+    if WinGetMinMax(hwnd) != 0 && !SetNormalRect(hwnd, r, 9)  ; SW_RESTORE
         WinRestore(hwnd)
     WinGetPos(&x, &y, &w, &h, hwnd)
     f := FrameRect(hwnd)
     WinMove(r.x - (f.x - x), r.y - (f.y - y), r.w + (w - f.w), r.h + (h - f.h), hwnd)
+}
+
+; Sets where the window goes when restored to normal (its visible frame filling r), then shows it
+; with showCmd. Needs the border widths FrameRect remembered; returns false without them.
+SetNormalRect(hwnd, r, showCmd) {
+    if !(i := frameInsets.Get(hwnd, ""))
+        return false
+    ; The position is in workspace coordinates: relative to the primary monitor's work area.
+    p := MonitorGetPrimary(), MonitorGet(p, &ml, &mt), MonitorGetWorkArea(p, &wl, &wt)
+    dx := wl - ml, dy := wt - mt
+    wp := Buffer(44, 0)  ; WINDOWPLACEMENT
+    NumPut("uint", 44, wp)
+    DllCall("GetWindowPlacement", "ptr", hwnd, "ptr", wp)
+    NumPut("uint", 0, "uint", showCmd, wp, 4)  ; flags 0: restore to normal, not maximized
+    NumPut("int", r.x - i.l - dx, "int", r.y - i.t - dy, "int", r.x + r.w + i.r - dx, "int", r.y + r.h + i.b - dy, wp, 28)
+    return DllCall("SetWindowPlacement", "ptr", hwnd, "ptr", wp)
 }
