@@ -276,22 +276,18 @@ alias l="eza -a"
 alias ll="eza -al --git --time-style=long-iso"
 alias llm="eza -al --git --time-style=long-iso --sort modified"
 alias lt="eza -a --tree"
-alias ltl="eza -a --tree --level 1"
-alias ltll="eza -a --tree --level 2"
-alias ltlll="eza -a --tree --level 3"
+for _n in 1 2 3 4; do alias lt$_n="eza -a --tree --level $_n"; done
+unset _n
 
 # git
 alias gs="git status"
 alias gd="git diff"
-alias gdh="git diff HEAD~1"
-alias gdhh="git diff HEAD~2"
-alias gdhhh="git diff HEAD~3"
-alias gdhhhh="git diff HEAD~4"
 alias gds="git diff --stat"
-alias gdsh="git diff --stat HEAD~1"
-alias gdshh="git diff --stat HEAD~2"
-alias gdshhh="git diff --stat HEAD~3"
-alias gdshhhh="git diff --stat HEAD~4"
+for _n in 1 2 3 4; do
+  alias gd$_n="git diff HEAD~$_n"
+  alias gds$_n="git diff --stat HEAD~$_n"
+done
+unset _n
 alias gdsg="git diff --staged"
 alias gdsgs="git diff --staged --stat"
 alias ga="git add"
