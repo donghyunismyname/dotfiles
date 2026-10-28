@@ -212,9 +212,11 @@ RPROMPT='%{$fg[green]%}[%*]%{$reset_color%}'
 # Terminal title (cwd at prompt, command name while running)
 # ============================================
 
+# Over SSH, prefix the host so tabs show which machine they are on
+_term_title_host=${SSH_CONNECTION:+${HOST%%.*}: }
 autoload -Uz add-zsh-hook
-_term_title_precmd()  { print -Pn "\e]2;%~\a" }
-_term_title_preexec() { print -Pn "\e]2;${1//[^[:print:]]/}\a" }
+_term_title_precmd()  { print -Pn "\e]2;$_term_title_host%~\a" }
+_term_title_preexec() { print -n "\e]2;$_term_title_host${1//[^[:print:]]/}\a" }
 add-zsh-hook precmd  _term_title_precmd
 add-zsh-hook preexec _term_title_preexec
 
