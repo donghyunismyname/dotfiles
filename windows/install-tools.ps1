@@ -27,6 +27,20 @@ Write-Host "`n=== Installing CLI tools ==="
 scoop install bat ripgrep fd delta eza zoxide btop dust gdu duf procs witr `
     lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trashy
 
+# Nerd Font that terminal/settings.json uses; skip if already installed by
+# hand (overwriting a font Terminal has open fails)
+$fontKeys = 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts',
+            'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts'
+$hasFont = $fontKeys | ForEach-Object { (Get-ItemProperty $_ -ErrorAction SilentlyContinue).PSObject.Properties.Name } |
+    Where-Object { $_ -like 'DroidSansM*Nerd*Font*Mono*' }
+if (-not $hasFont) {
+    Write-Host "`n=== Installing Nerd Font ==="
+    if (-not (scoop bucket list | Where-Object Name -eq nerd-fonts)) {
+        scoop bucket add nerd-fonts
+    }
+    scoop install DroidSansMono-NF-Mono
+}
+
 Write-Host "`n=== Verifying installation ==="
 $cmds = 'bat rg fd delta eza zoxide btop dust gdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trash' -split ' '
 $failed = $cmds | Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) }
