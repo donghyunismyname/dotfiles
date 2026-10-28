@@ -3,8 +3,9 @@
 # On a fresh PC, allow local scripts first (Scoop needs this too):
 #   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 #
-# Not installed, no Windows build: tmux, sesh, timg, trash-cli.
-# gdu stands in for ncdu; btop is the btop4win port.
+# Not installed, no Windows build: tmux, sesh, timg.
+# gdu stands in for ncdu; btop is the btop4win port; trashy (`trash`) for
+# trash-cli, sending files to the Windows Recycle Bin.
 # vim comes from MSYS2 (install-shell.ps1) so it reads the same config as Unix.
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
@@ -24,10 +25,10 @@ if (-not (scoop bucket list | Where-Object Name -eq extras)) {
 
 Write-Host "`n=== Installing CLI tools ==="
 scoop install bat ripgrep fd delta eza zoxide btop dust gdu duf procs witr `
-    lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot
+    lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trashy
 
 Write-Host "`n=== Verifying installation ==="
-$cmds = 'bat rg fd delta eza zoxide btop dust gdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot' -split ' '
+$cmds = 'bat rg fd delta eza zoxide btop dust gdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trash' -split ' '
 $failed = $cmds | Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) }
 
 if ($failed) {
