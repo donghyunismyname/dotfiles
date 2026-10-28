@@ -2,3 +2,7 @@
 # zsh, vim and sh under MSYS2 fail on CRLF scripts.
 * text=auto eol=lf
 vscode/settings.json -text
+# Read by Windows itself (cmd.exe, regedit), which expects CRLF
+*.cmd eol=crlf
+*.bat eol=crlf
+*.reg eol=crlf
