@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#Include %A_LineFile%\..\lib\admin.ahk
+#SingleInstance Force
 #Include %A_LineFile%\..\lib\util.ahk
 #Include %A_LineFile%\..\lib\winevent.ahk
 #Include %A_LineFile%\..\ime\caret.ahk

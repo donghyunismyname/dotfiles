@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#Include %A_LineFile%\..\lib\admin.ahk
+#SingleInstance Force
 
 ; Keyboard mouse jump.
 ;   Ctrl+Space  splits each of AREAS into 3x3 BLOCKS of 3x3 cells (ROWS), each labeled with three keys:
