@@ -1,18 +1,17 @@
 ; Zones as screen rectangles, and moving windows into them. A tile holds one window.
 
-restoring := 0  ; a minimized window Place is restoring, so the restore is not taken for the user's
+restoring := 0  ; a minimized window Place is restoring, so autoplace doesn't move it to HOME_TILE
 
-; Puts the window in the target zone. A tile's window moves out: to the placed window's old tile,
-; else to the first empty tile, else it is minimized.
-Place(hwnd, target) {
+; Puts the window in the target zone. A tile's window swaps to the placed window's old tile, or is
+; minimized when there is none. A window that appeared on its own (auto) has no old tile, only
+; where its app put it.
+Place(hwnd, target, auto := false) {
     global restoring
-    src := ZoneOf(hwnd)
     try {
+        src := ZoneOf(hwnd)
         if IsTile(target) && (other := TopWindowIn(target, hwnd)) {
-            if src && src != target && IsTile(src)
+            if !auto && src && src != target && IsTile(src)
                 MoveTo(other, ZoneRect(src))
-            else if empty := FirstEmptyTile(hwnd)
-                MoveTo(other, ZoneRect(empty))
             else
                 WinMinimize(other)
         }
@@ -40,14 +39,6 @@ IsTile(z) {
         if t == z
             return true
     return false
-}
-
-; First tile, in TILES order, with no window other than exclude.
-FirstEmptyTile(exclude) {
-    for t in Connected(TILES)
-        if !TopWindowIn(t, exclude)
-            return t
-    return ""
 }
 
 ; Minimizes every window whose center is in the zone, so a whole-monitor zone clears that monitor.

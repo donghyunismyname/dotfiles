@@ -18,15 +18,12 @@ AimRestore(hwnd) {
     }
 }
 
-; Moves the tile's window out, as placing does; also places the window when AimRestore could not.
+; Minimizes the tile's window; also places the window when AimRestore could not.
 PlaceRestored(hwnd) {
     global restoring
     if hwnd = restoring
         return restoring := 0
-    try {
-        if IsAppWindow(hwnd) && WinGetMinMax(hwnd) != -1
-            Place(hwnd, HOME_TILE)
-    }
+    PlaceHome(hwnd)
 }
 
 ; A window is new when it is shown for the first time after being created; a hidden window shown
@@ -46,7 +43,14 @@ OnWindowLifecycle(event, hwnd, idObject) {
 
 PlaceNew(hwnd) {
     try {
-        if IsAppWindow(hwnd) && WinGetStyle(hwnd) & 0x40000 && WinGetMinMax(hwnd) != -1  ; WS_THICKFRAME: resizable
-            Place(hwnd, HOME_TILE)
+        if WinGetStyle(hwnd) & 0x40000  ; WS_THICKFRAME: resizable
+            PlaceHome(hwnd)
+    }
+}
+
+PlaceHome(hwnd) {
+    try {
+        if IsAppWindow(hwnd) && WinGetMinMax(hwnd) != -1
+            Place(hwnd, HOME_TILE, true)
     }
 }

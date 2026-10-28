@@ -18,16 +18,15 @@
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   drag Right out of the window onto a zone: move the window there, like a pick from the overlay
-;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area: tiles, which hold one window each, and whole monitors.
-; Placing a window in a tile moves the tile's window out: to the placed window's old tile, else to the
-; first empty tile, else it is minimized. A whole-monitor zone takes any number of windows.
-; A window restored from minimized, or a newly opened app window, goes to HOME_TILE, moving that
-; tile's window out. Dialogs and popups stay where their app puts them.
+; Placing a window in a tile swaps the tile's window to the placed window's old tile, or minimizes it
+; when there is none. A whole-monitor zone takes any number of windows.
+; A window restored from minimized, or a newly opened app window, goes to HOME_TILE, minimizing that
+; tile's window. Dialogs and popups stay where their app puts them.
 ; The active window also gets a colored border.
 
 ; ---- Config ----
-TILES := [  ; in the order a window moved out of its tile looks for an empty one
+TILES := [
     {name: "Left",   mon: 1, x: 0,   y: 0,   w: 0.5, h: 1},
     {name: "Right",  mon: 1, x: 0.5, y: 0,   w: 0.5, h: 1},
     {name: "Top",    mon: 2, x: 0,   y: 0,   w: 1,   h: 0.5},
@@ -39,13 +38,11 @@ WHOLES := [
 ]
 ZONES := TILES.Clone()
 ZONES.Push(WHOLES*)
-MAIN_ZONE := TILES[1]
 HOME_TILE := TILES[1]      ; where windows restored from minimized and newly opened app windows go
 RESTORE_DELAY_MS := 100    ; after a window is minimized or restored, before acting on it
 NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
 KEY_PICK := "LShift"     ; tapped alone
 TAP_MAX_MS := 300        ; a longer press is not a tap
-KEY_PROMOTE := "^+Space"
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
     "LButton",   PickAndPlace,              ; rocker
     "WheelDown", () => WheelTab("{Tab}"),   ; next tab
@@ -81,7 +78,6 @@ CoordMode("Mouse", "Screen")  ; gesture start and end are compared across window
 A_IconTip := "zones"
 InstallMouseHook()  ; so Shift+click is not taken for a tap
 Hotkey("~" KEY_PICK, OnPickKey)
-Hotkey(KEY_PROMOTE, (*) => PromoteActive())
 SnapToZones()
 StartMouse()
 StartBorder()
@@ -104,7 +100,7 @@ PickAndPlace() {
         if !(pick := PickZoneAndWindow())
             return
         if pick.HasOwnProp("background") {
-            if active && WinExist(active) && IsAppWindow(active)
+            if active && IsAppWindow(active)
                 Place(active, pick.zone)
         }
         else if pick.hwnd
@@ -114,9 +110,4 @@ PickAndPlace() {
     } finally {
         busy := false
     }
-}
-
-PromoteActive() {
-    if (hwnd := WinExist("A")) && IsAppWindow(hwnd)
-        Place(hwnd, MAIN_ZONE)
 }
