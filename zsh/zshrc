@@ -409,13 +409,16 @@ export FZF_CTRL_T_OPTS="
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 
 # CTRL-/ to toggle small preview window to see the full command
-# CTRL-Y to copy the command into clipboard using pbcopy
+# CTRL-Y to copy the command into clipboard (pbcopy; /dev/clipboard on MSYS2)
+_fzf_copy=pbcopy
+[[ $OSTYPE == (cygwin|msys) ]] && _fzf_copy='cat > /dev/clipboard'
 export FZF_CTRL_R_OPTS="
   --preview 'echo {}' --preview-window up:3:hidden:wrap
   --bind 'ctrl-/:toggle-preview'
-  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | $_fzf_copy)+abort'
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
+unset _fzf_copy
 
 # ff - Flexible File Finder
 source "${${(%):-%x}:A:h}/ff.sh"
