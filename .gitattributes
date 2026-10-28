@@ -2,6 +2,8 @@
 # zsh, vim and sh under MSYS2 fail on CRLF scripts.
 * text=auto eol=lf
 vscode/settings.json -text
+# Firmware images stay byte-identical to the vendor's file
+*.hex -text
 # Read by Windows itself (cmd.exe, regedit), which expects CRLF
 *.cmd eol=crlf
 *.bat eol=crlf
