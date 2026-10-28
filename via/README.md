@@ -8,6 +8,6 @@
 | `GUTS_WECAT6_v7.hex` | Vendor firmware v7 that the definition matches. |
 
 In the factory keymap, layers 0/1 are the Windows base and its Fn layer; layers 2/3 are the macOS base and its Fn layer.
-In the current keymap, holding left space turns on layer 2: F1–F12 on the number row, arrows on HJKL, Home/End on I/O, Shift on F, digits on the bottom row, Right Alt on right space.
+In the current keymap, holding left space turns on layer 2: F1–F12 on the number row, arrows on HJKL, Y on U, Home/End on I/O, Shift on F, digits on the bottom row, Right Alt on right space.
 Layer 3 is unused.
 The firmware fixes the layer count at 4.
