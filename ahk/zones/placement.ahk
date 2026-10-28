@@ -1,20 +1,16 @@
-; Zones as screen rectangles, and moving windows into them. A tile holds one window.
+; Zones as screen rectangles, and moving windows into them.
 
 restoring := 0  ; a minimized window Place is restoring, so autoplace doesn't move it to HOME_TILE
 
-; Puts the window in the target zone. A tile's window swaps to the placed window's old tile, or is
-; minimized when there is none. A window that appeared on its own (auto) has no old tile, only
+; Puts the window in the target zone, on top of the windows there. Moved from another tile, it swaps
+; with the target tile's top window. A window that appeared on its own (auto) has no old tile, only
 ; where its app put it.
 Place(hwnd, target, auto := false) {
     global restoring
     try {
         src := ZoneOf(hwnd)
-        if IsTile(target) && (other := TopWindowIn(target, hwnd)) {
-            if !auto && src && src != target && IsTile(src)
-                MoveTo(other, ZoneRect(src))
-            else
-                WinMinimize(other)
-        }
+        if !auto && IsTile(src) && IsTile(target) && src != target && (other := TopWindowIn(target, hwnd))
+            MoveTo(other, ZoneRect(src))
         if WinGetMinMax(hwnd) = -1
             restoring := hwnd
         MoveTo(hwnd, ZoneRect(target))

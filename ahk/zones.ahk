@@ -12,17 +12,16 @@
 ; Zone-based window placement.
 ;   tap Left Shift    every zone shows a tile per open window; click a tile to put that window there,
 ;                     or the first tile to minimize every window in that zone. Clicking a zone's
-;                     background moves the active window there (swapping with the window there).
+;                     background moves the active window there.
 ;                     Right-click, Esc, or any key cancels
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   drag Right out of the window onto a zone: move the window there, like a pick from the overlay
-; Zones are fractions of a monitor's work area: tiles, which hold one window each, and whole monitors.
-; Placing a window in a tile swaps the tile's window to the placed window's old tile, or minimizes it
-; when there is none. A whole-monitor zone takes any number of windows.
-; A window restored from minimized, or a newly opened app window, goes to HOME_TILE, minimizing that
-; tile's window. Dialogs and popups stay where their app puts them.
+; Zones are fractions of a monitor's work area: tiles and whole monitors. A zone holds any number of
+; windows; moving a window from one tile to another swaps it with the target tile's top window.
+; A window restored from minimized, or a newly opened app window, goes to HOME_TILE, on top of the
+; windows there. Dialogs and popups stay where their app puts them.
 ; The active window also gets a colored border.
 
 ; ---- Config ----

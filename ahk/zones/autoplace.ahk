@@ -18,7 +18,7 @@ AimRestore(hwnd) {
     }
 }
 
-; Minimizes the tile's window; also places the window when AimRestore could not.
+; Places the window when AimRestore could not, and brings it to the front.
 PlaceRestored(hwnd) {
     global restoring
     if hwnd = restoring
