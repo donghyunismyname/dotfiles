@@ -16,6 +16,7 @@
 ;   hold Right, click Left (rocker): same as tapping Left Shift
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
+;   drag Right out of the window onto a zone: move the window there, like a pick from the overlay
 ;   Ctrl+Shift+Space  move the active window to MAIN_ZONE
 ; Zones are fractions of a monitor's work area and may overlap (Left, Right, and the whole monitor).
 ; Placing a window swaps it with the top window of the target zone when the two zones are disjoint;

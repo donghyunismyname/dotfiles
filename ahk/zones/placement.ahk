@@ -18,10 +18,21 @@ MinimizeZone(zone) {
     r := ZoneRect(zone)
     for hwnd in Windows()
         try {
-            f := FrameRect(hwnd), cx := f.x + f.w // 2, cy := f.y + f.h // 2
-            if cx >= r.x && cx < r.x + r.w && cy >= r.y && cy < r.y + r.h
+            f := FrameRect(hwnd)
+            if InRect(r, f.x + f.w // 2, f.y + f.h // 2)
                 WinMinimize(hwnd)
         }
+}
+
+; Smallest zone containing the point, so a half wins over the whole monitor around it.
+ZoneAt(x, y) {
+    best := "", bestArea := 0
+    for z in ConnectedZones() {
+        r := ZoneRect(z)
+        if InRect(r, x, y) && (!best || r.w * r.h < bestArea)
+            best := z, bestArea := r.w * r.h
+    }
+    return best
 }
 
 TopWindowIn(zone, exclude) {
@@ -57,5 +68,6 @@ ZoneRect(z) {
     return {x: x + GAP, y: y + GAP, w: w - 2 * GAP, h: h - 2 * GAP}
 }
 
+InRect(r, x, y) => x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h
 Intersects(a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h
 Encloses(a, b) => a.x <= b.x && a.y <= b.y && a.x + a.w >= b.x + b.w && a.y + a.h >= b.y + b.h

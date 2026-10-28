@@ -23,8 +23,8 @@ RunWhileRightHeld(action, *) {
     action()
 }
 
-; Ends the press: cancels the overlay, right-clicks when short, or runs a gesture on the window
-; where the drag began.
+; Ends the press: cancels the overlay, right-clicks when short, moves the window where the drag
+; began to the zone it was dropped on outside that window, or else runs a gesture on it.
 OnRightUp(*) {
     right.held := false
     if right.ctrl  ; held down by WheelTab
@@ -38,7 +38,11 @@ OnRightUp(*) {
     if Max(Abs(dx), Abs(dy)) < GESTURE_PX
         return Send("{RButton}")
     hwnd := right.hwnd
-    if !IsAppWindow(hwnd) || !(action := GESTURES.Get(GestureDir(dx, dy), ""))
+    if !IsAppWindow(hwnd)
+        return
+    if !InRect(FrameRect(hwnd), x, y) && (zone := ZoneAt(x, y))
+        return Place(hwnd, zone)
+    if !(action := GESTURES.Get(GestureDir(dx, dy), ""))
         return
     try {
         if action is String
