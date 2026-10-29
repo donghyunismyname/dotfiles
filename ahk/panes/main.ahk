@@ -56,8 +56,8 @@ GESTURES := Map(          ; drag direction -> keys to send, or a function called
     "SW", "^w",           ; close tab
     "SE", "{Enter}",
 )
-MARGIN := 2              ; px between neighboring cells, which share it, and between a cell and the work area's edge
-PADDING := 1             ; px between a cell's edge and the window in it
+MARGIN := 4              ; px between neighboring cells, which share it, and between a cell and the work area's edge
+PADDING := 2             ; px between a cell's edge and the window in it
 MATCH_TOLERANCE := 16    ; px of slack when deciding which pane a window fills
 ; Colors, RGB hex, and opacities, 0-255
 BORDER_COLOR := "2A5CC8" ; focus border
