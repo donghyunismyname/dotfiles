@@ -27,6 +27,10 @@ CellEdges(lo, hi, n) {
 
 ; The pane with the two cells as opposite corners.
 Pane(g, r1, c1, r2, c2) => {grid: g, r1: Min(r1, r2), c1: Min(c1, c2), r2: Max(r1, r2), c2: Max(c1, c2)}
+PaneRows(p) => p.r2 - p.r1 + 1
+PaneCols(p) => p.c2 - p.c1 + 1
+PaneKey(p) => p.grid.mon ":" p.r1 "," p.c1 "," p.r2 "," p.c2
+CellOrder(p) => p.grid.mon * 10000 + p.r1 * 100 + p.c1
 
 PaneRect(p) {
     x := p.grid.xs.starts[p.c1], y := p.grid.ys.starts[p.r1]
@@ -34,10 +38,10 @@ PaneRect(p) {
 }
 
 ; The pane the window fills, or "" when it is off the grid: minimized, maximized or another size.
-PaneOf(hwnd, grids) {
-    if WinGetMinMax(hwnd) != 0
-        return ""
-    f := FrameRect(hwnd)
+PaneOf(hwnd, grids) => WinGetMinMax(hwnd) = 0 ? RectPane(FrameRect(hwnd), grids) : ""
+
+; The pane the rectangle fills, or "".
+RectPane(f, grids) {
     for g in grids
         if (c1 := NearEdge(g.xs.starts, f.x)) && (c2 := NearEdge(g.xs.ends, f.x + f.w)) && c1 <= c2
             && (r1 := NearEdge(g.ys.starts, f.y)) && (r2 := NearEdge(g.ys.ends, f.y + f.h)) && r1 <= r2
@@ -70,20 +74,25 @@ CellAt(g, x, y) {
 }
 
 Clamp(v, lo, hi) => Max(lo, Min(hi, v))
+InRect(r, x, y) => x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h
 Overlaps(p, q) => p.grid.mon = q.grid.mon && p.r1 <= q.r2 && q.r1 <= p.r2 && p.c1 <= q.c2 && q.c1 <= p.c2
 Inside(p, q) => p.grid.mon = q.grid.mon && p.r1 >= q.r1 && p.r2 <= q.r2 && p.c1 >= q.c1 && p.c2 <= q.c2
-SameShape(p, q) => p.r2 - p.r1 = q.r2 - q.r1 && p.c2 - p.c1 = q.c2 - q.c1
-CellOrder(p) => p.grid.mon * 10000 + p.r1 * 100 + p.c1
+SameShape(p, q) => PaneRows(p) = PaneRows(q) && PaneCols(p) = PaneCols(q)
 
 ; Keys of the pane's cells, for a map of taken cells.
 CellKeys(p) {
     keys := []
-    loop p.r2 - p.r1 + 1 {
+    loop PaneRows(p) {
         r := p.r1 + A_Index - 1
-        loop p.c2 - p.c1 + 1
+        loop PaneCols(p)
             keys.Push(p.grid.mon ":" r ":" (p.c1 + A_Index - 1))
     }
     return keys
+}
+
+Take(taken, p) {
+    for k in CellKeys(p)
+        taken[k] := true
 }
 
 IsFree(p, taken) {
@@ -103,4 +112,11 @@ FirstFree(grids, taken, rows, cols) {
                     return p
         }
     return ""
+}
+
+; The first free pane of the size, else the first free cell, marked taken; "" when no cell is free.
+TakeFree(grids, taken, rows := 1, cols := 1) {
+    if (p := FirstFree(grids, taken, rows, cols)) || (p := FirstFree(grids, taken, 1, 1))
+        Take(taken, p)
+    return p
 }

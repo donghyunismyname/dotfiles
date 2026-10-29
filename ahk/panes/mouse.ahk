@@ -1,6 +1,7 @@
 ; Right-button controls. The script takes the right button over: a short press is passed on as a
-; right-click, a longer drag runs a gesture (GESTURES), and buttons pressed while it is held run
-; their WHILE_RIGHT_HELD action instead of their own.
+; right-click, a drag that ends outside the window it began on drops that window there (PlanDrop),
+; previewed while dragging, and any other drag runs a gesture (GESTURES). Buttons pressed while it is
+; held run their WHILE_RIGHT_HELD action instead of their own.
 
 right := {held: false, used: false, ctrl: false, x: 0, y: 0, hwnd: 0}  ; the current right press
 
@@ -10,59 +11,61 @@ StartMouse() {
     HotIf((*) => right.held)
     for key, action in WHILE_RIGHT_HELD
         Hotkey("*" key, RunWhileRightHeld.Bind(action))
-    HotIf((*) => selection.active)
-    Hotkey("*LButton Up", (*) => selection.active := false)  ; ends the rocker's selection
     HotIf()
 }
 
 OnRightDown(*) {
     MouseGetPos(&x, &y, &hwnd)
     right.held := true, right.used := false, right.x := x, right.y := y, right.hwnd := hwnd
+    SetTimer(PreviewDrop, POLL_MS)
 }
 
 RunWhileRightHeld(action, *) {
-    right.used := true  ; the release is then neither a right-click nor a gesture
+    right.used := true  ; the release is then neither a right-click, a drop nor a gesture
+    SetTimer(PreviewDrop, 0), ShowPlan()
     action()
 }
 
-; Ends the press: right-clicks when short, drops the window where the drag began when it ends outside
-; that window, or else runs a gesture on it.
+PreviewDrop() {
+    MouseGetPos(&x, &y)
+    try ShowPlan(ReleaseKind(x, y) = "drop" ? PlanDrop(right.hwnd, x, y) : [])
+}
+
 OnRightUp(*) {
     right.held := false
     if right.ctrl  ; held down by WheelTab
         right.ctrl := false, Send("{Ctrl up}")
-    if selection.active  ; released before Left: cancels the rocker
-        return (selection.active := false, selection.cancelled := true)
     if right.used
         return
+    SetTimer(PreviewDrop, 0), ShowPlan()
     MouseGetPos(&x, &y)
-    dx := x - right.x, dy := y - right.y
-    if Max(Abs(dx), Abs(dy)) < GESTURE_PX
-        return Send("{RButton}")
-    hwnd := right.hwnd
-    if !IsAppWindow(hwnd)
-        return
-    if !InRect(FrameRect(hwnd), x, y)
-        return DropOn(hwnd, x, y)
-    if !(action := GESTURES.Get(GestureDir(dx, dy), ""))
+    switch ReleaseKind(x, y) {
+        case "click": Send("{RButton}")
+        case "drop": ApplyPlan(PlanDrop(right.hwnd, x, y))
+        default: RunGesture(right.hwnd, x - right.x, y - right.y)
+    }
+}
+
+; What releasing Right at the point does: a "click" when it barely moved, a "drop" outside the app
+; window it went down on, else a "gesture".
+ReleaseKind(x, y) {
+    if Max(Abs(x - right.x), Abs(y - right.y)) < GESTURE_PX
+        return "click"
+    try {
+        if IsAppWindow(right.hwnd) && !InRect(FrameRect(right.hwnd), x, y)
+            return "drop"
+    }
+    return "gesture"
+}
+
+RunGesture(hwnd, dx, dy) {
+    if !IsAppWindow(hwnd) || !(action := GESTURES.Get(GestureDir(dx, dy), ""))
         return
     try {
         if action is String
             WinActivate(hwnd), WinWaitActive(hwnd, , 1) && Send(action)  ; never send to another window
         else
             action(hwnd)
-    }
-}
-
-; Dropped on another window, the two swap places and sizes; dropped on the desktop, the window goes to
-; the cell there.
-DropOn(hwnd, x, y) {
-    MouseGetPos(, , &under)
-    try {
-        if under != hwnd && IsAppWindow(under)
-            SwapWindows(hwnd, under)
-        else if WinGetClass(under) ~= "^(Progman|WorkerW)$"
-            PlaceInPane(hwnd, CellAt(GridAt(MonitorGrids(), x, y), x, y))
     }
 }
 

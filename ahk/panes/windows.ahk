@@ -17,10 +17,18 @@ IsAppWindow(hwnd) {
             return false
         cloaked := 0  ; e.g. suspended UWP apps and windows on other virtual desktops
         DllCall("dwmapi\DwmGetWindowAttribute", "ptr", hwnd, "uint", 14, "int*", &cloaked, "uint", 4)
-        return !cloaked && !(WinGetClass(hwnd) ~= "^(Progman|WorkerW|Shell_(Secondary)?TrayWnd)$")
+        return !cloaked && !IsDesktop(hwnd) && !(WinGetClass(hwnd) ~= "^Shell_(Secondary)?TrayWnd$")
     }
     return false
 }
+
+IsDesktop(hwnd) {
+    try return WinGetClass(hwnd) ~= "^(Progman|WorkerW)$"
+    return false
+}
+
+; The top-level window at the point. Click-through windows (the previews, the focus border) are skipped.
+WindowAt(x, y) => DllCall("GetAncestor", "ptr", DllCall("WindowFromPoint", "int64", y << 32 | x & 0xFFFFFFFF, "ptr"), "uint", 2, "ptr")  ; GA_ROOT
 
 frameInsets := Map()  ; hwnd -> widths of its invisible resize borders, see FrameRect
 
@@ -52,13 +60,33 @@ MoveTo(hwnd, r) {
 SetNormalRect(hwnd, r, showCmd) {
     if !(i := frameInsets.Get(hwnd, ""))
         return false
-    ; The position is in workspace coordinates: relative to the primary monitor's work area.
-    p := MonitorGetPrimary(), MonitorGet(p, &ml, &mt), MonitorGetWorkArea(p, &wl, &wt)
-    dx := wl - ml, dy := wt - mt
-    wp := Buffer(44, 0)  ; WINDOWPLACEMENT
-    NumPut("uint", 44, wp)
-    DllCall("GetWindowPlacement", "ptr", hwnd, "ptr", wp)
+    WorkspaceOffset(&dx, &dy)
+    wp := Placement(hwnd)
     NumPut("uint", 0, "uint", showCmd, wp, 4)  ; flags 0: restore to normal, not maximized
     NumPut("int", r.x - i.l - dx, "int", r.y - i.t - dy, "int", r.x + r.w + i.r - dx, "int", r.y + r.h + i.b - dy, wp, 28)
     return DllCall("SetWindowPlacement", "ptr", hwnd, "ptr", wp)
+}
+
+; The visible frame a minimized window gets when restored, or "" when it is restored maximized.
+NormalFrame(hwnd) {
+    wp := Placement(hwnd)
+    if NumGet(wp, 4, "uint") & 2  ; WPF_RESTORETOMAXIMIZED
+        return ""
+    WorkspaceOffset(&dx, &dy)
+    i := frameInsets.Get(hwnd, {l: 0, t: 0, r: 0, b: 0})  ; without them, MATCH_TOLERANCE covers the borders
+    x := NumGet(wp, 28, "int") + dx + i.l, y := NumGet(wp, 32, "int") + dy + i.t
+    return {x: x, y: y, w: NumGet(wp, 36, "int") + dx - i.r - x, h: NumGet(wp, 40, "int") + dy - i.b - y}
+}
+
+Placement(hwnd) {
+    wp := Buffer(44, 0)  ; WINDOWPLACEMENT
+    NumPut("uint", 44, wp)
+    DllCall("GetWindowPlacement", "ptr", hwnd, "ptr", wp)
+    return wp
+}
+
+; A restore position is in workspace coordinates: relative to the primary monitor's work area.
+WorkspaceOffset(&dx, &dy) {
+    p := MonitorGetPrimary(), MonitorGet(p, &ml, &mt), MonitorGetWorkArea(p, &wl, &wt)
+    dx := wl - ml, dy := wt - mt
 }

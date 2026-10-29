@@ -6,7 +6,8 @@
 #Include %A_LineFile%\..\cells.ahk
 #Include %A_LineFile%\..\placement.ahk
 #Include %A_LineFile%\..\autoplace.ahk
-#Include %A_LineFile%\..\overlay.ahk
+#Include %A_LineFile%\..\preview.ahk
+#Include %A_LineFile%\..\rocker.ahk
 #Include %A_LineFile%\..\mouse.ahk
 #Include %A_LineFile%\..\border.ahk
 
@@ -19,8 +20,10 @@
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   drag Right onto another window: the two swap places and sizes; onto the desktop: the window goes to
 ;                     the cell there
-; Windows in the way of a pane move out (see PlaceInPane): to its old pane, or the first free cells,
-; or else they are minimized.
+; Both the rocker and a drag onto something preview the result: where each window will go, and which
+; ones will be minimized.
+; Windows in the way of a pane move out (see PlanPane): to its old pane, or the first free cells, or
+; else they are minimized.
 ; A newly opened app window goes to the first free cell; one restored from minimized comes back to its
 ; pane, or the first free one of its size when that is taken. With no cell free, either takes the pane
 ; of the least recently active window, which is minimized. Dialogs and popups stay where their app
@@ -32,6 +35,8 @@ LANDSCAPE_GRID := {rows: 2, cols: 4}  ; cells of a monitor wider than tall
 PORTRAIT_GRID := {rows: 4, cols: 2}
 RESTORE_DELAY_MS := 100    ; after a window is restored, before acting on it
 NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
+AIM_DELAY_MS := 300        ; after the layout changes, before re-aiming where minimized windows come back
+POLL_MS := 20              ; how often the rocker and drag previews follow the cursor
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
     "LButton",   SelectAndPlace,            ; rocker
     "WheelDown", () => WheelTab("{Tab}"),   ; next tab
@@ -54,8 +59,11 @@ MATCH_TOLERANCE := 16    ; px of slack when deciding which pane a window fills
 BORDER_COLOR := "2A5CC8" ; focus border
 CELL_COLOR := "1F1F1F"   ; cells shown by the rocker
 CELL_ALPHA := 140
-SELECT_COLOR := "2A5CC8" ; the pane being selected
-SELECT_ALPHA := 120
+SELECT_COLOR := "2A5CC8" ; preview: where the placed window goes
+MOVED_COLOR := "C87A2A"  ; preview: where a window in its way goes
+MINIMIZED_COLOR := "B03A3A" ; preview: a window in its way that gets minimized
+TEXT_COLOR := "FFFFFF"   ; preview: window titles
+PREVIEW_ALPHA := 150
 BORDER_WIDTH := MARGIN   ; drawn outside the active window, so it fills the margin around a pane
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
