@@ -75,12 +75,9 @@ SetNormalRect(hwnd, r, showCmd) {
     return DllCall("SetWindowPlacement", "ptr", hwnd, "ptr", wp)
 }
 
-; The visible frame a minimized window gets when restored, or "" when it is restored maximized.
+; The visible frame the window has when shown normally, neither minimized nor maximized.
 NormalFrame(hwnd) {
-    wp := Placement(hwnd)
-    if NumGet(wp, 4, "uint") & 2  ; WPF_RESTORETOMAXIMIZED
-        return ""
-    i := Insets(hwnd)
+    wp := Placement(hwnd), i := Insets(hwnd)
     WorkspaceOffset(&dx, &dy)
     x := NumGet(wp, 28, "int") + dx + i.l, y := NumGet(wp, 32, "int") + dy + i.t
     return {x: x, y: y, w: NumGet(wp, 36, "int") + dx - i.r - x, h: NumGet(wp, 40, "int") + dy - i.b - y}

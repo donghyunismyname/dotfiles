@@ -1,5 +1,5 @@
 ; Right-button controls. The script takes the right button over: a short press is passed on as a
-; right-click, a drag that ends outside the window it began on drops that window there (PlanDrop),
+; right-click, a drag that ends outside the window it began on drops that window there (DropPane),
 ; previewed while dragging, and any other drag runs a gesture (GESTURES). Buttons pressed while it is
 ; held run their WHILE_RIGHT_HELD action instead of their own.
 
@@ -22,13 +22,17 @@ OnRightDown(*) {
 
 RunWhileRightHeld(action, *) {
     right.used := true  ; the release is then neither a right-click, a drop nor a gesture
-    SetTimer(PreviewDrop, 0), ShowPlan()
+    SetTimer(PreviewDrop, 0), ShowMoves()
     action()
 }
 
 PreviewDrop() {
     MouseGetPos(&x, &y)
-    try ShowPlan(ReleaseKind(x, y) = "drop" ? PlanDrop(right.hwnd, x, y) : [])
+    try {
+        if ReleaseKind(x, y) = "drop" && (base := LoadLayout(), p := DropPane(base, right.hwnd, x, y))
+            return ShowMoves(Preview(base, (l) => Put(l, right.hwnd, p), right.hwnd))
+    }
+    ShowMoves()
 }
 
 OnRightUp(*) {
@@ -37,13 +41,30 @@ OnRightUp(*) {
         right.ctrl := false, Send("{Ctrl up}")
     if right.used
         return
-    SetTimer(PreviewDrop, 0), ShowPlan()
+    SetTimer(PreviewDrop, 0), ShowMoves()
     MouseGetPos(&x, &y)
     switch ReleaseKind(x, y) {
         case "click": Send("{RButton}")
-        case "drop": ApplyPlan(PlanDrop(right.hwnd, x, y), true)
+        case "drop": Drop(right.hwnd, x, y)
         default: RunGesture(right.hwnd, x - right.x, y - right.y)
     }
+}
+
+Drop(hwnd, x, y) {
+    if p := DropPane(LoadLayout(), hwnd, x, y)
+        Update((l) => Put(l, hwnd, p), hwnd)
+}
+
+; Where dropping the window at the point puts it: in the pane of the window on the grid there, which then
+; makes room, usually by swapping; in the cell there over the desktop or a window off the grid; "" over
+; anything else.
+DropPane(l, hwnd, x, y) {
+    under := WindowAt(x, y)
+    if under = hwnd
+        return ""
+    if (w := l.wins.Get(under, "")) && InPlay(w) && Top(w).pane
+        return Top(w).pane
+    return IsDesktop(under) || IsAppWindow(under) ? CellAt(GridAt(l.grids, x, y), x, y) : ""
 }
 
 ; What releasing Right at the point does: a "click" when it barely moved, a "drop" outside the app

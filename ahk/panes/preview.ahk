@@ -1,35 +1,35 @@
-; Previews what a plan (see placement.ahk) does: where each window lands, the placed one in SELECT_COLOR
-; and the ones in its way in MOVED_COLOR with their titles, and each window it minimizes in
-; MINIMIZED_COLOR where it is now. With no plan, the preview hides.
-ShowPlan(plan := []) {
+; Previews moves (layout.ahk): where each window lands, the one being put first in PREVIEW_PUT_COLOR and
+; the others in PREVIEW_MOVED_COLOR with their titles, and each window to be minimized in
+; PREVIEW_MINIMIZED_COLOR where it is now. With no moves, the preview hides.
+ShowMoves(list := []) {
     static shown := [], last := ""
-    if (key := PlanKey(plan)) = last
+    if (key := MovesKey(list)) = last
         return
     last := key
     for g in shown
         g.Destroy()
     shown := []
-    for i, m in plan
+    for i, m in list
         try shown.Push(ShowRect(PreviewGui(m, i = 1), m.rect || FrameRect(m.hwnd)))
 }
 
-PlanKey(plan) {
+MovesKey(list) {
     key := ""
-    for m in plan
+    for m in list
         key .= m.hwnd ":" (m.rect ? m.rect.x "," m.rect.y "," m.rect.w "," m.rect.h : "min") ";"
     return key
 }
 
-; The placed window is a plain fill; the others carry their title, after a glyph when minimized.
-PreviewGui(m, placed) {
-    g := ClickThroughGui(placed ? SELECT_COLOR : m.rect ? MOVED_COLOR : MINIMIZED_COLOR, PREVIEW_ALPHA)
-    if placed
+; The window being put is a plain fill; the others carry their title, after a glyph when minimized.
+PreviewGui(m, isPut) {
+    g := ClickThroughGui(isPut ? PREVIEW_PUT_COLOR : m.rect ? PREVIEW_MOVED_COLOR : PREVIEW_MINIMIZED_COLOR, PREVIEW_ALPHA)
+    if isPut
         return g
     if !m.rect {
-        g.SetFont("s14 c" TEXT_COLOR, "Segoe MDL2 Assets")
+        g.SetFont("s14 c" PREVIEW_TEXT_COLOR, "Segoe MDL2 Assets")
         g.AddText("x12 y12", Chr(0xE921))  ; minimize glyph
     }
-    g.SetFont("s11 bold c" TEXT_COLOR, "Segoe UI")
+    g.SetFont("s11 bold c" PREVIEW_TEXT_COLOR, "Segoe UI")
     g.AddText((m.rect ? "x12" : "x+8") " y12", WinGetTitle(m.hwnd))
     return g
 }
