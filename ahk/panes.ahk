@@ -2,22 +2,22 @@
 #SingleInstance Force
 #Include %A_LineFile%\..\lib\util.ahk
 #Include %A_LineFile%\..\lib\winevent.ahk
-#Include %A_LineFile%\..\zones\windows.ahk
-#Include %A_LineFile%\..\zones\placement.ahk
-#Include %A_LineFile%\..\zones\autoplace.ahk
-#Include %A_LineFile%\..\zones\overlay.ahk
-#Include %A_LineFile%\..\zones\mouse.ahk
-#Include %A_LineFile%\..\zones\border.ahk
+#Include %A_LineFile%\..\panes\windows.ahk
+#Include %A_LineFile%\..\panes\placement.ahk
+#Include %A_LineFile%\..\panes\autoplace.ahk
+#Include %A_LineFile%\..\panes\overlay.ahk
+#Include %A_LineFile%\..\panes\mouse.ahk
+#Include %A_LineFile%\..\panes\border.ahk
 
-; Zone-based window placement.
-;   hold Right, click Left (rocker): every zone shows a tile per open window; click a tile to put that
-;                     window there, or the first tile to minimize every window in that zone. Clicking a
-;                     zone's background moves the active window there.
+; Pane-based window placement.
+;   hold Right, click Left (rocker): every pane shows a tile per open window; click a tile to put that
+;                     window there, or the first tile to minimize every window in that pane. Clicking a
+;                     pane's background moves the active window there.
 ;                     Right-click, Esc, or any key cancels
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
-;   drag Right out of the window onto a zone: move the window there, like a pick from the overlay
-; Zones are fractions of a monitor's work area: tiles and whole monitors. A zone holds any number of
+;   drag Right out of the window onto a pane: move the window there, like a pick from the overlay
+; Panes are fractions of a monitor's work area: tiles and whole monitors. A pane holds any number of
 ; windows; moving a window from one tile to another swaps it with the target tile's top window.
 ; A window restored from minimized, or a newly opened app window, goes to HOME_TILE, on top of the
 ; windows there. Dialogs and popups stay where their app puts them.
@@ -34,8 +34,8 @@ WHOLES := [
     {name: "Wide",   mon: 1, x: 0,   y: 0,   w: 1,   h: 1},
     {name: "Tall",   mon: 2, x: 0,   y: 0,   w: 1,   h: 1},
 ]
-ZONES := TILES.Clone()
-ZONES.Push(WHOLES*)
+PANES := TILES.Clone()
+PANES.Push(WHOLES*)
 HOME_TILE := TILES[1]      ; where windows restored from minimized and newly opened app windows go
 RESTORE_DELAY_MS := 100    ; after a window is minimized or restored, before acting on it
 NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
@@ -55,24 +55,24 @@ GESTURES := Map(          ; drag direction -> keys to send, or a function called
     "SW", "^w",           ; close tab
     "SE", "{Enter}",
 )
-MARGIN := 6              ; px between zones, and between a zone and the work area's edge
-MATCH_TOLERANCE := 16    ; px of slack when deciding which zone a window is in
+MARGIN := 6              ; px between panes, and between a pane and the work area's edge
+MATCH_TOLERANCE := 16    ; px of slack when deciding which pane a window is in
 ICON_SIZE := 32
 TILE_W := 110            ; px per window tile: icon with its title below
 TILE_H := 84
 ; Colors, RGB hex
 BORDER_COLOR := "2A5CC8" ; focus border
-BACK_COLOR := "1F1F1F"   ; zone overlays, bands included
+BACK_COLOR := "1F1F1F"   ; pane overlays, bands included
 KEY_COLOR := "1F1F1E"    ; never drawn: keyed out so the translucent backdrop shows through
 TEXT_COLOR := "E6E6E6"
 BACK_ALPHA := 200        ; overlay backdrop opacity, 0-255; icons and text stay opaque
-BORDER_WIDTH := MARGIN   ; drawn outside the active window, so it fills the margin around a zone
+BORDER_WIDTH := MARGIN   ; drawn outside the active window, so it fills the margin around a pane
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 CoordMode("Mouse", "Screen")  ; gesture start and end are compared across windows
-A_IconTip := "zones"
-SnapToZones()
+A_IconTip := "panes"
+SnapToPanes()
 StartMouse()
 StartBorder()
 StartAutoPlace()
@@ -84,16 +84,16 @@ PickAndPlace() {
     busy := true
     active := WinExist("A")  ; before the overlay takes focus
     try {
-        if !(pick := PickZoneAndWindow())
+        if !(pick := PickPaneAndWindow())
             return
         if pick.HasOwnProp("background") {
             if active && IsAppWindow(active)
-                Place(active, pick.zone)
+                Place(active, pick.pane)
         }
         else if pick.hwnd
-            Place(pick.hwnd, pick.zone)
+            Place(pick.hwnd, pick.pane)
         else
-            MinimizeZone(pick.zone)
+            MinimizePane(pick.pane)
     } finally {
         busy := false
     }

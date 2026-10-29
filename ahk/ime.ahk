@@ -6,8 +6,8 @@
 
 ; Input mode: a small "한" / "A" box just below the text caret shows it, and it is kept the same
 ; across windows (Windows keeps one per window).
-; Kept apart from zones.ahk: its calls into other apps can block for a while, and AHK has one thread,
-; so inside zones.ahk they would stall the mouse hook.
+; Kept apart from panes.ahk: its calls into other apps can block for a while, and AHK has one thread,
+; so inside panes.ahk they would stall the mouse hook.
 ; Updated on window events (caret moved, text changed, focus or foreground changed) and the 한/영 key.
 
 ; ---- Config ----

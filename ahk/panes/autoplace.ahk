@@ -14,7 +14,7 @@ StartAutoPlace() {
 AimRestore(hwnd) {
     try {
         if IsAppWindow(hwnd) && WinGetMinMax(hwnd) = -1
-            SetNormalRect(hwnd, ZoneRect(HOME_TILE), 7)  ; SW_SHOWMINNOACTIVE: stay minimized
+            SetNormalRect(hwnd, PaneRect(HOME_TILE), 7)  ; SW_SHOWMINNOACTIVE: stay minimized
     }
 }
 

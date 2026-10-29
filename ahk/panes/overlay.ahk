@@ -1,19 +1,19 @@
-; Zone overlay: every zone shows a tile per open window, to pick a zone and a window with one click.
+; Pane overlay: every pane shows a tile per open window, to pick a pane and a window with one click.
 
 cancelOverlay := ""  ; set while the overlay is open; closes it without a pick
 
-; Shows every zone with a tile per open window. Returns {zone, hwnd} for a clicked tile,
-; {zone, background} for a click on a zone's background, or "" when cancelled by right-click or any key.
-PickZoneAndWindow() {
+; Shows every pane with a tile per open window. Returns {pane, hwnd} for a clicked tile,
+; {pane, background} for a click on a pane's background, or "" when cancelled by right-click or any key.
+PickPaneAndWindow() {
     global cancelOverlay
     state := {pick: ""}
     ih := InputHook("L1 T30", "{Esc}")
-    shown := Connected(ZONES)  ; not "zones": AHK names ignore case, so it would hide ZONES
+    shown := Connected(PANES)  ; not "panes": AHK names ignore case, so it would hide PANES
     items := WindowItems()
-    items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the zone's windows
+    items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the pane's windows
     overlays := []
     for z in shown
-        overlays.Push(ShowZoneOverlay(z, shown, items))
+        overlays.Push(ShowPaneOverlay(z, shown, items))
     leftClick := OverlayClicked.Bind(overlays, items, state, ih)
     OnMessage(0x201, leftClick)  ; WM_LBUTTONDOWN
     cancelOverlay := () => ih.Stop()
@@ -27,16 +27,16 @@ PickZoneAndWindow() {
 }
 
 ; Every click lands on a backdrop, since the layer with the tiles is click-through.
-; A click inside the tile grid picks that tile; anywhere else is a click on the zone's background.
+; A click inside the tile grid picks that tile; anywhere else is a click on the pane's background.
 OverlayClicked(overlays, items, state, ih, wParam, lParam, msg, hwnd) {
     for o in overlays
         if hwnd = o.back.Hwnd {
             x := lParam & 0xFFFF, y := lParam >> 16 & 0xFFFF
             col := (x - o.x0) // TILE_W, row := (y - o.y0) // TILE_H, i := row * o.cols + col + 1
             if x >= o.x0 && y >= o.y0 && col < o.cols && i <= items.Length
-                state.pick := {zone: o.zone, hwnd: items[i].hwnd}
+                state.pick := {pane: o.pane, hwnd: items[i].hwnd}
             else
-                state.pick := {zone: o.zone, background: true}
+                state.pick := {pane: o.pane, background: true}
             ih.Stop()
         }
 }
@@ -83,22 +83,22 @@ WindowIcon(hwnd) {
     return WinGetProcessPath(hwnd)
 }
 
-IsContainer(z, zones) {
-    r := ZoneRect(z)
-    for other in zones
-        if other != z && Encloses(r, ZoneRect(other))
+IsContainer(z, panes) {
+    r := PaneRect(z)
+    for other in panes
+        if other != z && Encloses(r, PaneRect(other))
             return true
     return false
 }
 
-; Overlays never overlap: a zone that contains other zones gets a band at its top, tall enough for
-; n tiles, and a zone inside it that starts at the same top edge gets the area below the band.
-OverlayRect(z, zones, n) {
-    r := ZoneRect(z)
-    if IsContainer(z, zones)
+; Overlays never overlap: a pane that contains other panes gets a band at its top, tall enough for
+; n tiles, and a pane inside it that starts at the same top edge gets the area below the band.
+OverlayRect(z, panes, n) {
+    r := PaneRect(z)
+    if IsContainer(z, panes)
         return {x: r.x, y: r.y, w: r.w, h: BandHeight(r.w, n)}
-    for other in zones
-        if other != z && Encloses(c := ZoneRect(other), r) && c.y = r.y
+    for other in panes
+        if other != z && Encloses(c := PaneRect(other), r) && c.y = r.y
             return {x: r.x, y: r.y + BandHeight(c.w, n) + MARGIN, w: r.w, h: r.h - BandHeight(c.w, n) - MARGIN}
     return r
 }
@@ -106,18 +106,18 @@ OverlayRect(z, zones, n) {
 TileColumns(w) => Max(1, (w - 24) // TILE_W)
 BandHeight(w, n) => 56 + Ceil(n / TileColumns(w)) * TILE_H
 
-; Draws the zone as a translucent backdrop with a click-through layer on top holding the opaque
+; Draws the pane as a translucent backdrop with a click-through layer on top holding the opaque
 ; tiles; that layer's background color is keyed out. Returns both windows and the tile grid layout.
-ShowZoneOverlay(z, zones, items) {
-    r := OverlayRect(z, zones, items.Length), h := r.h
-    band := IsContainer(z, zones)
+ShowPaneOverlay(z, panes, items) {
+    r := OverlayRect(z, panes, items.Length), h := r.h
+    band := IsContainer(z, panes)
     back := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
     back.BackColor := BACK_COLOR
     WinSetTransparent(BACK_ALPHA, back)
     back.Show("NA x" r.x " y" r.y " w" r.w " h" h)
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x20 +Owner" back.Hwnd)  ; owned: stays above its backdrop
     g.BackColor := KEY_COLOR
-    ; A band starts its tile grid below the zone name; other zones center it.
+    ; A band starts its tile grid below the pane name; other panes center it.
     cols := TileColumns(r.w)
     rows := Ceil(items.Length / cols)
     x0 := Max(12, (r.w - Min(items.Length, cols) * TILE_W) // 2)
@@ -138,5 +138,5 @@ ShowZoneOverlay(z, zones, items) {
     }
     g.Show("NA x" r.x " y" r.y " w" r.w " h" h)
     WinSetTransColor(KEY_COLOR, g)
-    return {zone: z, back: back, front: g, x0: x0, y0: y0, cols: cols}
+    return {pane: z, back: back, front: g, x0: x0, y0: y0, cols: cols}
 }

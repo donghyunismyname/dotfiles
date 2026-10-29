@@ -9,7 +9,7 @@
 ; and Ctrl may still be held from the hotkey.
 
 ; ---- Config ----
-AREAS := [  ; first key, as the disjoint zones in zones.ahk; fractions of the whole monitor
+AREAS := [  ; first key, as the disjoint panes in panes.ahk; fractions of the whole monitor
     {key: "j", mon: 1, x: 0,   y: 0,   w: 0.5, h: 1},    ; landscape, left half
     {key: "k", mon: 1, x: 0.5, y: 0,   w: 0.5, h: 1},    ; landscape, right half
     {key: "l", mon: 2, x: 0,   y: 0,   w: 1,   h: 0.5},  ; portrait, top half
