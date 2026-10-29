@@ -56,8 +56,7 @@ GESTURES := Map(          ; drag direction -> keys to send, or a function called
     "SW", "^w",           ; close tab
     "SE", "{Enter}",
 )
-MARGIN := 4              ; px between neighboring cells, which share it, and between a cell and the work area's edge
-PADDING := 2             ; px between a cell's edge and the window in it
+GAP := 6                 ; px between neighboring cells, and between a cell and the work area's edge
 MATCH_TOLERANCE := 16    ; px of slack when deciding which pane a window fills
 ; Colors, RGB hex, and opacities, 0-255
 BORDER_COLOR := "2A5CC8" ; focus border
@@ -68,7 +67,7 @@ MOVED_COLOR := "C87A2A"  ; preview: where a window in its way goes
 MINIMIZED_COLOR := "B03A3A" ; preview: a window in its way that gets minimized
 TEXT_COLOR := "FFFFFF"   ; preview: window titles
 PREVIEW_ALPHA := 150
-BORDER_WIDTH := PADDING + MARGIN  ; drawn outside the active window, over its padding and margin
+BORDER_WIDTH := GAP      ; drawn outside the active window, so it fills the gap around it
 
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
