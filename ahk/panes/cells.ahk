@@ -37,9 +37,6 @@ PaneRect(p) {
     return {x: x, y: y, w: p.grid.xs.ends[p.c2] - x, h: p.grid.ys.ends[p.r2] - y}
 }
 
-; The pane the window fills, or "" when it is off the grid: minimized, maximized or another size.
-PaneOf(hwnd, grids) => WinGetMinMax(hwnd) = 0 ? RectPane(FrameRect(hwnd), grids) : ""
-
 ; The pane the rectangle fills, or "".
 RectPane(f, grids) {
     for g in grids

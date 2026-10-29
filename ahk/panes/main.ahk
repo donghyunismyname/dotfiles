@@ -5,6 +5,7 @@
 #Include %A_LineFile%\..\windows.ahk
 #Include %A_LineFile%\..\cells.ahk
 #Include %A_LineFile%\..\placement.ahk
+#Include %A_LineFile%\..\minimized.ahk
 #Include %A_LineFile%\..\autoplace.ahk
 #Include %A_LineFile%\..\preview.ahk
 #Include %A_LineFile%\..\rocker.ahk
@@ -24,10 +25,12 @@
 ; ones will be minimized.
 ; Windows in the way of a pane move out (see PlanPane): to its old pane, or the first free cells, or
 ; else they are minimized.
+; A window counts as in a pane when it fills it, or when the script put it there and its top-left corner
+; is still there: an app's minimum size can keep it larger than the pane.
 ; A newly opened app window goes to the first free cell; one restored from minimized comes back to its
 ; pane, or the first free one of its size when that is taken. With no cell free, either takes the pane
-; of the least recently active window, which is minimized. Dialogs and popups stay where their app
-; puts them.
+; of the least recently active window, which is minimized. Windows minimized to make room come back
+; by themselves once there is room. Dialogs and popups stay where their app puts them.
 ; The active window also gets a colored border.
 
 ; ---- Config ----
@@ -35,7 +38,7 @@ LANDSCAPE_GRID := {rows: 2, cols: 4}  ; cells of a monitor wider than tall
 PORTRAIT_GRID := {rows: 4, cols: 2}
 RESTORE_DELAY_MS := 100    ; after a window is restored, before acting on it
 NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
-AIM_DELAY_MS := 300        ; after the layout changes, before re-aiming where minimized windows come back
+LAYOUT_SETTLE_MS := 300    ; after the layout changes, before updating the minimized windows
 POLL_MS := 20              ; how often the rocker and drag previews follow the cursor
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
     "LButton",   SelectAndPlace,            ; rocker
