@@ -1,14 +1,14 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
-#Include %A_LineFile%\..\lib\util.ahk
-#Include %A_LineFile%\..\lib\winevent.ahk
-#Include %A_LineFile%\..\panes\windows.ahk
-#Include %A_LineFile%\..\panes\cells.ahk
-#Include %A_LineFile%\..\panes\placement.ahk
-#Include %A_LineFile%\..\panes\autoplace.ahk
-#Include %A_LineFile%\..\panes\overlay.ahk
-#Include %A_LineFile%\..\panes\mouse.ahk
-#Include %A_LineFile%\..\panes\border.ahk
+#Include %A_LineFile%\..\..\lib\util.ahk
+#Include %A_LineFile%\..\..\lib\winevent.ahk
+#Include %A_LineFile%\..\windows.ahk
+#Include %A_LineFile%\..\cells.ahk
+#Include %A_LineFile%\..\placement.ahk
+#Include %A_LineFile%\..\autoplace.ahk
+#Include %A_LineFile%\..\overlay.ahk
+#Include %A_LineFile%\..\mouse.ahk
+#Include %A_LineFile%\..\border.ahk
 
 ; Window placement on a grid, like tmux panes. Each monitor's work area is split into cells; a pane is
 ; a rectangle of one or more cells holding one window. Cells are ordered by monitor, row, then column.

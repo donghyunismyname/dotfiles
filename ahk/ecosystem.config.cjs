@@ -5,15 +5,15 @@
 const { join } = require("node:path");
 
 const AUTOHOTKEY = join(process.env.LOCALAPPDATA, "Programs/AutoHotkey/v2/AutoHotkey64.exe");
-const SCRIPTS = ["panes", "ime", "combo"];
+const SCRIPTS = { panes: "panes/main.ahk", ime: "ime.ahk", combo: "combo.ahk" }; // name -> entry script
 
 module.exports = {
-  apps: SCRIPTS.map((script) => ({
-    name: `ahk-${script}`,
+  apps: Object.entries(SCRIPTS).map(([name, script]) => ({
+    name: `ahk-${name}`,
     namespace: "ahk",
     cwd: __dirname,
     script: AUTOHOTKEY,
-    args: `${script}.ahk`,
+    args: script,
     interpreter: "none",
     autorestart: true,
     restart_delay: 5_000,
