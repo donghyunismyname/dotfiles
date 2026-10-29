@@ -23,16 +23,14 @@ RunWhileRightHeld(action, *) {
     action()
 }
 
-; Ends the press: cancels the overlay, right-clicks when short, moves the window where the drag
-; began to the target it was dropped on outside that window, or else runs a gesture on it.
+; Ends the press: right-clicks when short, drops the window where the drag began when it ends outside
+; that window, or else runs a gesture on it.
 OnRightUp(*) {
     right.held := false
     if right.ctrl  ; held down by WheelTab
         right.ctrl := false, Send("{Ctrl up}")
     if right.used
         return
-    if cancelOverlay
-        return cancelOverlay()
     MouseGetPos(&x, &y)
     dx := x - right.x, dy := y - right.y
     if Max(Abs(dx), Abs(dy)) < GESTURE_PX
@@ -40,8 +38,8 @@ OnRightUp(*) {
     hwnd := right.hwnd
     if !IsAppWindow(hwnd)
         return
-    if !InRect(FrameRect(hwnd), x, y) && (target := TargetAt(x, y))
-        return Place(hwnd, target)
+    if !InRect(FrameRect(hwnd), x, y)
+        return DropOn(hwnd, x, y)
     if !(action := GESTURES.Get(GestureDir(dx, dy), ""))
         return
     try {
@@ -49,6 +47,18 @@ OnRightUp(*) {
             WinActivate(hwnd), WinWaitActive(hwnd, , 1) && Send(action)  ; never send to another window
         else
             action(hwnd)
+    }
+}
+
+; Dropped on another window, the two swap places and sizes; dropped on the desktop, the window goes to
+; the cell there.
+DropOn(hwnd, x, y) {
+    MouseGetPos(, , &under)
+    try {
+        if under != hwnd && IsAppWindow(under)
+            SwapWindows(hwnd, under)
+        else if WinGetClass(under) ~= "^(Progman|WorkerW)$"
+            PlaceInPane(hwnd, CellAt(GridAt(MonitorGrids(), x, y), x, y))
     }
 }
 

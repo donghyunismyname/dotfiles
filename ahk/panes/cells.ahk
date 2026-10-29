@@ -1,0 +1,106 @@
+; The grid: each monitor's work area split into cells, and panes as rectangles of cells.
+; A pane is {grid, r1, c1, r2, c2}: its first and last row and column, counted from 1.
+; Cells are ordered by monitor, then row, then column.
+
+; The grids of the connected monitors, in monitor order.
+MonitorGrids() {
+    list := []
+    loop MonitorGetCount() {
+        MonitorGetWorkArea(A_Index, &l, &t, &r, &b)
+        shape := r - l >= b - t ? LANDSCAPE_GRID : PORTRAIT_GRID
+        list.Push({mon: A_Index, rows: shape.rows, cols: shape.cols, x: l, y: t, w: r - l, h: b - t,
+            xs: CellEdges(l, r, shape.cols), ys: CellEdges(t, b, shape.rows)})
+    }
+    return list
+}
+
+; Where n equal cells between lo and hi start and end, inset by MARGIN at lo and hi and by half of it
+; between cells, which the neighboring cell insets by the other half.
+CellEdges(lo, hi, n) {
+    starts := [], ends := [], half := MARGIN // 2
+    loop n {
+        starts.Push(lo + Round((A_Index - 1) * (hi - lo) / n) + (A_Index = 1 ? MARGIN : half))
+        ends.Push(lo + Round(A_Index * (hi - lo) / n) - (A_Index = n ? MARGIN : MARGIN - half))
+    }
+    return {starts: starts, ends: ends}
+}
+
+; The pane with the two cells as opposite corners.
+Pane(g, r1, c1, r2, c2) => {grid: g, r1: Min(r1, r2), c1: Min(c1, c2), r2: Max(r1, r2), c2: Max(c1, c2)}
+
+PaneRect(p) {
+    x := p.grid.xs.starts[p.c1], y := p.grid.ys.starts[p.r1]
+    return {x: x, y: y, w: p.grid.xs.ends[p.c2] - x, h: p.grid.ys.ends[p.r2] - y}
+}
+
+; The pane the window fills, or "" when it is off the grid: minimized, maximized or another size.
+PaneOf(hwnd, grids) {
+    if WinGetMinMax(hwnd) != 0
+        return ""
+    f := FrameRect(hwnd)
+    for g in grids
+        if (c1 := NearEdge(g.xs.starts, f.x)) && (c2 := NearEdge(g.xs.ends, f.x + f.w)) && c1 <= c2
+            && (r1 := NearEdge(g.ys.starts, f.y)) && (r2 := NearEdge(g.ys.ends, f.y + f.h)) && r1 <= r2
+            return Pane(g, r1, c1, r2, c2)
+    return ""
+}
+
+NearEdge(edges, v) {
+    for i, e in edges
+        if Abs(e - v) <= MATCH_TOLERANCE
+            return i
+    return 0
+}
+
+; The grid of the monitor the point is on, or else the first.
+GridAt(grids, x, y) {
+    for g in grids {
+        MonitorGet(g.mon, &l, &t, &r, &b)
+        if x >= l && x < r && y >= t && y < b
+            return g
+    }
+    return grids[1]
+}
+
+; The cell of the grid nearest the point, as a one-cell pane.
+CellAt(g, x, y) {
+    r := Clamp(Floor((y - g.y) * g.rows / g.h) + 1, 1, g.rows)
+    c := Clamp(Floor((x - g.x) * g.cols / g.w) + 1, 1, g.cols)
+    return Pane(g, r, c, r, c)
+}
+
+Clamp(v, lo, hi) => Max(lo, Min(hi, v))
+Overlaps(p, q) => p.grid.mon = q.grid.mon && p.r1 <= q.r2 && q.r1 <= p.r2 && p.c1 <= q.c2 && q.c1 <= p.c2
+Inside(p, q) => p.grid.mon = q.grid.mon && p.r1 >= q.r1 && p.r2 <= q.r2 && p.c1 >= q.c1 && p.c2 <= q.c2
+SameShape(p, q) => p.r2 - p.r1 = q.r2 - q.r1 && p.c2 - p.c1 = q.c2 - q.c1
+CellOrder(p) => p.grid.mon * 10000 + p.r1 * 100 + p.c1
+
+; Keys of the pane's cells, for a map of taken cells.
+CellKeys(p) {
+    keys := []
+    loop p.r2 - p.r1 + 1 {
+        r := p.r1 + A_Index - 1
+        loop p.c2 - p.c1 + 1
+            keys.Push(p.grid.mon ":" r ":" (p.c1 + A_Index - 1))
+    }
+    return keys
+}
+
+IsFree(p, taken) {
+    for k in CellKeys(p)
+        if taken.Has(k)
+            return false
+    return true
+}
+
+; The first pane of the size whose cells are all free, in cell order, or "" when there is none.
+FirstFree(grids, taken, rows, cols) {
+    for g in grids
+        loop Max(0, g.rows - rows + 1) {
+            r := A_Index
+            loop Max(0, g.cols - cols + 1)
+                if IsFree(p := Pane(g, r, A_Index, r + rows - 1, A_Index + cols - 1), taken)
+                    return p
+        }
+    return ""
+}

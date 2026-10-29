@@ -1,10 +1,11 @@
 ; Small helpers shared by the scripts.
 
 ; Topmost borderless window that clicks pass through (layered + transparent), sized in physical pixels.
-ClickThroughGui(color) {
+; alpha: opacity, 0-255.
+ClickThroughGui(color, alpha := 255) {
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x80020")
     g.BackColor := color
-    WinSetTransparent(255, g)
+    WinSetTransparent(alpha, g)
     return g
 }
 
