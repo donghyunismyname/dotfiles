@@ -1,8 +1,8 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
-#Include %A_LineFile%\..\lib\util.ahk
-#Include %A_LineFile%\..\lib\winevent.ahk
-#Include %A_LineFile%\..\ime\caret.ahk
+#Include %A_LineFile%\..\..\lib\util.ahk
+#Include %A_LineFile%\..\..\lib\winevent.ahk
+#Include %A_LineFile%\..\caret.ahk
 
 ; Input mode: a small "한" / "A" box just below the text caret shows it, and it is kept the same
 ; across windows (Windows keeps one per window).
