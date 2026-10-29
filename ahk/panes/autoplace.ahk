@@ -1,4 +1,4 @@
-; Windows that appear on their own go to HOME_TILE: ones restored from minimized, and newly opened
+; Windows that appear on their own go to HOME_PANE: ones restored from minimized, and newly opened
 ; app windows. Dialogs, popups and other owned or fixed-size windows stay where their app puts them.
 
 newWindows := Map()  ; top-level windows created but not shown yet
@@ -9,12 +9,12 @@ StartAutoPlace() {
     HookWinEvents([EVENT_OBJECT_CREATE, EVENT_OBJECT_DESTROY, EVENT_OBJECT_SHOW], OnWindowLifecycle)
 }
 
-; Points a minimized window's restore position at HOME_TILE, so Windows brings it back there
+; Points a minimized window's restore position at HOME_PANE, so Windows brings it back there
 ; instead of where it was. Needs the window's border widths, measured while it was shown.
 AimRestore(hwnd) {
     try {
         if IsAppWindow(hwnd) && WinGetMinMax(hwnd) = -1
-            SetNormalRect(hwnd, PaneRect(HOME_TILE), 7)  ; SW_SHOWMINNOACTIVE: stay minimized
+            SetNormalRect(hwnd, TargetRect(HOME_PANE), 7)  ; SW_SHOWMINNOACTIVE: stay minimized
     }
 }
 
@@ -51,6 +51,6 @@ PlaceNew(hwnd) {
 PlaceHome(hwnd) {
     try {
         if IsAppWindow(hwnd) && WinGetMinMax(hwnd) != -1
-            Place(hwnd, HOME_TILE, true)
+            Place(hwnd, HOME_PANE, true)
     }
 }

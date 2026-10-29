@@ -1,45 +1,45 @@
-; Panes as screen rectangles, and moving windows into them.
+; Targets (panes and monitors) as screen rectangles, and moving windows into them.
 
-restoring := 0  ; a minimized window Place is restoring, so autoplace doesn't move it to HOME_TILE
+restoring := 0  ; a minimized window Place is restoring, so autoplace doesn't move it to HOME_PANE
 
-; Puts the window in the target pane, on top of the windows there. Moved from another tile, it swaps
-; with the target tile's top window. A window that appeared on its own (auto) has no old tile, only
+; Puts the window in the target, on top of the windows there. Moved from one pane to another, it
+; swaps with that pane's top window. A window that appeared on its own (auto) has no old pane, only
 ; where its app put it.
 Place(hwnd, target, auto := false) {
     global restoring
     try {
-        src := PaneOf(hwnd)
-        if !auto && IsTile(src) && IsTile(target) && src != target && (other := TopWindowIn(target, hwnd))
-            MoveTo(other, PaneRect(src))
+        src := TargetOf(hwnd)
+        if !auto && IsPane(src) && IsPane(target) && src != target && (other := TopWindowIn(target, hwnd))
+            MoveTo(other, TargetRect(src))
         if WinGetMinMax(hwnd) = -1
             restoring := hwnd
-        MoveTo(hwnd, PaneRect(target))
+        MoveTo(hwnd, TargetRect(target))
         WinActivate(hwnd)
     } catch as e {
         TrayTip("Could not move the window`n" e.Message, "panes")
     }
 }
 
-; Fits the windows already in a pane to its current rectangle, e.g. after MARGIN changed.
-; Maximized windows are left alone, though they match the whole-monitor panes.
-SnapToPanes() {
+; Fits the windows already in a target to its current rectangle, e.g. after MARGIN changed.
+; Maximized windows are left alone, though they match the monitor targets.
+SnapToTargets() {
     for hwnd in Windows()
         try {
-            if WinGetMinMax(hwnd) = 0 && (z := PaneOf(hwnd))
-                MoveTo(hwnd, PaneRect(z))
+            if WinGetMinMax(hwnd) = 0 && (t := TargetOf(hwnd))
+                MoveTo(hwnd, TargetRect(t))
         }
 }
 
-IsTile(z) {
-    for t in TILES
-        if t == z
+IsPane(t) {
+    for p in PANES
+        if p == t
             return true
     return false
 }
 
-; Minimizes every window whose center is in the pane, so a whole-monitor pane clears that monitor.
-MinimizePane(pane) {
-    r := PaneRect(pane)
+; Minimizes every window whose center is in the target, so a monitor target clears that monitor.
+MinimizeWindowsIn(target) {
+    r := TargetRect(target)
     for hwnd in Windows()
         try {
             f := FrameRect(hwnd)
@@ -48,50 +48,50 @@ MinimizePane(pane) {
         }
 }
 
-; Smallest pane containing the point, so a half wins over the whole monitor around it.
-PaneAt(x, y) {
+; Smallest target containing the point, so a pane wins over the monitor around it.
+TargetAt(x, y) {
     best := "", bestArea := 0
-    for z in Connected(PANES) {
-        r := PaneRect(z)
+    for t in Connected(TARGETS) {
+        r := TargetRect(t)
         if InRect(r, x, y) && (!best || r.w * r.h < bestArea)
-            best := z, bestArea := r.w * r.h
+            best := t, bestArea := r.w * r.h
     }
     return best
 }
 
-TopWindowIn(pane, exclude) {
+TopWindowIn(target, exclude) {
     for hwnd in Windows()
-        if hwnd != exclude && PaneOf(hwnd) == pane
+        if hwnd != exclude && TargetOf(hwnd) == target
             return hwnd
     return 0
 }
 
-PaneOf(hwnd) {
+TargetOf(hwnd) {
     f := FrameRect(hwnd)
-    for z in Connected(PANES) {
-        r := PaneRect(z)
+    for t in Connected(TARGETS) {
+        r := TargetRect(t)
         if Abs(f.x - r.x) <= MATCH_TOLERANCE && Abs(f.y - r.y) <= MATCH_TOLERANCE
             && Abs(f.w - r.w) <= MATCH_TOLERANCE && Abs(f.h - r.h) <= MATCH_TOLERANCE
-            return z
+            return t
     }
     return ""
 }
 
-; The panes whose monitor is connected.
-Connected(panes) {
+; The targets whose monitor is connected.
+Connected(targets) {
     list := []
-    for z in panes
-        if z.mon <= MonitorGetCount()
-            list.Push(z)
+    for t in targets
+        if t.mon <= MonitorGetCount()
+            list.Push(t)
     return list
 }
 
-; The pane's area of the work area, inset by MARGIN at the work area's edges and by half of it at an
-; edge inside, which the neighboring pane insets by the other half.
-PaneRect(z) {
-    MonitorGetWorkArea(z.mon, &l, &t, &r, &b)
-    x1 := l + Round(z.x * (r - l)), y1 := t + Round(z.y * (b - t))
-    x2 := l + Round((z.x + z.w) * (r - l)), y2 := t + Round((z.y + z.h) * (b - t))
+; The target's area of the work area, inset by MARGIN at the work area's edges and by half of it at an
+; edge inside, which the neighboring target insets by the other half.
+TargetRect(target) {
+    MonitorGetWorkArea(target.mon, &l, &t, &r, &b)
+    x1 := l + Round(target.x * (r - l)), y1 := t + Round(target.y * (b - t))
+    x2 := l + Round((target.x + target.w) * (r - l)), y2 := t + Round((target.y + target.h) * (b - t))
     half := MARGIN // 2
     x1 += (x1 = l ? MARGIN : half), y1 += (y1 = t ? MARGIN : half)
     x2 -= (x2 = r ? MARGIN : MARGIN - half), y2 -= (y2 = b ? MARGIN : MARGIN - half)

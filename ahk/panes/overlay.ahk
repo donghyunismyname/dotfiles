@@ -1,19 +1,19 @@
-; Pane overlay: every pane shows a tile per open window, to pick a pane and a window with one click.
+; Overlay: every target shows a button per open window, to pick a target and a window with one click.
 
 cancelOverlay := ""  ; set while the overlay is open; closes it without a pick
 
-; Shows every pane with a tile per open window. Returns {pane, hwnd} for a clicked tile,
-; {pane, background} for a click on a pane's background, or "" when cancelled by right-click or any key.
-PickPaneAndWindow() {
+; Shows every target with a button per open window. Returns {target, hwnd} for a clicked button,
+; {target, background} for a click on a target's background, or "" when cancelled by right-click or any key.
+PickTargetAndWindow() {
     global cancelOverlay
     state := {pick: ""}
     ih := InputHook("L1 T30", "{Esc}")
-    shown := Connected(PANES)  ; not "panes": AHK names ignore case, so it would hide PANES
+    shown := Connected(TARGETS)  ; not "targets": AHK names ignore case, so it would hide TARGETS
     items := WindowItems()
-    items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the pane's windows
+    items.InsertAt(1, {hwnd: 0, title: "Minimize all"})  ; hwnd 0: minimize the target's windows
     overlays := []
-    for z in shown
-        overlays.Push(ShowPaneOverlay(z, shown, items))
+    for t in shown
+        overlays.Push(ShowTargetOverlay(t, shown, items))
     leftClick := OverlayClicked.Bind(overlays, items, state, ih)
     OnMessage(0x201, leftClick)  ; WM_LBUTTONDOWN
     cancelOverlay := () => ih.Stop()
@@ -26,17 +26,17 @@ PickPaneAndWindow() {
     return state.pick
 }
 
-; Every click lands on a backdrop, since the layer with the tiles is click-through.
-; A click inside the tile grid picks that tile; anywhere else is a click on the pane's background.
+; Every click lands on a backdrop, since the layer with the buttons is click-through.
+; A click inside the button grid picks that button; anywhere else is a click on the target's background.
 OverlayClicked(overlays, items, state, ih, wParam, lParam, msg, hwnd) {
     for o in overlays
         if hwnd = o.back.Hwnd {
             x := lParam & 0xFFFF, y := lParam >> 16 & 0xFFFF
-            col := (x - o.x0) // TILE_W, row := (y - o.y0) // TILE_H, i := row * o.cols + col + 1
+            col := (x - o.x0) // BUTTON_W, row := (y - o.y0) // BUTTON_H, i := row * o.cols + col + 1
             if x >= o.x0 && y >= o.y0 && col < o.cols && i <= items.Length
-                state.pick := {pane: o.pane, hwnd: items[i].hwnd}
+                state.pick := {target: o.target, hwnd: items[i].hwnd}
             else
-                state.pick := {pane: o.pane, background: true}
+                state.pick := {target: o.target, background: true}
             ih.Stop()
         }
 }
@@ -83,60 +83,60 @@ WindowIcon(hwnd) {
     return WinGetProcessPath(hwnd)
 }
 
-IsContainer(z, panes) {
-    r := PaneRect(z)
-    for other in panes
-        if other != z && Encloses(r, PaneRect(other))
+IsContainer(t, targets) {
+    r := TargetRect(t)
+    for other in targets
+        if other != t && Encloses(r, TargetRect(other))
             return true
     return false
 }
 
-; Overlays never overlap: a pane that contains other panes gets a band at its top, tall enough for
-; n tiles, and a pane inside it that starts at the same top edge gets the area below the band.
-OverlayRect(z, panes, n) {
-    r := PaneRect(z)
-    if IsContainer(z, panes)
+; Overlays never overlap: a target that contains other targets gets a band at its top, tall enough for
+; n buttons, and a target inside it that starts at the same top edge gets the area below the band.
+OverlayRect(t, targets, n) {
+    r := TargetRect(t)
+    if IsContainer(t, targets)
         return {x: r.x, y: r.y, w: r.w, h: BandHeight(r.w, n)}
-    for other in panes
-        if other != z && Encloses(c := PaneRect(other), r) && c.y = r.y
+    for other in targets
+        if other != t && Encloses(c := TargetRect(other), r) && c.y = r.y
             return {x: r.x, y: r.y + BandHeight(c.w, n) + MARGIN, w: r.w, h: r.h - BandHeight(c.w, n) - MARGIN}
     return r
 }
 
-TileColumns(w) => Max(1, (w - 24) // TILE_W)
-BandHeight(w, n) => 56 + Ceil(n / TileColumns(w)) * TILE_H
+ButtonColumns(w) => Max(1, (w - 24) // BUTTON_W)
+BandHeight(w, n) => 56 + Ceil(n / ButtonColumns(w)) * BUTTON_H
 
-; Draws the pane as a translucent backdrop with a click-through layer on top holding the opaque
-; tiles; that layer's background color is keyed out. Returns both windows and the tile grid layout.
-ShowPaneOverlay(z, panes, items) {
-    r := OverlayRect(z, panes, items.Length), h := r.h
-    band := IsContainer(z, panes)
+; Draws the target as a translucent backdrop with a click-through layer on top holding the opaque
+; buttons; that layer's background color is keyed out. Returns both windows and the button grid layout.
+ShowTargetOverlay(t, targets, items) {
+    r := OverlayRect(t, targets, items.Length), h := r.h
+    band := IsContainer(t, targets)
     back := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale")
     back.BackColor := BACK_COLOR
     WinSetTransparent(BACK_ALPHA, back)
     back.Show("NA x" r.x " y" r.y " w" r.w " h" h)
     g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale +E0x20 +Owner" back.Hwnd)  ; owned: stays above its backdrop
     g.BackColor := KEY_COLOR
-    ; A band starts its tile grid below the pane name; other panes center it.
-    cols := TileColumns(r.w)
+    ; A band starts its button grid below the target name; other targets center it.
+    cols := ButtonColumns(r.w)
     rows := Ceil(items.Length / cols)
-    x0 := Max(12, (r.w - Min(items.Length, cols) * TILE_W) // 2)
-    y0 := band ? 44 : (h - rows * TILE_H) // 2
+    x0 := Max(12, (r.w - Min(items.Length, cols) * BUTTON_W) // 2)
+    y0 := band ? 44 : (h - rows * BUTTON_H) // 2
     g.SetFont("s16 bold c" TEXT_COLOR, "Segoe UI")
-    g.AddText("x" x0 " y" y0 - 40, z.name)
+    g.AddText("x" x0 " y" y0 - 40, t.name)
     g.SetFont("s9 norm c" TEXT_COLOR)
     for i, item in items {
-        x := x0 + Mod(i - 1, cols) * TILE_W, y := y0 + (i - 1) // cols * TILE_H
+        x := x0 + Mod(i - 1, cols) * BUTTON_W, y := y0 + (i - 1) // cols * BUTTON_H
         if item.hwnd {
-            try g.AddPicture("x" x + (TILE_W - ICON_SIZE) // 2 " y" y " w" ICON_SIZE " h" ICON_SIZE, item.icon)
+            try g.AddPicture("x" x + (BUTTON_W - ICON_SIZE) // 2 " y" y " w" ICON_SIZE " h" ICON_SIZE, item.icon)
         } else {
             g.SetFont("s20", "Segoe MDL2 Assets")
-            g.AddText("x" x " y" y " w" TILE_W " h" ICON_SIZE " Center", Chr(0xE921))  ; minimize glyph
+            g.AddText("x" x " y" y " w" BUTTON_W " h" ICON_SIZE " Center", Chr(0xE921))  ; minimize glyph
             g.SetFont("s9", "Segoe UI")
         }
-        g.AddText("x" x " y" y + ICON_SIZE + 4 " w" TILE_W " r2 Center", item.title)
+        g.AddText("x" x " y" y + ICON_SIZE + 4 " w" BUTTON_W " r2 Center", item.title)
     }
     g.Show("NA x" r.x " y" r.y " w" r.w " h" h)
     WinSetTransColor(KEY_COLOR, g)
-    return {pane: z, back: back, front: g, x0: x0, y0: y0, cols: cols}
+    return {target: t, back: back, front: g, x0: x0, y0: y0, cols: cols}
 }
