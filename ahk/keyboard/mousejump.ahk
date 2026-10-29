@@ -30,7 +30,7 @@ BACK_ALPHA := 170        ; overlay opacity, 0-255
 ; Work in physical pixels on every monitor, even with mixed display scaling.
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 CoordMode("Mouse", "Screen")
-A_IconTip := "grid"
+A_IconTip := "mousejump"
 Hotkey(KEY_SHOW, (*) => Jump())
 
 Jump() {
