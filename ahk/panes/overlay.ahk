@@ -1,13 +1,13 @@
 ; Rocker: with Right held, pressing Left shows every cell; dragging selects the pane between the cell
 ; where Left went down and the one under the cursor, on that monitor. Releasing Left fits the window
-; that was under the cursor when Right went down to it; Esc cancels.
-selection := {active: false}  ; while selecting; the Left release ends it (see StartMouse)
+; that was under the cursor when Right went down to it; releasing Right first, or Esc, cancels.
+selection := {active: false, cancelled: false}  ; the Left or Right release ends it (see mouse.ahk)
 
 SelectAndPlace() {
     hwnd := right.hwnd
     if !IsAppWindow(hwnd)
         return
-    selection.active := true
+    selection.active := true, selection.cancelled := false
     grids := MonitorGrids()
     MouseGetPos(&x, &y)
     g := GridAt(grids, x, y), p := anchor := CellAt(g, x, y)
@@ -29,7 +29,7 @@ SelectAndPlace() {
             ShowRect(preview, PaneRect(p)), shown := key
         Sleep(15)
     }
-    cancelled := !ih.InProgress
+    cancelled := !ih.InProgress || selection.cancelled
     selection.active := false
     ih.Stop()
     preview.Destroy()

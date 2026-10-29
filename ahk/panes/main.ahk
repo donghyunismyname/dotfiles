@@ -14,7 +14,7 @@
 ; a rectangle of one or more cells holding one window. Cells are ordered by monitor, row, then column.
 ;   hold Right, press Left (rocker) and drag: every cell shows; the cells between where Left went down
 ;                     and the cursor make a pane, and releasing Left fits the window that was under the
-;                     cursor when Right went down to it. Esc cancels
+;                     cursor when Right went down to it. Releasing Right first, or Esc, cancels
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   drag Right onto another window: the two swap places and sizes; onto the desktop: the window goes to

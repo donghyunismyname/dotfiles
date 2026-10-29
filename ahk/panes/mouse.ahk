@@ -31,6 +31,8 @@ OnRightUp(*) {
     right.held := false
     if right.ctrl  ; held down by WheelTab
         right.ctrl := false, Send("{Ctrl up}")
+    if selection.active  ; released before Left: cancels the rocker
+        return (selection.active := false, selection.cancelled := true)
     if right.used
         return
     MouseGetPos(&x, &y)
