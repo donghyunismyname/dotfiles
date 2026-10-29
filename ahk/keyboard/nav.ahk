@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
-#Include %A_LineFile%\..\lib\util.ahk
+#Include %A_LineFile%\..\..\lib\util.ahk
 
 ; Keyboard navigation over clickable elements, found through UI Automation (the accessibility API).
 ;   Ctrl+Space  outlines every clickable element of the active window and highlights the one nearest
