@@ -1,6 +1,6 @@
-; Previews moves (layout.ahk): where each window lands, the one being put first in PREVIEW_PUT_COLOR and
-; the others in PREVIEW_MOVED_COLOR with their titles, and each window to be minimized in
-; PREVIEW_MINIMIZED_COLOR where it is now. With no moves, the preview hides.
+; Previews moves (LayoutMoves in model.ahk): where each window lands, the one being put first in
+; PREVIEW_PUT_COLOR and the others in PREVIEW_MOVED_COLOR with their titles, and each window to be
+; minimized in PREVIEW_MINIMIZED_COLOR where it is now. With no moves, the preview hides.
 ShowMoves(list := []) {
     static shown := [], last := ""
     if (key := MovesKey(list)) = last

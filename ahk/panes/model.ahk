@@ -1,19 +1,7 @@
-; The layout model (see main.ahk): every managed window and its claims, the actions that change them, and
-; the resolution that follows. A layout is {grids, wins: Map(hwnd -> win)}; a win is {hwnd, claims,
-; minimized, maximized}, its claims its stack, bottom first (claims.ahk). Actions and resolution work on
-; a layout in memory; Commit then stores it and moves the windows to match.
-
-LoadLayout() {
-    grids := MonitorGrids(), wins := Map()
-    for hwnd in Windows()
-        try {
-            if IsObject(claims := ReadClaims(hwnd, grids))
-                wins[hwnd] := Win(hwnd, claims)
-        }
-    return {grids: grids, wins: wins}
-}
-
-Win(hwnd, claims) => {hwnd: hwnd, claims: claims, minimized: WinGetMinMax(hwnd) = -1, maximized: WinGetMinMax(hwnd) = 1}
+; The layout model (see main.ahk), in memory only: no window is read or moved here, so it can be tested
+; on its own (model.test.ahk). A layout is {grids, wins: Map(hwnd -> win)}; a win is {hwnd, claims,
+; minimized, maximized}, its claims its stack, bottom first, each {pane, time} with pane "" for a
+; minimized claim. sync.ahk loads a layout from the windows and carries one out.
 
 CopyLayout(l) {
     wins := Map()
@@ -35,11 +23,12 @@ InPlay(w) => !(w.minimized && Top(w).pane)
 ; ---- Actions ----
 
 ; The user put the window in pane p: that is now all it claims, and windows in the way are pushed aside.
+; A window the layout does not have yet joins it, shown normally.
 Put(l, hwnd, p) {
     w := l.wins.Get(hwnd, "")
     from := w && InPlay(w) ? Top(w).pane : ""
     if !w
-        l.wins[hwnd] := w := Win(hwnd, [])
+        l.wins[hwnd] := w := {hwnd: hwnd, claims: [], minimized: false, maximized: false}
     w.claims := [{pane: p, time: NewClaimTime()}], w.maximized := false
     PushAside(l, w, from)
 }
@@ -151,6 +140,33 @@ DeepestFree(w, held) {
     return 0
 }
 
+; ---- Results ----
+
+; The moves change(layout) would make from `base`, for a preview.
+Preview(base, change, first) {
+    after := CopyLayout(base)
+    change(after)
+    PopBack(after)
+    return LayoutMoves(base, after, first)
+}
+
+; What turning `before` into `after` does to the windows, as moves: {hwnd, rect, maximized}, rect "" to
+; minimize. A window moves when its top pane changed, when it comes back from minimized, or when it is
+; put out of maximized; `first` leads.
+LayoutMoves(before, after, first := 0) {
+    list := []
+    for hwnd, w in after.wins {
+        if !InPlay(w)
+            continue
+        b := before.wins.Get(hwnd, ""), p := Top(w).pane
+        if b && InPlay(b) && PaneKey(Top(b).pane) = PaneKey(p) && !(b.minimized && p) && b.maximized = w.maximized
+            continue
+        m := {hwnd: hwnd, rect: p ? PaneRect(p) : "", maximized: w.maximized}
+        hwnd = first ? list.InsertAt(1, m) : list.Push(m)
+    }
+    return list
+}
+
 ; ---- Helpers ----
 
 ; Cells held by the top claims of the windows in play, but the given ones.
@@ -186,75 +202,5 @@ InsertionSort(list, after) {
         while i > 1 && after(list[i - 1], v)
             list[i] := list[i - 1], i--
         list[i] := v
-    }
-}
-
-; ---- Carrying a layout out ----
-
-; Runs change(layout) on the current layout, resolves, and commits; focus, when given, is activated.
-Update(change, focus := 0) {
-    Critical
-    before := LoadLayout(), after := CopyLayout(before)
-    change(after)
-    PopBack(after)
-    Commit(before, after, focus)
-}
-
-; The moves change(layout) would make from `base`, for a preview.
-Preview(base, change, first) {
-    after := CopyLayout(base)
-    change(after)
-    PopBack(after)
-    return LayoutMoves(base, after, first)
-}
-
-; Stores the claims that changed, and moves the windows to match `after`.
-Commit(before, after, focus := 0) {
-    for hwnd, w in after.wins
-        if !(b := before.wins.Get(hwnd, "")) || ClaimsKey(b) != ClaimsKey(w)
-            try WriteClaims(hwnd, w.claims)
-    ApplyMoves(LayoutMoves(before, after, focus))
-    if focus
-        try WinActivate(focus)
-}
-
-ClaimsKey(w) {
-    key := ""
-    for c in w.claims
-        key .= PaneKey(c.pane) "@" c.time ";"
-    return key
-}
-
-; What turning `before` into `after` does to the windows, as moves: {hwnd, rect, maximized}, rect "" to
-; minimize. A window moves when its top pane changed, when it comes back from minimized, or when it is
-; put out of maximized; `first` leads.
-LayoutMoves(before, after, first := 0) {
-    list := []
-    for hwnd, w in after.wins {
-        if !InPlay(w)
-            continue
-        b := before.wins.Get(hwnd, ""), p := Top(w).pane
-        if b && InPlay(b) && PaneKey(Top(b).pane) = PaneKey(p) && !(b.minimized && p) && b.maximized = w.maximized
-            continue
-        m := {hwnd: hwnd, rect: p ? PaneRect(p) : "", maximized: w.maximized}
-        hwnd = first ? list.InsertAt(1, m) : list.Push(m)
-    }
-    return list
-}
-
-; Carries out the moves, the first last so it ends on top, without the focus. A maximized window stays so,
-; and only its restore position moves. Each is marked as the script's own change (events.ahk).
-ApplyMoves(list) {
-    loop list.Length {
-        m := list[list.Length - A_Index + 1]
-        MarkOwn(m.hwnd)
-        try {
-            if !m.rect
-                WinMinimize(m.hwnd)
-            else if m.maximized
-                SetNormalRect(m.hwnd, m.rect, 3)  ; SW_SHOWMAXIMIZED
-            else
-                MoveTo(m.hwnd, m.rect, false)
-        }
     }
 }

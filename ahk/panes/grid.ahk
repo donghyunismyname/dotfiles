@@ -7,12 +7,14 @@ MonitorGrids() {
     list := []
     loop MonitorGetCount() {
         MonitorGetWorkArea(A_Index, &l, &t, &r, &b)
-        shape := r - l >= b - t ? GRID_LANDSCAPE : GRID_PORTRAIT
-        list.Push({mon: A_Index, rows: shape.rows, cols: shape.cols, x: l, y: t, w: r - l, h: b - t,
-            xs: CellEdges(l, r, shape.cols), ys: CellEdges(t, b, shape.rows)})
+        list.Push(Grid(A_Index, l, t, r, b, r - l >= b - t ? GRID_LANDSCAPE : GRID_PORTRAIT))
     }
     return list
 }
+
+; The grid of monitor `mon` over the work area from (l, t) to (r, b), with shape's rows and columns.
+Grid(mon, l, t, r, b, shape) => {mon: mon, rows: shape.rows, cols: shape.cols, x: l, y: t, w: r - l, h: b - t,
+    xs: CellEdges(l, r, shape.cols), ys: CellEdges(t, b, shape.rows)}
 
 ; Where n equal cells between lo and hi start and end, with GRID_GAP before, between and after them.
 ; Pixels left over from an uneven split go to the outer gaps, so every cell is the same size.
@@ -21,8 +23,8 @@ CellEdges(lo, hi, n) {
     first := lo + GRID_GAP + (hi - lo - GRID_GAP - n * step) // 2
     starts := [], ends := []
     loop n {
-        cell := first + (A_Index - 1) * step
-        starts.Push(cell), ends.Push(cell + step - GRID_GAP)
+        start := first + (A_Index - 1) * step
+        starts.Push(start), ends.Push(start + step - GRID_GAP)
     }
     return {starts: starts, ends: ends}
 }

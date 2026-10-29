@@ -5,7 +5,8 @@
 #Include %A_LineFile%\..\windows.ahk
 #Include %A_LineFile%\..\grid.ahk
 #Include %A_LineFile%\..\claims.ahk
-#Include %A_LineFile%\..\layout.ahk
+#Include %A_LineFile%\..\model.ahk
+#Include %A_LineFile%\..\sync.ahk
 #Include %A_LineFile%\..\events.ahk
 #Include %A_LineFile%\..\preview.ahk
 #Include %A_LineFile%\..\rocker.ahk

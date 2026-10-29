@@ -1,5 +1,5 @@
 ; What the user does to windows outside the script's own controls, turned into layout updates
-; (layout.ahk): restoring, minimizing, closing, opening, and moving windows by other means. The script's
+; (model.ahk, sync.ahk): restoring, minimizing, closing, opening, and moving windows by other means. The script's
 ; own changes raise the same events; MarkOwn tells those apart for OWN_CHANGE_MS.
 
 own := Map()  ; window -> A_TickCount when the script last changed it
