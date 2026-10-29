@@ -10,6 +10,8 @@ StartMouse() {
     HotIf((*) => right.held)
     for key, action in WHILE_RIGHT_HELD
         Hotkey("*" key, RunWhileRightHeld.Bind(action))
+    HotIf((*) => selection.active)
+    Hotkey("*LButton Up", (*) => selection.active := false)  ; ends the rocker's selection
     HotIf()
 }
 
