@@ -52,7 +52,7 @@ DRIFT_CHECK_DELAY_MS := 500 ; after a window on the grid moves by other means, b
 OWN_CHANGE_MS := 1000      ; how long events from a window the script changed are taken for its own
 POLL_MS := 20              ; how often the rocker and drag previews follow the cursor
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
-    "LButton",   SelectAndPut,              ; rocker
+    "LButton",   StartSelection,            ; rocker
     "WheelDown", () => WheelTab("{Tab}"),   ; next tab
     "WheelUp",   () => WheelTab("+{Tab}"),  ; previous tab
 )
@@ -83,5 +83,6 @@ DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 CoordMode("Mouse", "Screen")  ; gesture start and end are compared across windows
 A_IconTip := "panes"
 StartMouse()
+StartRocker()
 StartBorder()
 StartEvents()
