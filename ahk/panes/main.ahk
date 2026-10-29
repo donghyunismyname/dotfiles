@@ -4,9 +4,9 @@
 #Include %A_LineFile%\..\..\lib\winevent.ahk
 #Include %A_LineFile%\..\windows.ahk
 #Include %A_LineFile%\..\cells.ahk
+#Include %A_LineFile%\..\props.ahk
 #Include %A_LineFile%\..\placement.ahk
-#Include %A_LineFile%\..\minimized.ahk
-#Include %A_LineFile%\..\autoplace.ahk
+#Include %A_LineFile%\..\settle.ahk
 #Include %A_LineFile%\..\preview.ahk
 #Include %A_LineFile%\..\rocker.ahk
 #Include %A_LineFile%\..\mouse.ahk
@@ -27,18 +27,18 @@
 ; else they are minimized.
 ; A window counts as in a pane when it fills it, or when the script put it there and its top-left corner
 ; is still there: an app's minimum size can keep it larger than the pane.
-; A newly opened app window goes to the first free cell; one restored from minimized comes back to its
-; pane, or the first free one of its size when that is taken. With no cell free, either takes the pane
-; of the least recently active window, which is minimized. Windows minimized to make room come back
-; by themselves once there is room. Dialogs and popups stay where their app puts them.
+; Each window wants the pane the user last put it in (settle.ahk). One pushed out goes back by itself,
+; without the focus, once that pane is free again, even from minimized; one the user minimized stays
+; so, and comes back there when restored, or to a free pane until it is free. A newly opened app window
+; goes to the first free cell, else takes the pane of the least recently active window. Dialogs and
+; popups stay where their app puts them.
 ; The active window also gets a colored border.
 
 ; ---- Config ----
 LANDSCAPE_GRID := {rows: 2, cols: 4}  ; cells of a monitor wider than tall
 PORTRAIT_GRID := {rows: 4, cols: 2}
-RESTORE_DELAY_MS := 100    ; after a window is restored, before acting on it
 NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed it and set its title
-LAYOUT_SETTLE_MS := 300    ; after the layout changes, before updating the minimized windows
+LAYOUT_SETTLE_MS := 300    ; after the layout changes, before moving windows back where they want to be
 POLL_MS := 20              ; how often the rocker and drag previews follow the cursor
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
     "LButton",   SelectAndPlace,            ; rocker
@@ -73,7 +73,6 @@ BORDER_WIDTH := MARGIN   ; drawn outside the active window, so it fills the marg
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 CoordMode("Mouse", "Screen")  ; gesture start and end are compared across windows
 A_IconTip := "panes"
-SnapToGrid()
 StartMouse()
 StartBorder()
-StartAutoPlace()
+StartSettle()

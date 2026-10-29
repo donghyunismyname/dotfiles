@@ -30,38 +30,46 @@ IsDesktop(hwnd) {
 ; The top-level window at the point. Click-through windows (the previews, the focus border) are skipped.
 WindowAt(x, y) => DllCall("GetAncestor", "ptr", DllCall("WindowFromPoint", "int64", y << 32 | x & 0xFFFFFFFF, "ptr"), "uint", 2, "ptr")  ; GA_ROOT
 
-frameInsets := Map()  ; hwnd -> widths of its invisible resize borders, see FrameRect
-
-; Visible frame, without the invisible resize borders that WinGetPos includes. The border widths are
-; remembered while the window is shown normally, since a minimized window has no frame to measure.
+; Visible frame, without the invisible resize borders that WinGetPos includes.
 FrameRect(hwnd) {
     WinGetPos(&x, &y, &w, &h, hwnd)
     buf := Buffer(16)
     if DllCall("dwmapi\DwmGetWindowAttribute", "ptr", hwnd, "uint", 9, "ptr", buf, "uint", 16)
         return {x: x, y: y, w: w, h: h}
     l := NumGet(buf, 0, "int"), t := NumGet(buf, 4, "int"), r := NumGet(buf, 8, "int"), b := NumGet(buf, 12, "int")
-    if WinGetMinMax(hwnd) = 0
-        frameInsets[hwnd] := {l: l - x, t: t - y, r: x + w - r, b: y + h - b}
     return {x: l, y: t, w: r - l, h: b - t}
 }
 
+; Widths of the invisible resize borders around the visible frame, which Windows counts as part of the
+; window. Measured while the window is shown normally; otherwise those of a standard window at its DPI,
+; which an app drawing its own frame may differ from by a few pixels (Settle fits it afterwards).
+Insets(hwnd) {
+    if WinGetMinMax(hwnd) = 0 {
+        WinGetPos(&x, &y, &w, &h, hwnd), f := FrameRect(hwnd)
+        return {l: f.x - x, t: f.y - y, r: x + w - f.x - f.w, b: y + h - f.y - f.h}
+    }
+    if !(WinGetStyle(hwnd) & 0x40000)  ; WS_THICKFRAME: no resize borders
+        return {l: 0, t: 0, r: 0, b: 0}
+    dpi := DllCall("GetDpiForWindow", "ptr", hwnd, "uint")
+    ; SM_CXSIZEFRAME + SM_CXPADDEDBORDER, less the 1px border that is visible
+    side := DllCall("GetSystemMetricsForDpi", "int", 32, "uint", dpi) + DllCall("GetSystemMetricsForDpi", "int", 92, "uint", dpi) - 1
+    return {l: side, t: 0, r: side, b: side}
+}
+
 ; Moves the window so its visible frame fills r. A minimized or maximized window is restored straight
-; into r, so the restore animation ends there.
-MoveTo(hwnd, r) {
-    if WinGetMinMax(hwnd) != 0 && !SetNormalRect(hwnd, r, 9)  ; SW_RESTORE
-        WinRestore(hwnd)
-    WinGetPos(&x, &y, &w, &h, hwnd)
-    f := FrameRect(hwnd)
-    WinMove(r.x - (f.x - x), r.y - (f.y - y), r.w + (w - f.w), r.h + (h - f.h), hwnd)
+; into r, so the restore animation ends there, and activated only when asked.
+MoveTo(hwnd, r, activate := true) {
+    if WinGetMinMax(hwnd) != 0
+        SetNormalRect(hwnd, r, activate ? 9 : 4)  ; SW_RESTORE, SW_SHOWNOACTIVATE
+    i := Insets(hwnd)
+    WinMove(r.x - i.l, r.y - i.t, r.w + i.l + i.r, r.h + i.t + i.b, hwnd)
 }
 
 ; Sets where the window goes when restored to normal (its visible frame filling r), then shows it
-; with showCmd. Needs the border widths FrameRect remembered; returns false without them.
+; with showCmd.
 SetNormalRect(hwnd, r, showCmd) {
-    if !(i := frameInsets.Get(hwnd, ""))
-        return false
+    i := Insets(hwnd), wp := Placement(hwnd)
     WorkspaceOffset(&dx, &dy)
-    wp := Placement(hwnd)
     NumPut("uint", 0, "uint", showCmd, wp, 4)  ; flags 0: restore to normal, not maximized
     NumPut("int", r.x - i.l - dx, "int", r.y - i.t - dy, "int", r.x + r.w + i.r - dx, "int", r.y + r.h + i.b - dy, wp, 28)
     return DllCall("SetWindowPlacement", "ptr", hwnd, "ptr", wp)
@@ -72,8 +80,8 @@ NormalFrame(hwnd) {
     wp := Placement(hwnd)
     if NumGet(wp, 4, "uint") & 2  ; WPF_RESTORETOMAXIMIZED
         return ""
+    i := Insets(hwnd)
     WorkspaceOffset(&dx, &dy)
-    i := frameInsets.Get(hwnd, {l: 0, t: 0, r: 0, b: 0})  ; without them, MATCH_TOLERANCE covers the borders
     x := NumGet(wp, 28, "int") + dx + i.l, y := NumGet(wp, 32, "int") + dy + i.t
     return {x: x, y: y, w: NumGet(wp, 36, "int") + dx - i.r - x, h: NumGet(wp, 40, "int") + dy - i.b - y}
 }

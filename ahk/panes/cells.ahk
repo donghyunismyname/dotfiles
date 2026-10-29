@@ -32,10 +32,25 @@ PaneCols(p) => p.c2 - p.c1 + 1
 PaneKey(p) => p.grid.mon ":" p.r1 "," p.c1 "," p.r2 "," p.c2
 CellOrder(p) => p.grid.mon * 10000 + p.r1 * 100 + p.c1
 
+; The pane packed into an integer, its numbers as decimal digits (a grid has fewer than 10 rows and columns).
+PackPane(p) => p.grid.mon * 10000 + p.r1 * 1000 + p.c1 * 100 + p.r2 * 10 + p.c2
+
+; The packed pane, or "" when the value is no pane or its monitor or cells are gone.
+UnpackPane(n, grids) {
+    if n < 10000 || (mon := n // 10000) > grids.Length
+        return ""
+    g := grids[mon], r2 := Mod(n // 10, 10), c2 := Mod(n, 10)
+    return r2 <= g.rows && c2 <= g.cols ? Pane(g, Mod(n // 1000, 10), Mod(n // 100, 10), r2, c2) : ""
+}
+
 PaneRect(p) {
     x := p.grid.xs.starts[p.c1], y := p.grid.ys.starts[p.r1]
     return {x: x, y: y, w: p.grid.xs.ends[p.c2] - x, h: p.grid.ys.ends[p.r2] - y}
 }
+
+; Whether every edge of the rectangle is within MATCH_TOLERANCE of r's.
+CloseTo(f, r) => Abs(f.x - r.x) <= MATCH_TOLERANCE && Abs(f.y - r.y) <= MATCH_TOLERANCE
+    && Abs(f.x + f.w - r.x - r.w) <= MATCH_TOLERANCE && Abs(f.y + f.h - r.y - r.h) <= MATCH_TOLERANCE
 
 ; The pane the rectangle fills, or "".
 RectPane(f, grids) {

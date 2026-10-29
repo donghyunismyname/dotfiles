@@ -27,7 +27,7 @@ SelectAndPlace() {
     for c in cells
         c.Destroy()
     if released.apply && !escaped
-        ApplyPlan(plan)
+        ApplyPlan(plan, true)
 }
 
 ; Every cell as a translucent rectangle.

@@ -41,7 +41,7 @@ OnRightUp(*) {
     MouseGetPos(&x, &y)
     switch ReleaseKind(x, y) {
         case "click": Send("{RButton}")
-        case "drop": ApplyPlan(PlanDrop(right.hwnd, x, y))
+        case "drop": ApplyPlan(PlanDrop(right.hwnd, x, y), true)
         default: RunGesture(right.hwnd, x - right.x, y - right.y)
     }
 }

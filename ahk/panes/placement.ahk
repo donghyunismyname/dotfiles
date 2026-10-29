@@ -1,33 +1,45 @@
 ; Plans for putting windows in panes, and carrying them out. A plan is an array of moves, the window
-; being placed first: {hwnd, rect, pane, maximize}. rect "" minimizes the window, and pane is where it
-; goes, or for a minimized one where it was. A plan is worked out apart from carrying it out, so a
-; preview (ShowPlan) shows exactly what will happen.
-
-placed := Map()  ; window -> the pane it was last put in
+; being placed first: {hwnd, rect, pane, maximize}, where pane is the one rect fills or "", and rect ""
+; minimizes the window. A plan is worked out apart from carrying it out, so a preview (ShowPlan) shows
+; exactly what will happen.
 
 Move(hwnd, rect, pane := "", maximize := false) => {hwnd: hwnd, rect: rect, pane: pane, maximize: maximize}
 MoveToPane(hwnd, p) => Move(hwnd, PaneRect(p), p)
-MinimizeFrom(hwnd, p) => Move(hwnd, "", p)
 
-; Where the windows on the grid are: {grids, panes: window -> pane}.
+; The layout: {grids, stack: app windows topmost first, panes: window -> the pane it is in, firm:
+; windows in the pane they want, claimed: the cells of those}. Windows are claimed top-down, so of two
+; windows wanting the same cells only the higher one is firm.
 Snapshot() {
-    grids := MonitorGrids(), panes := Map()
-    for hwnd in Windows()
+    grids := MonitorGrids(), stack := Windows(), panes := Map(), firm := Map(), claimed := Map()
+    for hwnd in stack
         try {
-            if WinGetMinMax(hwnd) = 0 && (p := FramePane(hwnd, FrameRect(hwnd), grids))
-                panes[hwnd] := p
+            if !(p := CurrentPane(hwnd, grids))
+                continue
+            panes[hwnd] := p
+            if (wanted := Want(hwnd, grids)) && PaneKey(wanted) = PaneKey(p) && IsFree(p, claimed)
+                firm[hwnd] := true, Take(claimed, p)
         }
-    return {grids: grids, panes: panes}
+    return {grids: grids, stack: stack, panes: panes, firm: firm, claimed: claimed}
 }
 
-; The pane a window with that frame is in: the one the frame fills, or else the one the window was
-; put in, as long as its top-left corner is still there; an app's minimum size can keep a window
-; larger than its pane. "" when it is off the grid.
-FramePane(hwnd, f, grids) {
+; The pane the window is in: the one its frame fills, or the one the script put it in while its top-left
+; corner is still there. "" when it is minimized, maximized or otherwise off the grid.
+CurrentPane(hwnd, grids) {
+    if WinGetMinMax(hwnd) != 0
+        return ""
+    f := FrameRect(hwnd)
     if p := RectPane(f, grids)
         return p
-    if (p := placed.Get(hwnd, "")) && Abs((r := PaneRect(p)).x - f.x) <= MATCH_TOLERANCE && Abs(r.y - f.y) <= MATCH_TOLERANCE
-        return p
+    p := PlacedAt(hwnd, grids)
+    return p && Abs((r := PaneRect(p)).x - f.x) <= MATCH_TOLERANCE && Abs(r.y - f.y) <= MATCH_TOLERANCE ? p : ""
+}
+
+; The pane the window fills, or for a minimized one would fill when restored; "" when off the grid.
+FilledPane(hwnd, grids) {
+    switch WinGetMinMax(hwnd) {
+        case 0: return RectPane(FrameRect(hwnd), grids)
+        case -1: return (f := NormalFrame(hwnd)) ? RectPane(f, grids) : ""
+    }
     return ""
 }
 
@@ -75,7 +87,7 @@ PlanPane(hwnd, p, snap) {
         Take(taken, p)
         for w in inWay {
             q := snap.panes[w]
-            plan.Push((free := TakeFree(snap.grids, taken, PaneRows(q), PaneCols(q))) ? MoveToPane(w, free) : MinimizeFrom(w, q))
+            plan.Push((free := TakeFree(snap.grids, taken, PaneRows(q), PaneCols(q))) ? MoveToPane(w, free) : Move(w, ""))
         }
     }
     return plan
@@ -115,41 +127,26 @@ SortByCell(list, panes) {
     }
 }
 
-; Carries out the plan, the placed window last so it ends on top, and activates it when asked.
-; A window minimized to make room comes back once there is room again (see UpdateMinimized).
-ApplyPlan(plan, activate := true) {
+; Carries out the plan, the placed window last so it ends on top. A plan the user made also sets where
+; that window wants to be, and activates it. A window minimized to make room is marked, so Settle brings
+; it back.
+ApplyPlan(plan, byUser := false) {
     try {
         loop plan.Length {
             m := plan[plan.Length - A_Index + 1]
             if !m.rect {
-                MinimizeToMakeRoom(m.hwnd, m.pane)
+                SetEvicted(m.hwnd, true), WinMinimize(m.hwnd)
                 continue
             }
-            MoveTo(m.hwnd, m.rect)
+            MoveTo(m.hwnd, m.rect, byUser)
             if m.maximize
                 WinMaximize(m.hwnd)
-            if m.pane
-                placed[m.hwnd] := m.pane
-            else
-                Forget(placed, m.hwnd)
+            SetPlacedAt(m.hwnd, m.pane)
         }
-        if activate && plan.Length
-            WinActivate(plan[1].hwnd)
+        if byUser && plan.Length
+            SetWant(plan[1].hwnd, plan[1].pane), WinActivate(plan[1].hwnd)
     } catch as e {
         TrayTip("Could not move the windows`n" e.Message, "panes")
     }
-    ScheduleMinimized()
+    ScheduleSettle()
 }
-
-; Fits windows already close to a pane to it exactly, e.g. after MARGIN changed.
-SnapToGrid() {
-    grids := MonitorGrids()
-    for hwnd in Windows()
-        try {
-            if WinGetMinMax(hwnd) = 0 && (p := RectPane(FrameRect(hwnd), grids))
-                MoveTo(hwnd, PaneRect(p))
-        }
-}
-
-; Deletes the key; returns whether it was there.
-Forget(dict, key) => dict.Has(key) && (dict.Delete(key), true)
