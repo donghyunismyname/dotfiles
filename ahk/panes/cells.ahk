@@ -14,13 +14,16 @@ MonitorGrids() {
     return list
 }
 
-; Where n equal cells between lo and hi start and end, inset by MARGIN at lo and hi and by half of it
-; between cells, which the neighboring cell insets by the other half.
+; Where the windows of n equal cells between lo and hi start and end. Neighboring cells share the MARGIN
+; between them, like collapsing CSS margins, and a window sits PADDING inside its cell. Pixels left over
+; from an uneven split go to the outer margins, so every cell is the same size.
 CellEdges(lo, hi, n) {
-    starts := [], ends := [], half := MARGIN // 2
+    step := (hi - lo - MARGIN) // n  ; a cell and the margin after it
+    first := lo + MARGIN + (hi - lo - MARGIN - n * step) // 2
+    starts := [], ends := []
     loop n {
-        starts.Push(lo + Round((A_Index - 1) * (hi - lo) / n) + (A_Index = 1 ? MARGIN : half))
-        ends.Push(lo + Round(A_Index * (hi - lo) / n) - (A_Index = n ? MARGIN : MARGIN - half))
+        cell := first + (A_Index - 1) * step
+        starts.Push(cell + PADDING), ends.Push(cell + step - MARGIN - PADDING)
     }
     return {starts: starts, ends: ends}
 }
