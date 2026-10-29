@@ -12,6 +12,7 @@ FAILURES := 0
 OnError((e, *) => (FileAppend("ERROR " e.Message " at " e.File ":" e.Line "`n", "*", "UTF-8"), ExitApp(99)))
 
 SwapOnPut()
+SwapBackRemovesCycle()
 ReturnAfterTemporaryWindow()
 RestoreReclaimsLastPlace()
 MinimizedWindowLendsItsPlace()
@@ -27,6 +28,18 @@ SwapOnPut() {
     Run(l, (l) => Put(l, 1, Cell(1, 2)))
     Check("swap: the put window", Where(l, 1), Key(Cell(1, 2), 1))
     Check("swap: the other window", Where(l, 2), Key(Cell(1, 1), 2))
+}
+
+; Swapping back pushes B onto a pane already in its stack: the stack is cut back to it, not grown, and
+; that claim is made anew.
+SwapBackRemovesCycle() {
+    l := Layout([1, Cell(1, 1)], [2, Cell(1, 2)])
+    Run(l, (l) => Put(l, 1, Cell(1, 2)))
+    first := l.wins[2].claims[1].time
+    Run(l, (l) => Put(l, 1, Cell(1, 1)))
+    Check("swap back: the put window", Where(l, 1), Key(Cell(1, 1), 1))
+    Check("swap back: the other window", Where(l, 2), Key(Cell(1, 2), 1))
+    Check("swap back: claimed anew", l.wins[2].claims[1].time > first, true)
 }
 
 ; A temporary window pushes W aside; once it closes, W goes back where it was before.
