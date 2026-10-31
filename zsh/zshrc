@@ -338,17 +338,47 @@ gcm() {
   fi
 }
 
-# Open a directory (default: cwd) in the OS file manager; for a file, open its
-# folder with the file selected. Refuses over SSH, where the window would
-# appear on the remote machine's screen instead of yours.
+# Open in the OS file manager, like z/zi from zoxide:
+#   e            current directory
+#   e <path>     that directory; for a file, its folder with the file selected
+#   e <words>    best zoxide match for the words
+#   ei [words]   pick a zoxide match with fzf
+# Refuses over SSH, where the window would appear on the remote machine's
+# screen instead of yours.
 e() {
-  local target=${1:-.}
-  [[ -e $target ]] || { print -u2 "e: no such file or directory: $target"; return 1 }
+  _e_can_open || return
+  if (( $# <= 1 )) && [[ -e ${1:-.} ]]; then
+    _e_open ${1:-.}
+  else
+    _e_zoxide -- "$@"
+  fi
+}
+
+ei() {
+  _e_can_open && _e_zoxide -i -- "$@"
+}
+
+_e_can_open() {
   if [[ -n $SSH_CONNECTION ]]; then
     print -u2 "e: SSH session, no local desktop to open a file manager on"
     return 1
   fi
-  target=${target:A}
+  if [[ $OSTYPE == linux* && -z $WSL_DISTRO_NAME && -z $DISPLAY$WAYLAND_DISPLAY ]]; then
+    print -u2 "e: no graphical session (DISPLAY and WAYLAND_DISPLAY are unset)"
+    return 1
+  fi
+}
+
+_e_zoxide() {
+  local dir
+  dir=$(zoxide query "$@") || return
+  # MSYS2: the zoxide database stores Windows paths (C:\...)
+  (( $+commands[cygpath] )) && dir=$(cygpath -u $dir)
+  _e_open $dir
+}
+
+_e_open() {
+  local target=${1:A}
   if [[ $OSTYPE == darwin* ]]; then
     if [[ -d $target ]]; then open $target; else open -R $target; fi
   elif [[ $OSTYPE == (cygwin|msys) || -n $WSL_DISTRO_NAME ]]; then
@@ -364,12 +394,9 @@ e() {
       MSYS2_ARG_CONV_EXCL='*' explorer.exe /select, $win
     fi
     return 0
-  elif [[ -n $DISPLAY || -n $WAYLAND_DISPLAY ]]; then
+  else
     [[ -d $target ]] || target=${target:h}
     xdg-open $target
-  else
-    print -u2 "e: no graphical session (DISPLAY and WAYLAND_DISPLAY are unset)"
-    return 1
   fi
 }
 
