@@ -51,6 +51,7 @@ Install a [Nerd Font](https://www.nerdfonts.com/font-downloads) on your **local 
 | btop       | Better `htop`       |
 | dust       | Better `du`         |
 | gdu        | Interactive `du`    |
+| dua        | Interactive `du`, can delete |
 | duf        | Better `df`         |
 | procs      | Better `ps`         |
 | witr       | Why is this running?  |

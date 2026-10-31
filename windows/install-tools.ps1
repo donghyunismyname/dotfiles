@@ -25,7 +25,7 @@ if (-not (scoop bucket list | Where-Object Name -eq extras)) {
 }
 
 Write-Host "`n=== Installing CLI tools ==="
-scoop install bat ripgrep fd delta eza zoxide btop dust gdu duf procs witr `
+scoop install bat ripgrep fd delta eza zoxide btop dust gdu dua duf procs witr `
     lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trashy gsudo
 
 # Nerd Font that terminal/settings.json uses; skip if already installed by
@@ -43,7 +43,7 @@ if (-not $hasFont) {
 }
 
 Write-Host "`n=== Verifying installation ==="
-$cmds = 'bat rg fd delta eza zoxide btop dust gdu duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trash gsudo' -split ' '
+$cmds = 'bat rg fd delta eza zoxide btop dust gdu dua duf procs witr lazygit lazydocker tokei miniserve fzf jq uv direnv chafa yazi broot trash gsudo' -split ' '
 $failed = $cmds | Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) }
 
 if ($failed) {
