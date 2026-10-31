@@ -288,7 +288,8 @@ alias lt4="eza -a --tree --level 4"
 
 # git
 alias gs="git status"
-alias gp="git push"
+alias gpsh="git push"
+alias gpll="git pull"
 alias gd="git diff"
 alias gd1="git diff HEAD~1"
 alias gd2="git diff HEAD~2"
