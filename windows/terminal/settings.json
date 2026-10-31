@@ -86,10 +86,6 @@
         {
             "id": "User.sendInput.ShiftEnter",
             "keys": "shift+enter"
-        },
-        {
-            "id": null,
-            "keys": "win+sc(41)"
         }
     ],
     "newTabMenu": 
