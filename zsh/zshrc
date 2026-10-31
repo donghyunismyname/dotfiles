@@ -472,6 +472,40 @@ unset _fzf_copy
 # ff - Flexible File Finder
 source "${${(%):-%x}:A:h}/ff.sh"
 
+# bf - bat with fuzzy line search inside one file
+#   bf <file> [query]    ENTER opens the line in vim
+#   <cmd> | bf [query]   ENTER prints the line
+# An empty query lists every line in order, so it also works as a pager.
+# CTRL-S toggles best-match-first order, CTRL-Y copies the line,
+# CTRL-/ toggles the context preview.
+bf() {
+  local file src copy=pbcopy
+  [[ $OSTYPE == (cygwin|msys) ]] && copy='cat > /dev/clipboard'
+  if [[ -t 0 ]]; then
+    file=$1; shift
+    [[ -f $file ]] || { print -u2 "bf: not a file: $file"; return 1 }
+    src=$file
+  else
+    src=$(mktemp)
+    cat > $src
+  fi
+  {
+    bat --color=always --style=plain --paging=never -- $src |
+      awk '{ printf "\033[2m%5d\033[0m\t%s\n", NR, $0 }' |
+      fzf --ansi --delimiter='\t' --nth=2.. --tiebreak=index --layout=reverse \
+        --query="$*" \
+        --preview "bat --color=always --style=numbers --highlight-line {1} -- ${(q)src}" \
+        --preview-window 'up,60%,border-bottom,+{1}-/2' \
+        --bind 'ctrl-s:toggle-sort' \
+        --bind 'ctrl-/:change-preview-window(hidden|)' \
+        --bind "ctrl-y:execute-silent(echo -n {2..} | $copy)+abort" \
+        ${file:+--bind="enter:become(vim +{1} -- ${(q)file})"} \
+        --accept-nth=2..
+  } always {
+    [[ -z $file ]] && rm -f $src
+  }
+}
+
 
 # ============================================
 # no-op (for exit code 0)
