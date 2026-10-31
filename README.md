@@ -50,8 +50,8 @@ Install a [Nerd Font](https://www.nerdfonts.com/font-downloads) on your **local 
 | zoxide     | Better `cd`         |
 | btop       | Better `htop`       |
 | dust       | Better `du`         |
-| gdu        | Interactive `du`    |
-| dua        | Interactive `du`, can delete |
+| gdu        | Interactive `du` (Go)   |
+| dua        | Interactive `du` (Rust) |
 | duf        | Better `df`         |
 | procs      | Better `ps`         |
 | witr       | Why is this running?  |
