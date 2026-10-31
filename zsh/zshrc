@@ -479,18 +479,21 @@ source "${${(%):-%x}:A:h}/ff.sh"
 # CTRL-S toggles best-match-first order, CTRL-Y copies the line,
 # CTRL-/ toggles the context preview.
 bf() {
-  local file src copy=pbcopy
+  local file src out accept=2.. copy=pbcopy
   [[ $OSTYPE == (cygwin|msys) ]] && copy='cat > /dev/clipboard'
   if [[ -t 0 ]]; then
     file=$1; shift
     [[ -f $file ]] || { print -u2 "bf: not a file: $file"; return 1 }
     src=$file
+    accept=1
   else
     src=$(mktemp)
     cat > $src
   fi
+  # vim runs after fzf exits, not via become(): Windows fzf hands become()
+  # its piped stdin, so vim would not get the terminal.
   {
-    bat --color=always --style=plain --paging=never -- $src |
+    out=$(bat --color=always --style=plain --paging=never -- $src |
       awk '{ printf "\033[2m%5d\033[0m\t%s\n", NR, $0 }' |
       fzf --ansi --delimiter='\t' --nth=2.. --tiebreak=index --layout=reverse \
         --query="$*" \
@@ -499,8 +502,8 @@ bf() {
         --bind 'ctrl-s:toggle-sort' \
         --bind 'ctrl-/:change-preview-window(hidden|)' \
         --bind "ctrl-y:execute-silent(echo -n {2..} | $copy)+abort" \
-        ${file:+--bind="enter:become(vim +{1} -- ${(q)file})"} \
-        --accept-nth=2..
+        --accept-nth=$accept) || return
+    if [[ -n $file ]]; then vim +$((out)) -- $file; else print -r -- $out; fi
   } always {
     [[ -z $file ]] && rm -f $src
   }
