@@ -148,12 +148,6 @@
                 "name": "MSYS2 zsh"
             },
             {
-                "guid": "{d4e36de1-6c47-5b10-97ce-1e0bd6ac3a72}",
-                "hidden": false,
-                "name": "ubun",
-                "source": "Microsoft.WSL"
-            },
-            {
                 "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
                 "hidden": false,
                 "name": "Ubuntu-22.04",
