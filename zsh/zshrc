@@ -513,7 +513,7 @@ ff() {
       fzf --ansi --delimiter='\t' --nth=$nth --tiebreak=index --layout=reverse --wrap \
         --query="$*" \
         --preview "bat --color=always --style=numbers --highlight-line $lp -- $fp" \
-        --preview-window "up,60%,wrap,border-bottom,+$lp-/2" \
+        --preview-window "up,80%,wrap,border-bottom,+$lp-/2" \
         --bind 'ctrl-s:toggle-sort' \
         --bind 'ctrl-/:change-preview-window(hidden|)' \
         --bind "ctrl-y:execute-silent(echo -n $tp | $copy)+abort") || return
