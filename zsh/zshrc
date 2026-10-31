@@ -338,9 +338,9 @@ gcm() {
   fi
 }
 
-# Open in the OS file manager, like z/zi from zoxide:
+# Open with the OS default app (file manager for directories), like z/zi:
 #   e            current directory
-#   e <path>     that directory; for a file, its folder with the file selected
+#   e <path>     that directory, or that file in its default app
 #   e <words>    best zoxide match for the words
 #   ei [words]   pick a zoxide match with fzf
 # Refuses over SSH, where the window would appear on the remote machine's
@@ -360,7 +360,7 @@ ei() {
 
 _e_can_open() {
   if [[ -n $SSH_CONNECTION ]]; then
-    print -u2 "e: SSH session, no local desktop to open a file manager on"
+    print -u2 "e: SSH session, no local desktop to open it on"
     return 1
   fi
   if [[ $OSTYPE == linux* && -z $WSL_DISTRO_NAME && -z $DISPLAY$WAYLAND_DISPLAY ]]; then
@@ -380,22 +380,14 @@ _e_zoxide() {
 _e_open() {
   local target=${1:A}
   if [[ $OSTYPE == darwin* ]]; then
-    if [[ -d $target ]]; then open $target; else open -R $target; fi
+    open $target
   elif [[ $OSTYPE == (cygwin|msys) || -n $WSL_DISTRO_NAME ]]; then
     local win
     if [[ -n $WSL_DISTRO_NAME ]]; then win=$(wslpath -w $target); else win=$(cygpath -w $target); fi
-    # Pass the path as its own argument: a quoted "/select,C:\a b" (what a
-    # path with spaces becomes) makes Explorer open Documents instead.
-    # MSYS2_ARG_CONV_EXCL keeps MSYS2 from rewriting /select as a POSIX path.
     # explorer.exe exits 1 even on success, so ignore its status.
-    if [[ -d $target ]]; then
-      explorer.exe $win
-    else
-      MSYS2_ARG_CONV_EXCL='*' explorer.exe /select, $win
-    fi
+    explorer.exe $win
     return 0
   else
-    [[ -d $target ]] || target=${target:h}
     xdg-open $target
   fi
 }
