@@ -9,6 +9,7 @@
 ; Kept apart from panes/main.ahk: its calls into other apps can block for a while, and AHK has one thread,
 ; so inside it they would stall the mouse hook.
 ; Updated on window events (caret moved, text changed, focus or foreground changed) and the 한/영 key.
+; Tapping left shift alone switches to English, right shift alone to Hangul.
 
 ; ---- Config ----
 HANGUL_COLOR := "2A5CC8"  ; RGB hex
@@ -27,7 +28,17 @@ HookWinEvents([EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MOVESIZEEND, EVENT_OBJECT_S
     EVENT_OBJECT_FOCUS, EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_TEXTSELECTIONCHANGED,
     IA2_EVENT_TEXT_CARET_MOVED, IA2_EVENT_TEXT_INSERTED, IA2_EVENT_TEXT_REMOVED], OnImeEvent)
 Hotkey("~vk15", (*) => SetTimer(UpdateImeTip, -UPDATE_DELAY_MS))  ; 한/영 key
+Hotkey("~LShift up", (*) => ShiftTap("LShift", false))
+Hotkey("~RShift up", (*) => ShiftTap("RShift", true))
 UpdateImeTip()
+
+; A shift key pressed and released with no other key in between sets the mode: left English, right Hangul.
+ShiftTap(key, hangul) {
+    if A_PriorKey != key
+        return
+    try SetHangul(ControlGetFocus("A"), hangul)
+    SetTimer(UpdateImeTip, -UPDATE_DELAY_MS)
+}
 
 ; Location changes come from every window and the cursor; only the caret's matter.
 OnImeEvent(event, hwnd, idObject) {
