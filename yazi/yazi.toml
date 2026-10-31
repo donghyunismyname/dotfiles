@@ -2,6 +2,12 @@
 ratio = [1, 1, 3]
 show_hidden = true
 
+# The Windows preset opens text files with `code`; use vim everywhere
+[opener]
+edit = [
+	{ run = "vim %s", desc = "vim", block = true },
+]
+
 [preview]
 wrap = "yes"
 max_width = 2000
