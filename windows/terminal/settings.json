@@ -51,15 +51,6 @@
                 "input": "\u001b\r"
             },
             "id": "User.sendInput.ShiftEnter"
-        },
-        {
-            "command": 
-            {
-                "action": "globalSummon",
-                "dropdownDuration": 0,
-                "name": "_quake"
-            },
-            "id": "User.quakeMode"
         }
     ],
     "copyFormatting": "none",
@@ -97,7 +88,7 @@
             "keys": "shift+enter"
         },
         {
-            "id": "User.quakeMode",
+            "id": null,
             "keys": "win+sc(41)"
         }
     ],
@@ -187,7 +178,6 @@
         ]
     },
     "schemes": [],
-    "startOnUserLogin": true,
     "tabSwitcherMode": "inOrder",
     "themes": []
 }
