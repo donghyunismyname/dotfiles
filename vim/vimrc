@@ -1,4 +1,4 @@
-" Vim < 9.1 does not read ~/.config/vim; ~/.vimrc symlink loads this file,
+" Vim < 9.1 does not read ~/.config/vim; ~/.vimrc (symlink, or stub on Windows) loads this file,
 " so add the config dir to runtimepath by hand (colors/, plugins).
 " pack/*/start plugins load from packpath, which does not follow runtimepath.
 set runtimepath^=~/.config/vim

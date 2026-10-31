@@ -21,11 +21,12 @@ Or run them individually:
 ```powershell
 .\install-tools.ps1    # CLI tools (uses Scoop)
 .\install-shell.ps1    # MSYS2, zsh, vim, zsh plugins
-.\install-configs.ps1  # Copy vim, zshenv; link yazi; stub ~/.zshrc and ~/.gitconfig
+.\install-configs.ps1  # Link vim, yazi; stub ~/.vimrc, ~/.zshenv, ~/.zshrc and ~/.gitconfig
 ```
 
-Configs are copied, not symlinked (symlinks need admin rights or developer
-mode), so re-run `install-configs.ps1` after changing them in the repo.
+Symlinks need admin rights or developer mode, so directories are linked with
+junctions and single files get a stub that loads the repo file. Nothing is
+copied, so repo edits apply without re-running `install-configs.ps1`.
 
 ## Other files
 

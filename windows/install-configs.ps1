@@ -1,25 +1,21 @@
-# Copy, link or stub configs (Windows counterpart of ../install-configs.sh).
-# Files are copied, since symlinks need admin rights or developer mode;
-# re-run after changing vim/ or zsh/zshenv in the repo.
+# Link or stub configs (Windows counterpart of ../install-configs.sh).
+# Nothing is copied, so repo edits apply without re-running this script.
+# Symlinks need admin rights or developer mode, so directories become
+# junctions and single files become stubs.
 # Run from PowerShell: .\install-configs.ps1
 
 $repo = Split-Path $PSScriptRoot
 $repoWin = $repo -replace '\\', '/'                                        # C:/Users/... for git
 $repoMsys = '/' + $repoWin.Substring(0, 1).ToLower() + $repoWin.Substring(2) # /c/Users/... for zsh
 
-# Copies: the repo owns these files, so overwrite whatever is there.
-function Copy-Config($src, $dst) {
-    New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
-    if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
-    Copy-Item -Recurse "$repo\$src" $dst
-    Write-Host "  $dst <- $src"
-}
-
-# Junctions: like a directory symlink, but needs no admin rights, so repo edits
-# apply without re-running this script. Directories only.
+# Junctions: a directory link that needs no admin rights. Directories only.
 function Link-Config($src, $dst) {
     New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
-    if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
+    $item = Get-Item $dst -Force -ErrorAction SilentlyContinue
+    # Remove-Item -Recurse on a junction can delete the target's contents in
+    # Windows PowerShell 5.1, so remove an existing link by itself
+    if ($item.LinkType) { [IO.Directory]::Delete($dst) }
+    elseif ($item) { Remove-Item -Recurse -Force $dst }
     New-Item -ItemType Junction -Path $dst -Target "$repo\$src" | Out-Null
     Write-Host "  $dst -> $src"
 }
@@ -34,17 +30,23 @@ function Add-Stub($file, $load) {
     Write-Host "  $file -> stub"
 }
 
-# Old layout: ~/.vim is in the default runtimepath and would load stale plugins
+# Old layouts: ~/.vim is in the default runtimepath and would load stale
+# plugins; ~/.vimrc and ~/.zshenv were full copies, which a stub would load twice
 if (Test-Path "$HOME\.vim") {
     if (Test-Path "$HOME\.vim.bak") { Remove-Item -Recurse -Force "$HOME\.vim.bak" }
     Move-Item "$HOME\.vim" "$HOME\.vim.bak"
 }
+foreach ($f in "$HOME\.vimrc", "$HOME\.zshenv") {
+    if ((Test-Path $f) -and (Get-Content $f -TotalCount 1) -notlike 'source *') {
+        Move-Item -Force $f "$f.bak"
+    }
+}
 
-Copy-Config vim "$HOME\.config\vim"
-Copy-Config vim\vimrc "$HOME\.vimrc"
+Link-Config vim "$HOME\.config\vim"
 Link-Config yazi "$env:APPDATA\yazi\config"
-Copy-Config zsh\zshenv "$HOME\.zshenv"
 
+Add-Stub "$HOME\.vimrc" "source ~/.config/vim/vimrc"
+Add-Stub "$HOME\.zshenv" "source $repoMsys/zsh/zshenv"
 Add-Stub "$HOME\.zshrc" "source $repoMsys/zsh/zshrc"
 # Git for Windows ignores /c/... include paths, so use C:/...
 Add-Stub "$HOME\.gitconfig" "[include]`n`tpath = $repoWin/git/config"
