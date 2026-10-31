@@ -21,7 +21,7 @@ Or run them individually:
 ```powershell
 .\install-tools.ps1    # CLI tools (uses Scoop)
 .\install-shell.ps1    # MSYS2, zsh, vim, zsh plugins
-.\install-configs.ps1  # Copy vim, yazi, zshenv; stub ~/.zshrc and ~/.gitconfig
+.\install-configs.ps1  # Copy vim, zshenv; link yazi; stub ~/.zshrc and ~/.gitconfig
 ```
 
 Configs are copied, not symlinked (symlinks need admin rights or developer

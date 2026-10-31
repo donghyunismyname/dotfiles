@@ -1,6 +1,6 @@
-# Copy or stub configs (Windows counterpart of ../install-configs.sh).
-# Copies instead of symlinking, since symlinks need admin rights or developer
-# mode; re-run after changing vim/, yazi/ or zsh/zshenv in the repo.
+# Copy, link or stub configs (Windows counterpart of ../install-configs.sh).
+# Files are copied, since symlinks need admin rights or developer mode;
+# re-run after changing vim/ or zsh/zshenv in the repo.
 # Run from PowerShell: .\install-configs.ps1
 
 $repo = Split-Path $PSScriptRoot
@@ -13,6 +13,15 @@ function Copy-Config($src, $dst) {
     if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
     Copy-Item -Recurse "$repo\$src" $dst
     Write-Host "  $dst <- $src"
+}
+
+# Junctions: like a directory symlink, but needs no admin rights, so repo edits
+# apply without re-running this script. Directories only.
+function Link-Config($src, $dst) {
+    New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
+    if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
+    New-Item -ItemType Junction -Path $dst -Target "$repo\$src" | Out-Null
+    Write-Host "  $dst -> $src"
 }
 
 # Stubs: a machine-owned file whose first lines load the repo config. Tools that
@@ -33,7 +42,7 @@ if (Test-Path "$HOME\.vim") {
 
 Copy-Config vim "$HOME\.config\vim"
 Copy-Config vim\vimrc "$HOME\.vimrc"
-Copy-Config yazi "$env:APPDATA\yazi\config"
+Link-Config yazi "$env:APPDATA\yazi\config"
 Copy-Config zsh\zshenv "$HOME\.zshenv"
 
 Add-Stub "$HOME\.zshrc" "source $repoMsys/zsh/zshrc"
