@@ -50,7 +50,7 @@ Install a [Nerd Font](https://www.nerdfonts.com/font-downloads) on your **local 
 | zoxide     | Better `cd`         |
 | btop       | Better `htop`       |
 | dust       | Better `du`         |
-| ncdu       | Interactive `du`    |
+| gdu        | Interactive `du`    |
 | duf        | Better `df`         |
 | procs      | Better `ps`         |
 | witr       | Why is this running?  |

@@ -269,9 +269,11 @@ if command -v systemd-run >/dev/null 2>&1 && [[ -d /run/user/$UID ]]; then
     alias codex='_agent codex'
 fi
 
-# Ubuntu binary name compatibility
+# Binary name compatibility (Ubuntu, Homebrew)
 command -v batcat >/dev/null && alias bat='batcat'
 command -v fdfind >/dev/null && alias fd='fdfind'
+# Homebrew installs gdu as gdu-go, since coreutils' gdu is GNU du
+command -v gdu-go >/dev/null && alias gdu='gdu-go'
 
 # Windows: `sudo` would hit System32's built-in sudo (often disabled); use gsudo
 [[ $OSTYPE == (cygwin|msys) ]] && command -v gsudo >/dev/null && alias sudo='gsudo'

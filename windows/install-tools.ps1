@@ -4,7 +4,7 @@
 #   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 #
 # Not installed, no Windows build: tmux, sesh, timg.
-# gdu stands in for ncdu; btop is the btop4win port; trashy (`trash`) for
+# btop is the btop4win port; trashy (`trash`) for
 # trash-cli, sending files to the Windows Recycle Bin. gsudo runs one command
 # elevated, since Terminal tabs open non-elevated.
 # vim comes from MSYS2 (install-shell.ps1) so it reads the same config as Unix.
