@@ -286,6 +286,10 @@ alias lt2="lt --level 2"
 alias lt3="lt --level 3"
 alias lt4="lt --level 4"
 alias ltd="lt -D"
+alias ltd1="ltd --level 1"
+alias ltd2="ltd --level 2"
+alias ltd3="ltd --level 3"
+alias ltd4="ltd --level 4"
 
 # git
 alias gs="git status"
