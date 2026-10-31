@@ -1,0 +1,16 @@
+# Folders skipped by fzf's CTRL-T search over $HOME (gitignore syntax).
+# Project-specific bulk output belongs in a .fdignore inside that folder.
+
+# Hidden folders: .git, .vscode, .cursor, .cache, .config, ...
+.*/
+# OS and app data
+AppData/
+Library/
+# State files that change all the time and would top the recent-first order
+.*history
+.viminfo
+.lesshst
+.claude.json*
+# Package managers and dependencies
+scoop/
+node_modules/

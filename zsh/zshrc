@@ -434,14 +434,18 @@ _cached_init fzf --zsh
 
 # Use fd for fzf: fast, respects .gitignore, includes hidden files
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-# export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git . $HOME"
-export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
-
+# CTRL-T searches all of home, recently modified first; on equal fuzzy scores
+# --tiebreak=index keeps that order, and CTRL-S drops fuzzy ranking entirely
+export FZF_CTRL_T_COMMAND="sh '${${(%):-%x}:A:h}/recent-files.sh'"
 
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
+  --tiebreak=index
+  --bind 'ctrl-s:toggle-sort'
   --preview 'bat -n --color=always {}'
-  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'
+  --color header:italic
+  --header 'CTRL-S: toggle recent-first order'"
 
 # CTRL-/ to toggle small preview window to see the full command
 # CTRL-Y to copy the command into clipboard (pbcopy; /dev/clipboard on MSYS2)
