@@ -355,6 +355,7 @@ gcm() {
 #   e <path>     that directory, or that file in its default app
 #   e <words>    best zoxide match for the words
 #   ei [words]   pick a zoxide match with fzf
+#   ef [words]   pick a file from the CTRL-T list, with its fzf options
 # Refuses over SSH, where the window would appear on the remote machine's
 # screen instead of yours.
 e() {
@@ -368,6 +369,14 @@ e() {
 
 ei() {
   _e_can_open && _e_zoxide -i -- "$@"
+}
+
+ef() {
+  _e_can_open || return
+  local file
+  # Same layout flags fzf's own CTRL-T widget adds before FZF_CTRL_T_OPTS
+  file=$(eval "$FZF_CTRL_T_COMMAND" | FZF_DEFAULT_OPTS="--height 40% --reverse --scheme=path $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS" fzf --query="$*") || return
+  _e_open $file
 }
 
 _e_can_open() {
@@ -384,18 +393,18 @@ _e_can_open() {
 _e_zoxide() {
   local dir
   dir=$(zoxide query "$@") || return
-  # MSYS2: the zoxide database stores Windows paths (C:\...)
-  (( $+commands[cygpath] )) && dir=$(cygpath -u $dir)
   _e_open $dir
 }
 
+# MSYS2: paths may come in Windows form (C:\... from zoxide, C:/... from the
+# CTRL-T list), which zsh's :A would treat as relative; cygpath -a takes both.
 _e_open() {
   local target=${1:A}
   if [[ $OSTYPE == darwin* ]]; then
     open $target
   elif [[ $OSTYPE == (cygwin|msys) || -n $WSL_DISTRO_NAME ]]; then
     local win
-    if [[ -n $WSL_DISTRO_NAME ]]; then win=$(wslpath -w $target); else win=$(cygpath -w $target); fi
+    if [[ -n $WSL_DISTRO_NAME ]]; then win=$(wslpath -w $target); else win=$(cygpath -aw $1); fi
     # explorer.exe exits 1 even on success, so ignore its status.
     explorer.exe $win
     return 0
