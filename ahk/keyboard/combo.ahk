@@ -1,36 +1,37 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 Persistent
-#Include %A_LineFile%\..\..\lib\ime.ahk
 
 ; Combos: pressing both keys of a pair together (the second within COMBO_MS of the first) holds its
 ; modifier until either key is released; the other key is then ignored until it is released too.
-; A combo released within COMBO_TAP_MS with no other key pressed meanwhile is a tap: it sets the input mode.
 ; A lone combo key is held back until its partner, another key, its own release or COMBO_MS decides.
 ; Skipped while a modifier is already down, so Ctrl+D or a Shift-held J goes out at once.
 ; Uses its own low-level keyboard hook instead of hotkeys, so every key event is seen in order and a
 ; held-back key can be sent before the key that came after it. Injected input (Send, other scripts)
 ; passes through untouched.
+; Also: tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) presses 한/영.
+; Only a physical press counts, so the Left Shift of D+F does not.
 
 ; ---- Config ----
 COMBO_MS := 50
-COMBO_TAP_MS := 200
+SHIFT_TAP_MS := 250
 COMBOS := [
-    {keys: [0x44, 0x46], out: 0xA0, hangul: false},  ; D+F: Left Shift; tap: English
-    {keys: [0x4A, 0x4B], out: 0xA1, hangul: true},   ; J+K: Right Shift; tap: Hangul
+    {keys: [0x44, 0x46], out: 0xA0},  ; D+F: Left Shift
+    {keys: [0x4A, 0x4B], out: 0xA1},  ; J+K: Right Shift
 ]
 
 A_IconTip := "combo"
 comboOf := Map()    ; vk -> its combo
 for c in COMBOS {
-    c.sc := DllCall("MapVirtualKey", "uint", c.out, "uint", 0, "uint")
-    c.active := false, c.since := 0, c.used := false  ; used: another key was pressed while it was held
+    c.sc := DllCall("MapVirtualKey", "uint", c.out, "uint", 0, "uint"), c.active := false
     comboOf[c.keys[1]] := c, comboOf[c.keys[2]] := c
 }
 held := Map()       ; combo keys physically down
 pending := 0        ; combo key held back, waiting for its partner
 pendingSc := 0
 swallow := Map()    ; combo keys ignored until released, after their combo ended
+shiftAt := 0        ; when Left Shift went down, while it is down
+shiftAlone := false ; no other key pressed since then
 
 hook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), ; WH_KEYBOARD_LL
     "ptr", DllCall("GetModuleHandle", "ptr", 0, "ptr"), "uint", 0, "ptr")
@@ -47,13 +48,18 @@ KeyboardProc(nCode, wParam, lParam) {
 
 ; Returns true to swallow the event.
 OnKey(vk, sc, ext, down) {
-    global pending, pendingSc
-    c := comboOf.Get(vk, 0)
-    if down
-        for other in COMBOS
-            if other.active && other != c
-                other.used := true
-    if !c {
+    global pending, pendingSc, shiftAt, shiftAlone
+    if vk = 0xA0 {  ; VK_LSHIFT
+        if down && !shiftAt  ; not a repeat
+            shiftAt := A_TickCount, shiftAlone := true
+        else if !down {
+            if shiftAlone && A_TickCount - shiftAt < SHIFT_TAP_MS
+                SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
+            shiftAt := 0
+        }
+    } else if down
+        shiftAlone := false
+    if !c := comboOf.Get(vk, 0) {
         if !pending
             return false
         ; Another key decides it: send the held-back key first, then this one.
@@ -75,8 +81,6 @@ OnKey(vk, sc, ext, down) {
             SendKeys([c.out, c.sc, true])
             if held.Has(partner)
                 swallow[partner] := true
-            if !c.used && A_TickCount - c.since < COMBO_TAP_MS
-                SetTimer(SwitchHangul.Bind(c.hangul), -1)  ; out of the hook, which must return quickly
         }
         return true
     }
@@ -90,7 +94,7 @@ OnKey(vk, sc, ext, down) {
     }
     if pending = partner && down {
         pending := 0, SetTimer(Expire, 0)
-        c.active := true, c.since := A_TickCount, c.used := false
+        c.active := true
         SendKeys([c.out, c.sc, false])
         return true
     }
@@ -116,6 +120,12 @@ Expire() {
     vk := pending, pending := 0
     SetTimer(Expire, 0)
     SendKeys([vk, pendingSc, false])
+}
+
+; SendLevel 1, so ime/main.ahk's 한/영 hotkey sees it and updates its tip.
+PressHangulKey() {
+    SendLevel(1)
+    Send("{vk15}")
 }
 
 ; Each key is [vk, sc, up, extended?]; sent in one SendInput call so nothing lands in between.
