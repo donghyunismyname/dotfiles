@@ -9,7 +9,7 @@ COMBOS := [
 ]
 SELECT_LAYER_KEY := Ord("L")
 SELECT_LAYER_START := Ord("J")  ; the key that turns the layer on
-SELECT_LAYER_MS := 100
+SELECT_LAYER_MS := 200
 SELECT_LAYER_ARROWS := Map(Ord("J"), VK_LEFT, Ord("K"), VK_RIGHT)  ; sent with Shift
 SHIFT_TAP_MS := 250
 SHIFT_TAPS := Map(VK_LSHIFT, ToggleInputMode)
