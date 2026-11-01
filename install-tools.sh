@@ -14,8 +14,6 @@ export HOMEBREW_NO_ASK=1
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 
-trap 'echo ""; echo "❌ Installation failed"; exit 1' ERR
-
 # Try to load existing brew from known locations
 for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
     if [ -x "$brew_path" ]; then
