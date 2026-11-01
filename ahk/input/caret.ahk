@@ -1,13 +1,5 @@
 ; Where the text caret is, in screen coordinates.
 
-; The control with the keyboard focus in the foreground window, or 0. Unlike ControlGetFocus("A"), this
-; also works in the Claude desktop app, where AutoHotkey fails to find the active window.
-FocusedControl() {
-    info := Buffer(72, 0)  ; GUITHREADINFO
-    NumPut("uint", 72, info)
-    return DllCall("GetGUIThreadInfo", "uint", 0, "ptr", info) ? NumGet(info, 16, "ptr") : 0
-}
-
 ; Text caret of the foreground window, with the control that has the focus.
 FocusCaret() {
     info := Buffer(72, 0)  ; GUITHREADINFO
