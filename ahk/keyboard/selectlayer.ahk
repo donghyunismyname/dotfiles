@@ -2,8 +2,9 @@
 ; the layer on, and until L is released every J or K press or key repeat is Shift+Left / Shift+Right.
 ; Otherwise (no key within SELECT_LAYER_MS, or another key first, Ctrl too) L goes out as the letter
 ; before that key, so a typed "lk" (walk, milk) stays letters and L then Ctrl+S is not Ctrl+L.
-; Once on, other keys pass, so Ctrl held with J / K selects a word at a time.
-; Skipped while a modifier is already down, so Ctrl+L goes out at once.
+; Modifiers held from before carry over: with Ctrl held, L then J is Ctrl+Shift+Left (a word), and an L
+; let go as the letter is Ctrl+L. Once on, other keys pass, so Ctrl can also come in between J / K presses.
+; Skipped while Win is down, so Win+L goes out at once.
 class SelectLayer {
     static state := ""            ; "" off, "waiting" for J while L is held back, "on"
     static triggerSc := 0
@@ -35,7 +36,7 @@ class SelectLayer {
         repeat := key.down && this.triggerDown
         this.triggerDown := key.down
         if !this.state {
-            if !key.down || repeat || AnyModifierDown()  ; Ctrl+L and the like, or an L already let go
+            if !key.down || repeat || WinKeyDown()  ; Win+L locks the screen; or an L already let go
                 return PASS
             ComboKeys.LetHeldBackGo()  ; a held-back combo key goes first
             this.SetState("waiting"), this.triggerSc := key.sc

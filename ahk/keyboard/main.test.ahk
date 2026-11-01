@@ -29,6 +29,8 @@ Check("L+J then K selects", Keys("L", "J", "^J", "K", "^K", "^L"), SelLeft() " "
 Check("J repeats while L is held", Keys("L", "J", "J", "^J", "^L"), SelLeft() " " SelLeft())
 Check("J held on after L is released", Keys("L", "J", "^L", "J", "^J"), SelLeft())
 Check("Ctrl after L makes it the letter", Keys("L", "LCtrl", "^LCtrl", "^L"), "l (lcontrol) (^lcontrol) (^l)")
+Check("Ctrl before L and J", Keys("LCtrl", "L", "J", "^J", "^L", "^LCtrl"), "(lcontrol) " SelLeft() " (^lcontrol)")
+Check("Ctrl before L alone is Ctrl+L", Keys("LCtrl", "L", "^L", "^LCtrl"), "(lcontrol) l ^l (^lcontrol)")
 Check("Ctrl inside the layer", Keys("L", "J", "^J", "LCtrl", "K", "^K", "^LCtrl", "^L"),
     SelLeft() " (lcontrol) " SelRight() " (^lcontrol)")
 Check("Left Shift tapped", Keys("LShift", "^LShift"), "(lshift) (^lshift) vk15 ^vk15")
