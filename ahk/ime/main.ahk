@@ -30,7 +30,7 @@ imeMode := -1  ; 1 Hangul, 0 English, -1 not seen yet
 HookWinEvents([EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MOVESIZEEND, EVENT_OBJECT_SHOW, EVENT_OBJECT_HIDE,
     EVENT_OBJECT_FOCUS, EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_TEXTSELECTIONCHANGED,
     IA2_EVENT_TEXT_CARET_MOVED, IA2_EVENT_TEXT_INSERTED, IA2_EVENT_TEXT_REMOVED], OnImeEvent)
-Hotkey("~vk15", (*) => SetTimer(UpdateImeTip, -UPDATE_DELAY_MS))  ; 한/영 key, also sent by keyboard/combo.ahk
+Hotkey("~vk15", (*) => SetTimer(UpdateImeTip, -UPDATE_DELAY_MS))  ; 한/영 key, also sent by keyboard/main.ahk
 UpdateImeTip()
 SetTimer(UpdateMouseTip, MOUSE_POLL_MS)
 
