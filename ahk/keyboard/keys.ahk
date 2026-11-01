@@ -12,7 +12,5 @@ ScanCode(vk) => DllCall("MapVirtualKey", "uint", vk, "uint", 0, "uint")  ; MAPVK
 
 PressHangulKey() => SendKeys(Down(VK_HANGUL), Up(VK_HANGUL))
 
-IsModifier(vk) => vk >= 0x10 && vk <= 0x12 || vk >= 0xA0 && vk <= 0xA5 || vk = 0x5B || vk = 0x5C  ; Shift, Ctrl, Alt, Win
-
 AnyModifierDown() => GetKeyState("Shift") || GetKeyState("Ctrl") || GetKeyState("Alt")
     || GetKeyState("LWin") || GetKeyState("RWin")

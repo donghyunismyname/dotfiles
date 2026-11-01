@@ -1,7 +1,8 @@
 ; Select layer: L is held back for SELECT_LAYER_MS. A J pressed meanwhile, before L is released, turns
 ; the layer on, and until L is released every J or K press or key repeat is Shift+Left / Shift+Right.
-; Otherwise L goes out as the letter, so a typed "lk" (walk, milk) stays letters.
-; Modifiers pressed in between pass and keep the wait, so L, Ctrl, J is Ctrl+Shift+Left (a word).
+; Otherwise (no key within SELECT_LAYER_MS, or another key first, Ctrl too) L goes out as the letter
+; before that key, so a typed "lk" (walk, milk) stays letters and L then Ctrl+S is not Ctrl+L.
+; Once on, other keys pass, so Ctrl held with J / K selects a word at a time.
 ; Skipped while a modifier is already down, so Ctrl+L goes out at once.
 class SelectLayer {
     static state := ""            ; "" off, "waiting" for J while L is held back, "on"
@@ -25,7 +26,7 @@ class SelectLayer {
                 this.arrowKeys.Delete(vk)
             return SWALLOW
         }
-        if key.down && this.state = "waiting" && !IsModifier(vk)  ; another key first: L was the letter, still held
+        if key.down && this.state = "waiting"  ; another key first, Ctrl too: L was the letter, still held
             this.LetTriggerGo()
         return NEXT
     }
