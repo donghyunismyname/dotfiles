@@ -11,9 +11,9 @@ class ComboKeys {
     static heldBack := ""    ; the combo key waiting for its partner: {vk, sc}
     static timeout := ObjBindMethod(this, "LetHeldBackGo")
 
-    static Init(combos) {
-        this.combos := combos
-        for c in combos {
+    static Init(pairs) {
+        this.combos := pairs
+        for c in pairs {
             c.active := false
             this.byKey[c.keys[1]] := c, this.byKey[c.keys[2]] := c
         }
