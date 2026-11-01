@@ -35,9 +35,10 @@ Hotkey("~LShift up", (*) => ShiftTap("LShift", false))
 Hotkey("~RShift up", (*) => ShiftTap("RShift", true))
 UpdateImeTip()
 
-; A held key repeats its key-down, so only the first one is kept.
+; A held key repeats its key-down, so only the first one is kept. Only a physical press counts, not the shift
+; a program sends (the D+F / J+K combos of keyboard/combo.ahk).
 ShiftDown(hotkey) {
-    if !shiftDownAt.Has(key := SubStr(hotkey, 2))
+    if !shiftDownAt.Has(key := SubStr(hotkey, 2)) && GetKeyState(key, "P")
         shiftDownAt[key] := A_TickCount
 }
 
@@ -49,7 +50,7 @@ ShiftTap(key, hangul) {
     if A_PriorKey != key || held >= SHIFT_TAP_MAX_MS
         return
     ; The 한/영 key rather than SetHangul: it first ends the syllable being composed, which Chrome would drop.
-    try if IsHangul(ControlGetFocus("A")) != hangul
+    if (focus := FocusedControl()) && IsHangul(focus) != hangul
         Send("{vk15}")
     SetTimer(UpdateImeTip, -UPDATE_DELAY_MS)
 }
