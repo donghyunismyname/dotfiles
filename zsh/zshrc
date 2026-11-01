@@ -37,7 +37,7 @@ autoload -U colors && colors
 # History
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=50000
-SAVEHIST=10000
+SAVEHIST=50000
 setopt EXTENDED_HISTORY
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
@@ -226,8 +226,9 @@ add-zsh-hook preexec _term_title_preexec
 # ============================================
 
 export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export TERM=xterm-256color
+# Fall back to xterm-256color only where this host lacks the terminal's terminfo
+# (e.g. xterm-ghostty over SSH), so terminals keep their own TERM elsewhere
+infocmp "$TERM" >/dev/null 2>&1 || export TERM=xterm-256color
 export EDITOR=vim
 
 
