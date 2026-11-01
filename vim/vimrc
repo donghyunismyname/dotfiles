@@ -10,13 +10,19 @@ syntax enable "make colorscheme work on mac
 colorscheme hybrid
 
 
+" group this file's autocmds so re-sourcing it replaces them instead of adding duplicates
+augroup vimrc
+  autocmd!
+augroup END
+
+
 set autoread
-autocmd FocusGained,BufEnter * checktime
-autocmd CursorHold,CursorHoldI * checktime
+autocmd vimrc FocusGained,BufEnter * checktime
+autocmd vimrc CursorHold,CursorHoldI * checktime
 
 
 filetype plugin on  "understand file types
-autocmd FileType * set formatoptions-=o "disable autoindent
+autocmd vimrc FileType * setlocal formatoptions-=o "disable autoindent
 
 
 "togglw word wrap
@@ -27,14 +33,15 @@ noremap <expr> k v:count ? 'k' : 'gk'
 
 
 " pick up cursor where last left
-au BufReadPost *
+au vimrc BufReadPost *
 \ if line("'\"") > 0 && line("'\"") <= line("$") |
 \ exe "norm g`\"" |
 \ endif
 
 
-"automatically strip trailing whitespace when a file is saved
-autocmd BufWritePre * :%s/\s\+$//e
+"automatically strip trailing whitespace when a file is saved,
+"except Markdown, where two trailing spaces mean a line break
+autocmd vimrc BufWritePre * if &ft !=# 'markdown' | %s/\s\+$//e | endif
 
 
 " Cursor shape
@@ -72,7 +79,6 @@ set list            "make whitespaces visible
 set listchars=tab:>-,trail:~,extends:>,precedes:<
 set nostartofline   "keep column position when c-u or c-d
 set clipboard=unnamed,unnamedplus "use system clipboard
-set gdefault        "substitute all matches in a line
 
 
 
@@ -148,15 +154,15 @@ vmap ' gcgv
 
 " plugin: vim-fzf
 " fzf base plugin ships with the fzf binary (separate from fzf.vim wrapper);
-" add brew prefix to rtp so :Files etc. can find fzf#run
-if executable('brew')
-  let s:fzf_dir = trim(system('brew --prefix fzf 2>/dev/null'))
-  if !empty(s:fzf_dir) && isdirectory(s:fzf_dir)
+" add its dir to rtp so :Files etc. can find fzf#run.
+" Check known paths: `brew --prefix fzf` would spawn brew on every start.
+for s:fzf_dir in [$HOMEBREW_PREFIX.'/opt/fzf', '/opt/homebrew/opt/fzf', '/usr/local/opt/fzf',
+      \ '/home/linuxbrew/.linuxbrew/opt/fzf', $HOME.'/.fzf']
+  if isdirectory(s:fzf_dir)
     let &rtp .= ',' . s:fzf_dir
+    break
   endif
-elseif isdirectory($HOME.'/.fzf')
-  set rtp+=~/.fzf
-endif
+endfor
 
 " :Files uses $FZF_DEFAULT_COMMAND (fd) which respects .gitignore
 nmap <leader>o :Files<cr>
