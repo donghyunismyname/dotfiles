@@ -15,11 +15,13 @@ IsHangul(hwnd) => ImeControl(hwnd, 5) && ImeControl(hwnd, 1) & 1  ; IMC_GETOPENS
 ; conversion mode, so from closed with that mode English it takes two.
 HangulKeyPresses(hwnd) => !ImeControl(hwnd, 5) && !(ImeControl(hwnd, 1) & 1) ? 2 : 1
 
-; Returns the mode afterwards, since an app may ignore the change.
+; Returns the mode afterwards, since an app may ignore the change. Writes the whole conversion mode rather
+; than flipping bit 0 of what it reads: Chromium apps sometimes answer the read with junk (0xfba), and
+; writing that back turned on full-width (bit 3) there.
 SetHangul(hwnd, on) {
     if on
         ImeControl(hwnd, 6, 1)  ; IMC_SETOPENSTATUS
-    ImeControl(hwnd, 2, ImeControl(hwnd, 1) & ~1 | on)  ; IMC_SETCONVERSIONMODE
+    ImeControl(hwnd, 2, on)  ; IMC_SETCONVERSIONMODE
     return IsHangul(hwnd)
 }
 
