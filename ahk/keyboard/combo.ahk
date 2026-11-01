@@ -9,9 +9,9 @@ Persistent
 ; Uses its own low-level keyboard hook instead of hotkeys, so every key event is seen in order and a
 ; held-back key can be sent before the key that came after it. Injected input (Send, other scripts)
 ; passes through untouched.
-; Also: tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) presses 한/영.
-; Only a physical press counts, so the Left Shift of D+F does not.
-; And: Shift+Space presses 한/영 for one word; the next Space presses it again before typing the space.
+; Also: tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) switches 한/영 for
+; a while: the first key that does not type a character (Space, Enter, Tab, arrows, Ctrl, ...) switches back
+; before it goes out, and so does another tap. Only a physical press counts, so the Left Shift of D+F does not.
 
 ; ---- Config ----
 COMBO_MS := 50
@@ -33,8 +33,7 @@ pendingSc := 0
 swallow := Map()    ; combo keys ignored until released, after their combo ended
 shiftAt := 0        ; when Left Shift went down, while it is down
 shiftAlone := false ; no other key pressed since then
-oneWord := false    ; 한/영 pressed by Shift+Space, to press again at the next Space
-spaceHeld := false  ; the Space of Shift+Space, swallowed with its repeats until released
+switched := false   ; 한/영 pressed by a tap, to press again to switch back
 HANGUL_SC := DllCall("MapVirtualKey", "uint", 0x15, "uint", 0, "uint")
 
 hook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), ; WH_KEYBOARD_LL
@@ -52,37 +51,25 @@ KeyboardProc(nCode, wParam, lParam) {
 
 ; Returns true to swallow the event.
 OnKey(vk, sc, ext, down) {
-    global pending, pendingSc, shiftAt, shiftAlone, oneWord, spaceHeld
+    global pending, pendingSc, shiftAt, shiftAlone, switched
     if vk = 0xA0 {  ; VK_LSHIFT
         if down && !shiftAt  ; not a repeat
             shiftAt := A_TickCount, shiftAlone := true
         else if !down {
             if shiftAlone && A_TickCount - shiftAt < SHIFT_TAP_MS
-                oneWord := false, SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
+                switched := !switched, SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
             shiftAt := 0
         }
     } else if down
         shiftAlone := false
-    if vk = 0x15 && down  ; a real 한/영 press sets the mode for good
-        oneWord := false
-    if vk = 0x20 {  ; VK_SPACE
-        if spaceHeld {
-            if !down
-                spaceHeld := false
-            return true
-        }
-        shift := GetKeyState("Shift") && !(GetKeyState("Ctrl") || GetKeyState("Alt") || GetKeyState("LWin") || GetKeyState("RWin"))
-        if down && (shift || oneWord) {
-            if pending
-                Expire()
-            ; Shift+Space again before a Space only switches back.
-            oneWord := shift && !oneWord, spaceHeld := shift
-            keys := [[0x15, HANGUL_SC, false], [0x15, HANGUL_SC, true]]
-            if !shift
-                keys.Push([vk, sc, false])  ; the space goes out after the switch back
-            SendKeys(keys*)
-            return true
-        }
+    if switched && down && !TypesCharacter(vk) {
+        switched := false
+        if vk = 0x15  ; a real 한/영 press sets the mode for good
+            return false
+        if pending
+            Expire()
+        SendKeys([0x15, HANGUL_SC, false], [0x15, HANGUL_SC, true], [vk, sc, false, ext])  ; switch back, then the key
+        return true
     }
     if !c := comboOf.Get(vk, 0) {
         if !pending
@@ -147,11 +134,12 @@ Expire() {
     SendKeys([vk, pendingSc, false])
 }
 
-; SendLevel 1, so ime/main.ahk's 한/영 hotkey sees it and updates its tip.
-PressHangulKey() {
-    SendLevel(1)
-    Send("{vk15}")
-}
+PressHangulKey() => SendKeys([0x15, HANGUL_SC, false], [0x15, HANGUL_SC, true])
+
+; Keys that keep a tap's switch: letters, digits, punctuation, the numpad, Shift, and Backspace for fixing a typo.
+TypesCharacter(vk) => vk >= 0x30 && vk <= 0x39 || vk >= 0x41 && vk <= 0x5A || vk >= 0x60 && vk <= 0x6F
+    || vk >= 0xBA && vk <= 0xC0 || vk >= 0xDB && vk <= 0xDF || vk = 0xE2
+    || vk = 0xA0 || vk = 0xA1 || vk = 0x08
 
 ; Each key is [vk, sc, up, extended?]; sent in one SendInput call so nothing lands in between.
 SendKeys(keys*) {
