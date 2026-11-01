@@ -10,8 +10,9 @@ Persistent
 ; A lone combo key is held back until its partner, another key, its own release or COMBO_MS decides.
 ; Skipped while a modifier is already down, so Ctrl+D or a Shift-held J goes out at once.
 ; Tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) presses 한/영.
-; L is held back for LAYER_MS: a J or K pressed meanwhile (before L is released) is Shift+Left / Shift+Right, and so is
-; every J or K press or key repeat until L is released. Otherwise L goes out as the letter.
+; L is held back for LAYER_MS: a J pressed meanwhile (before L is released) is Shift+Left, and from then on
+; until L is released every J or K press or key repeat is Shift+Left / Shift+Right. Otherwise L goes out
+; as the letter, so a typed "lk" (walk, milk) stays letters.
 ; Uses its own low-level keyboard hook instead of hotkeys, so every key event is seen in order and a
 ; held-back key can be sent before the key that came after it. Injected input (Send, other scripts,
 ; the Shift of a combo) passes through untouched, so a combo's Shift is never a tap.
@@ -21,6 +22,7 @@ COMBO_MS := 50
 SHIFT_TAP_MS := 250
 LAYER_KEY := 0x4C                                 ; L
 LAYER_MS := 100
+LAYER_START := 0x4A                               ; J
 LAYER_ARROWS := Map(0x4A, 0x25, 0x4B, 0x27)       ; J: Shift+Left, K: Shift+Right
 COMBOS := [
     {keys: [0x44, 0x46], shift: 0xA0},    ; D+F: Left Shift
@@ -43,7 +45,7 @@ swallow := Map()      ; combo keys ignored until released, after their combo end
 pending := ""         ; {vk, sc} of the combo key held back, waiting for its partner
 shiftDownAt := 0      ; when Left Shift went down, while it is down
 shiftAlone := false   ; no other key pressed since then
-layer := ""           ; "" off, "maybe" while L is held back, "on" once J or K came in time
+layer := ""           ; "" off, "maybe" while L is held back, "on" once J came in time
 layerSc := 0
 layerKeyDown := false ; L physically down, to tell its key repeats from a new press
 layerOwned := Map()   ; J / K pressed as arrows, swallowed until released
@@ -145,12 +147,12 @@ OnLayerKey(vk, sc, ext, down) {
         }
         if repeat
             return true
-        if layer = "maybe"  ; released before J or K: the letter
+        if layer = "maybe"  ; released before J: the letter
             SendKeys([vk, sc, false], [vk, sc, true])
         EndLayer()
         return true
     }
-    if layer && down && LAYER_ARROWS.Has(vk) {
+    if down && (layer = "on" && LAYER_ARROWS.Has(vk) || layer = "maybe" && vk = LAYER_START) {
         layer := "on", SetTimer(LayerExpire, 0)
         arrow := LAYER_ARROWS[vk], arrowSc := ScanCode(arrow), layerOwned[vk] := true
         SendKeys([VK_LSHIFT, shiftSc, false], [arrow, arrowSc, false, true], [arrow, arrowSc, true, true],
@@ -167,7 +169,7 @@ OnLayerKey(vk, sc, ext, down) {
     return ""
 }
 
-; No J or K within LAYER_MS: the held-back L goes down as itself.
+; No J within LAYER_MS: the held-back L goes down as itself.
 LayerExpire() {
     Critical
     if layer = "maybe" {
