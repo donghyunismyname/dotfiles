@@ -13,6 +13,7 @@ SELECT_LAYER_MS := 100
 SELECT_LAYER_ARROWS := Map(Ord("J"), VK_LEFT, Ord("K"), VK_RIGHT)  ; sent with Shift
 HANGUL_TAP_MS := 250
 MODE_LAYER_KEY := VK_F13  ; the left space half sends it (via/)
+MODE_LAYER_TAP_MS := 250
 MODE_LAYER_MAP := Map(    ; key -> what it sends while MODE_LAYER_KEY is held: {vk, shift?}
     VK_ESC, {vk: VK_OEM_3},               ; `
     VK_TAB, {vk: VK_OEM_3, shift: true},  ; ~
