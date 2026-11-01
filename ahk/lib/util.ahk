@@ -9,6 +9,14 @@ ClickThroughGui(color, alpha := 255) {
     return g
 }
 
+; GUITHREADINFO of the foreground window's thread (focus at 16, caret window at 48, caret rect at 56),
+; or "" when there is none.
+GuiThreadInfo() {
+    info := Buffer(72, 0)
+    NumPut("uint", 72, info)
+    return DllCall("GetGUIThreadInfo", "uint", 0, "ptr", info) ? info : ""
+}
+
 ; A GUID string in its 16-byte binary form.
 Guid(s) {
     b := Buffer(16)

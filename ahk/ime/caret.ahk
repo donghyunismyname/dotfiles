@@ -2,9 +2,7 @@
 
 ; Text caret of the foreground window, with the control that has the focus.
 FocusCaret() {
-    info := Buffer(72, 0)  ; GUITHREADINFO
-    NumPut("uint", 72, info)
-    if !DllCall("GetGUIThreadInfo", "uint", 0, "ptr", info) || !(focus := NumGet(info, 16, "ptr"))
+    if !(info := GuiThreadInfo()) || !(focus := NumGet(info, 16, "ptr"))
         return ""
     if caret := NumGet(info, 48, "ptr") {  ; a system caret, in its window's client coordinates
         pt := Buffer(8)

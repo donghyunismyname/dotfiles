@@ -2,6 +2,7 @@
 #SingleInstance Force
 #Include %A_LineFile%\..\..\lib\util.ahk
 #Include %A_LineFile%\..\..\lib\winevent.ahk
+#Include %A_LineFile%\..\..\lib\ime.ahk
 #Include %A_LineFile%\..\caret.ahk
 
 ; Input mode: a small "가" / "A" box just below the text caret and another by the mouse cursor show it,
@@ -56,8 +57,7 @@ UpdateImeTip() {
 
 ; Hidden while the cursor is (some apps hide it while typing) and until a mode has been seen.
 UpdateMouseTip() {
-    static last := ""
-    ci := Buffer(24, 0)  ; CURSORINFO
+    static last := "", ci := Buffer(24, 0)  ; CURSORINFO
     NumPut("uint", 24, ci)
     shown := imeMode >= 0 && DllCall("GetCursorInfo", "ptr", ci) && NumGet(ci, 4, "uint") & 1  ; CURSOR_SHOWING
     x := NumGet(ci, 16, "int") + MOUSE_TIP_DX, y := NumGet(ci, 20, "int") + MOUSE_TIP_DY
@@ -96,21 +96,4 @@ SyncHangul(focus) {
         hangul := SetHangul(focus, imeMode)
     lastFocus := focus, imeMode := hangul
     return hangul
-}
-
-; Hangul mode of the window's IME: bit 0 (native) of its conversion mode.
-IsHangul(hwnd) => ImeControl(hwnd, 1) & 1  ; IMC_GETCONVERSIONMODE
-
-; Returns the mode afterwards, since an app may ignore the change.
-SetHangul(hwnd, on) {
-    ImeControl(hwnd, 2, ImeControl(hwnd, 1) & ~1 | on)  ; IMC_SETCONVERSIONMODE
-    return IsHangul(hwnd)
-}
-
-; WM_IME_CONTROL to the window's default IME window; SMTO_ABORTIFHUNG, so a hung app cannot block this script.
-ImeControl(hwnd, cmd, arg := 0) {
-    ime := DllCall("imm32\ImmGetDefaultIMEWnd", "ptr", hwnd, "ptr")
-    result := 0
-    DllCall("SendMessageTimeoutW", "ptr", ime, "uint", 0x283, "ptr", cmd, "ptr", arg, "uint", 2, "uint", 100, "ptr*", &result)
-    return result
 }

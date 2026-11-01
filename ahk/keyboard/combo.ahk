@@ -1,40 +1,43 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 Persistent
+#Include %A_LineFile%\..\..\lib\util.ahk
+#Include %A_LineFile%\..\..\lib\ime.ahk
 
-; Combos: pressing both keys of a pair together (the second within COMBO_MS of the first) holds its
-; modifier until either key is released; the other key is then ignored until it is released too.
+; Combos: pressing both keys of a pair together (the second within COMBO_MS of the first) starts it.
+; A shift combo holds its Shift until either key is released; a mode combo sets the input mode.
+; The other key is then ignored until it is released too.
 ; A lone combo key is held back until its partner, another key, its own release or COMBO_MS decides.
 ; Skipped while a modifier is already down, so Ctrl+D or a Shift-held J goes out at once.
+; Tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) presses 한/영.
 ; Uses its own low-level keyboard hook instead of hotkeys, so every key event is seen in order and a
-; held-back key can be sent before the key that came after it. Injected input (Send, other scripts)
-; passes through untouched.
-; Also: tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) switches 한/영 for
-; a while: the first key that does not type a character (Space, Enter, Tab, arrows, Ctrl, ...) switches back
-; before it goes out, and so does another tap. Only a physical press counts, so the Left Shift of D+F does not.
+; held-back key can be sent before the key that came after it. Injected input (Send, other scripts,
+; the Shift of a combo) passes through untouched, so a combo's Shift is never a tap.
 
 ; ---- Config ----
 COMBO_MS := 50
 SHIFT_TAP_MS := 250
 COMBOS := [
-    {keys: [0x44, 0x46], out: 0xA0},  ; D+F: Left Shift
-    {keys: [0x4A, 0x4B], out: 0xA1},  ; J+K: Right Shift
+    {keys: [0x44, 0x46], shift: 0xA0},    ; D+F: Left Shift
+    {keys: [0x4A, 0x4B], shift: 0xA1},    ; J+K: Right Shift
+    {keys: [0x58, 0x43], hangul: false},  ; X+C: English
+    {keys: [0xBC, 0xBE], hangul: true},   ; ,+.: Hangul
 ]
 
+VK_LSHIFT := 0xA0, VK_HANGUL := 0x15
 A_IconTip := "combo"
-comboOf := Map()    ; vk -> its combo
+comboOf := Map()      ; vk -> its combo
 for c in COMBOS {
-    c.sc := DllCall("MapVirtualKey", "uint", c.out, "uint", 0, "uint"), c.active := false
+    c.active := false
+    if c.HasProp("shift")
+        c.sc := ScanCode(c.shift)
     comboOf[c.keys[1]] := c, comboOf[c.keys[2]] := c
 }
-held := Map()       ; combo keys physically down
-pending := 0        ; combo key held back, waiting for its partner
-pendingSc := 0
-swallow := Map()    ; combo keys ignored until released, after their combo ended
-shiftAt := 0        ; when Left Shift went down, while it is down
-shiftAlone := false ; no other key pressed since then
-switched := false   ; 한/영 pressed by a tap, to press again to switch back
-HANGUL_SC := DllCall("MapVirtualKey", "uint", 0x15, "uint", 0, "uint")
+held := Map()         ; combo keys physically down
+swallow := Map()      ; combo keys ignored until released, after their combo ended
+pending := ""         ; {vk, sc} of the combo key held back, waiting for its partner
+shiftDownAt := 0      ; when Left Shift went down, while it is down
+shiftAlone := false   ; no other key pressed since then
 
 hook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), ; WH_KEYBOARD_LL
     "ptr", DllCall("GetModuleHandle", "ptr", 0, "ptr"), "uint", 0, "ptr")
@@ -51,32 +54,14 @@ KeyboardProc(nCode, wParam, lParam) {
 
 ; Returns true to swallow the event.
 OnKey(vk, sc, ext, down) {
-    global pending, pendingSc, shiftAt, shiftAlone, switched
-    if vk = 0xA0 {  ; VK_LSHIFT
-        if down && !shiftAt  ; not a repeat
-            shiftAt := A_TickCount, shiftAlone := true
-        else if !down {
-            if shiftAlone && A_TickCount - shiftAt < SHIFT_TAP_MS
-                switched := !switched, SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
-            shiftAt := 0
-        }
-    } else if down
-        shiftAlone := false
-    if switched && down && !TypesCharacter(vk) {
-        switched := false
-        if vk = 0x15  ; a real 한/영 press sets the mode for good
-            return false
-        if pending
-            Expire()
-        SendKeys([0x15, HANGUL_SC, false], [0x15, HANGUL_SC, true], [vk, sc, false, ext])  ; switch back, then the key
-        return true
-    }
+    global pending
+    WatchShiftTap(vk, down)
     if !c := comboOf.Get(vk, 0) {
         if !pending
             return false
         ; Another key decides it: send the held-back key first, then this one.
-        vkPending := pending, pending := 0, SetTimer(Expire, 0)
-        SendKeys([vkPending, pendingSc, false], [vk, sc, !down, ext])
+        p := TakePending()
+        SendKeys([p.vk, p.sc, false], [vk, sc, !down, ext])
         return true
     }
     repeat := down && held.Has(vk)
@@ -88,36 +73,62 @@ OnKey(vk, sc, ext, down) {
     }
     partner := c.keys[1] = vk ? c.keys[2] : c.keys[1]
     if c.active {
-        if !down {
-            c.active := false
-            SendKeys([c.out, c.sc, true])
-            if held.Has(partner)
-                swallow[partner] := true
+        if !down
+            EndCombo(c, partner)
+        return true
+    }
+    if pending && pending.vk = vk {
+        if !repeat {  ; released before its partner came: a tap
+            TakePending()
+            SendKeys([vk, sc, false], [vk, sc, true])
         }
         return true
     }
-    if pending = vk {
-        if repeat
-            return true
-        ; Released before its partner came: a tap.
-        pending := 0, SetTimer(Expire, 0)
-        SendKeys([vk, sc, false], [vk, sc, true])
-        return true
-    }
-    if pending = partner && down {
-        pending := 0, SetTimer(Expire, 0)
-        c.active := true
-        SendKeys([c.out, c.sc, false])
+    if pending && pending.vk = partner && down {
+        TakePending()
+        StartCombo(c)
         return true
     }
     if pending
         Expire()  ; a key of another combo: the held-back key goes first, alone
     if down && !repeat && !held.Has(partner) && !ModifierDown() {
-        pending := vk, pendingSc := sc
+        pending := {vk: vk, sc: sc}
         SetTimer(Expire, -COMBO_MS)
         return true
     }
     return false
+}
+
+StartCombo(c) {
+    c.active := true
+    if c.HasProp("shift")
+        SendKeys([c.shift, c.sc, false])
+    else
+        SetTimer(SetMode.Bind(c.hangul), -1)  ; out of the hook, which must return quickly
+}
+
+EndCombo(c, partner) {
+    c.active := false
+    if c.HasProp("shift")
+        SendKeys([c.shift, c.sc, true])
+    if held.Has(partner)
+        swallow[partner] := true
+}
+
+; A physical Left Shift released within SHIFT_TAP_MS with no other key pressed meanwhile presses 한/영.
+WatchShiftTap(vk, down) {
+    global shiftDownAt, shiftAlone
+    if vk != VK_LSHIFT {
+        if down
+            shiftAlone := false
+    } else if down {
+        if !shiftDownAt  ; not a repeat
+            shiftDownAt := A_TickCount, shiftAlone := true
+    } else {
+        if shiftAlone && A_TickCount - shiftDownAt < SHIFT_TAP_MS
+            SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
+        shiftDownAt := 0
+    }
 }
 
 ModifierDown() => GetKeyState("Shift") || GetKeyState("Ctrl") || GetKeyState("Alt")
@@ -125,21 +136,33 @@ ModifierDown() => GetKeyState("Shift") || GetKeyState("Ctrl") || GetKeyState("Al
 
 ; No partner within COMBO_MS: the held-back key goes down as itself.
 Expire() {
-    global pending
     Critical
-    if !pending
-        return
-    vk := pending, pending := 0
-    SetTimer(Expire, 0)
-    SendKeys([vk, pendingSc, false])
+    if p := TakePending()
+        SendKeys([p.vk, p.sc, false])
 }
 
-PressHangulKey() => SendKeys([0x15, HANGUL_SC, false], [0x15, HANGUL_SC, true])
+; Stops waiting for the held-back key's partner and returns the key, or "" when there is none.
+TakePending() {
+    global pending
+    p := pending, pending := ""
+    SetTimer(Expire, 0)
+    return p
+}
 
-; Keys that keep a tap's switch: letters, digits, punctuation, the numpad, Shift, and Backspace for fixing a typo.
-TypesCharacter(vk) => vk >= 0x30 && vk <= 0x39 || vk >= 0x41 && vk <= 0x5A || vk >= 0x60 && vk <= 0x6F
-    || vk >= 0xBA && vk <= 0xC0 || vk >= 0xDB && vk <= 0xDF || vk = 0xE2
-    || vk = 0xA0 || vk = 0xA1 || vk = 0x08
+; Presses 한/영 when the focused control's mode differs; the IME then finishes the syllable being
+; composed first, as on a real press, which SetHangul would not.
+SetMode(hangul) {
+    if (focus := FocusedControl()) && IsHangul(focus) != hangul
+        PressHangulKey()
+}
+
+; ime/main.ahk's 한/영 hotkey sees it, since it is not sent by AutoHotkey's Send.
+PressHangulKey() {
+    static sc := ScanCode(VK_HANGUL)
+    SendKeys([VK_HANGUL, sc, false], [VK_HANGUL, sc, true])
+}
+
+ScanCode(vk) => DllCall("MapVirtualKey", "uint", vk, "uint", 0, "uint")  ; MAPVK_VK_TO_VSC
 
 ; Each key is [vk, sc, up, extended?]; sent in one SendInput call so nothing lands in between.
 SendKeys(keys*) {
@@ -156,5 +179,5 @@ Cleanup(*) {
     DllCall("UnhookWindowsHookEx", "ptr", hook)
     for c in COMBOS
         if c.active
-            SendKeys([c.out, c.sc, true])
+            EndCombo(c, 0)
 }
