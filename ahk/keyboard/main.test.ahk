@@ -8,7 +8,7 @@
 #Include %A_LineFile%\..\config.ahk
 #Include %A_LineFile%\..\remap.ahk
 
-SENT := ""
+RECORD := ""
 HANGUL := false  ; the made-up input mode
 FAILURES := 0
 OnError((e, *) => (FileAppend("ERROR " e.Message " at " e.File ":" e.Line "`n", "*", "UTF-8"), ExitApp(99)))
@@ -50,6 +50,24 @@ Check("F13+Tab is a tilde", Keys("english", "F13", "Tab", "^Tab", "^F13"), Toggl
 Check("F13 keeps letters", Keys("english", "F13", "H", "^H", "^F13"), Toggled("(h) (^h)"))
 Check("F13 keeps Space", Keys("english", "F13", "Space", "^Space", "^F13"), Toggled("(space) (^space)"))
 Check("1 held on after F13 is released", Keys("english", "F13", "1", "^F13", "1", "^1"), HangulKey() " f1 ^f1 " HangulKey())
+Check("Right Shift tap converts English to Hangul", Keys("english", "word:tmp", "RShift", "^RShift"),
+    Passed("tmp") " (rshift) (^rshift) " HangulKey() " " Erased(3) " " Sent("tmp"))
+Check("Right Shift tap converts Hangul to English", Keys("hangul", "word:now", "RShift", "^RShift"),
+    Passed("now") " (rshift) (^rshift) " HangulKey() " " Erased(3) " " Sent("now"))
+Check("converting keeps the spaces after the word", Keys("english", "word:tmp", "Space", "^Space", "RShift", "^RShift"),
+    Passed("tmp") " (space) (^space) (rshift) (^rshift) " HangulKey() " " Erased(4) " " Sent("tmp") " space ^space")
+Check("converting twice turns it back", Keys("english", "word:tmp", "RShift", "^RShift", 50, "RShift", "^RShift"),
+    Passed("tmp") " (rshift) (^rshift) " HangulKey() " " Erased(3) " " Sent("tmp")
+    " (rshift) (^rshift) " HangulKey() " " Erased(2) " " Sent("tmp"))  ; 스ㅔ is 2 characters
+Check("nothing to convert after another key", Keys("english", "word:tmp", "Enter", "^Enter", "RShift", "^RShift"),
+    Passed("tmp") " (enter) (^enter) (rshift) (^rshift)")
+Check("nothing to convert after Backspace", Keys("english", "word:tmp", "Backspace", "^Backspace", "RShift", "^RShift"),
+    Passed("tmp") " (backspace) (^backspace) (rshift) (^rshift)")
+Check("nothing to convert after a click", Keys("english", "word:tmp", "click", "RShift", "^RShift"),
+    Passed("tmp") " (rshift) (^rshift)")
+for word, n in Map("dkssud", 2, "gksrmf", 2, "rt", 1, "rtk", 2, "dhk", 1, "hk", 1, "ekfr", 1, "ekfrk", 2,
+        "hello", 4, "Rk", 1, "dkE", 2, "now", 3, "dlqslek", 3)
+    Check("Hangul length of " word, HangulLength(Letters(word)), n)
 ExitApp(FAILURES)
 
 SelLeft() => "lshift left ^left ^lshift"
@@ -57,10 +75,32 @@ SelRight() => "lshift right ^right ^lshift"
 HangulKey() => "vk15 ^vk15"
 Toggled(inner) => HangulKey() " " inner " " HangulKey()  ; between the mode layer's two 한/영 presses
 
-; Steps may also be "hangul" or "english", to set the made-up mode.
+; What a typed word records: its keys passed, or sent.
+Passed(word) => Join(word, (c) => "(" c ") (^" c ")")
+Sent(word) => Join(word, (c) => c " ^" c)
+Erased(n) => Join(StrRepeat("b", n), (c) => "backspace ^backspace")
+Join(word, f) {
+    out := ""
+    for c in StrSplit(word)
+        out .= " " f(c)
+    return Trim(out)
+}
+StrRepeat(s, n) => StrReplace(Format("{:" n "}", ""), " ", s)
+
+; The letters of a word as LastWord keeps them; capitals were typed with Shift.
+Letters(word) {
+    result := []
+    for c in StrSplit(word)
+        result.Push({vk: Ord(StrUpper(c)), shift: c == StrUpper(c)})
+    return result
+}
+
+; Steps may also be "hangul" or "english", to set the made-up mode, "word:..." to type a word's letters,
+; or "click". Each run starts with no last word.
 Keys(steps*) {
-    global SENT, HANGUL
-    SENT := ""
+    global RECORD, HANGUL
+    RECORD := ""
+    LastWord.Reset()
     for step in steps {
         if step is Integer {  ; not IsNumber: the key "1" is a string
             Critical("Off"), Sleep(step)  ; the handlers' Critical lasts for the thread, which would hold off timers
@@ -70,21 +110,36 @@ Keys(steps*) {
             HANGUL := step = "hangul"
             continue
         }
-        release := SubStr(step, 1, 1) = "^", name := LTrim(step, "^")
-        if !OnKey({vk: GetKeyVK(name), sc: GetKeySC(name), ext: false, down: !release})
-            SENT .= "(" KeyText(GetKeyVK(name), release) ") "
+        if step = "click" {
+            OnMouseDown()
+            continue
+        }
+        if SubStr(step, 1, 5) = "word:" {
+            for c in StrSplit(SubStr(step, 6))
+                Press(c), Press("^" c)
+            continue
+        }
+        Press(step)
     }
     Critical("Off"), Sleep(SELECT_LAYER_MS + 50)  ; let the timers run out
-    return Trim(SENT)
+    return Trim(RECORD)
 }
 
-; Stand in for send.ahk and lib/ime.ahk.
+Press(step) {
+    global RECORD
+    release := SubStr(step, 1, 1) = "^", name := LTrim(step, "^")
+    if !OnKey({vk: GetKeyVK(name), sc: GetKeySC(name), ext: false, down: !release, injected: false})
+        RECORD .= "(" KeyText(GetKeyVK(name), release) ") "
+}
+
+; Stand in for send.ahk and lib/ime.ahk. Sent keys come back to OnKey as injected, as from the system.
 SendKeys(keys*) {
-    global SENT, HANGUL
+    global RECORD, HANGUL
     for k in keys {
-        SENT .= KeyText(k[1], k[3]) " "
+        RECORD .= KeyText(k[1], k[3]) " "
         if k[1] = VK_HANGUL && !k[3]
             HANGUL := !HANGUL
+        OnKey({vk: k[1], sc: k[2], ext: k[4], down: !k[3], injected: true})
     }
 }
 FocusedControl() => 1

@@ -10,23 +10,32 @@ Persistent
 
 ; Key remapping (remap.ahk) through one low-level keyboard hook of its own instead of hotkeys, so every
 ; physical key event is seen in order and a held-back key can be sent before the key that came after it.
-; Injected input (Send, other scripts, the keys this script sends) passes through untouched.
+; A low-level mouse hook only tells it about clicks.
 
 A_IconTip := "keyboard"
-hook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), ; WH_KEYBOARD_LL
-    "ptr", DllCall("GetModuleHandle", "ptr", 0, "ptr"), "uint", 0, "ptr")
+module := DllCall("GetModuleHandle", "ptr", 0, "ptr")
+keyboardHook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), "ptr", module, "uint", 0, "ptr")  ; WH_KEYBOARD_LL
+mouseHook := DllCall("SetWindowsHookEx", "int", 14, "ptr", CallbackCreate(MouseProc), "ptr", module, "uint", 0, "ptr")  ; WH_MOUSE_LL
 OnExit(Cleanup)
 
 KeyboardProc(nCode, wParam, lParam) {
     Critical
     flags := NumGet(lParam, 8, "uint")
-    if nCode >= 0 && !(flags & 0x10)  ; LLKHF_INJECTED
-        && OnKey({vk: NumGet(lParam, 0, "uint"), sc: NumGet(lParam, 4, "uint"), ext: flags & 1, down: !(flags & 0x80)})  ; LLKHF_EXTENDED, LLKHF_UP
+    if nCode >= 0 && OnKey({vk: NumGet(lParam, 0, "uint"), sc: NumGet(lParam, 4, "uint"),
+            ext: flags & 1, down: !(flags & 0x80), injected: flags & 0x10})  ; LLKHF_EXTENDED, _UP, _INJECTED
         return 1
     return DllCall("CallNextHookEx", "ptr", 0, "int", nCode, "ptr", wParam, "ptr", lParam, "ptr")
 }
 
+MouseProc(nCode, wParam, lParam) {
+    Critical
+    if nCode >= 0 && (wParam = 0x201 || wParam = 0x204 || wParam = 0x207 || wParam = 0x20B)  ; WM_L/R/M/XBUTTONDOWN
+        OnMouseDown()
+    return DllCall("CallNextHookEx", "ptr", 0, "int", nCode, "ptr", wParam, "ptr", lParam, "ptr")
+}
+
 Cleanup(*) {
-    DllCall("UnhookWindowsHookEx", "ptr", hook)
+    DllCall("UnhookWindowsHookEx", "ptr", keyboardHook)
+    DllCall("UnhookWindowsHookEx", "ptr", mouseHook)
     ComboKeys.EndAll()
 }
