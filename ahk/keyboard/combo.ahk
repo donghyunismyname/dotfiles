@@ -11,6 +11,7 @@ Persistent
 ; passes through untouched.
 ; Also: tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) presses 한/영.
 ; Only a physical press counts, so the Left Shift of D+F does not.
+; And: Shift+Space presses 한/영 for one word; the next Space presses it again before typing the space.
 
 ; ---- Config ----
 COMBO_MS := 50
@@ -32,6 +33,9 @@ pendingSc := 0
 swallow := Map()    ; combo keys ignored until released, after their combo ended
 shiftAt := 0        ; when Left Shift went down, while it is down
 shiftAlone := false ; no other key pressed since then
+oneWord := false    ; 한/영 pressed by Shift+Space, to press again at the next Space
+spaceHeld := false  ; the Space of Shift+Space, swallowed with its repeats until released
+HANGUL_SC := DllCall("MapVirtualKey", "uint", 0x15, "uint", 0, "uint")
 
 hook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), ; WH_KEYBOARD_LL
     "ptr", DllCall("GetModuleHandle", "ptr", 0, "ptr"), "uint", 0, "ptr")
@@ -48,17 +52,38 @@ KeyboardProc(nCode, wParam, lParam) {
 
 ; Returns true to swallow the event.
 OnKey(vk, sc, ext, down) {
-    global pending, pendingSc, shiftAt, shiftAlone
+    global pending, pendingSc, shiftAt, shiftAlone, oneWord, spaceHeld
     if vk = 0xA0 {  ; VK_LSHIFT
         if down && !shiftAt  ; not a repeat
             shiftAt := A_TickCount, shiftAlone := true
         else if !down {
             if shiftAlone && A_TickCount - shiftAt < SHIFT_TAP_MS
-                SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
+                oneWord := false, SetTimer(PressHangulKey, -1)  ; out of the hook, after the Shift release goes out
             shiftAt := 0
         }
     } else if down
         shiftAlone := false
+    if vk = 0x15 && down  ; a real 한/영 press sets the mode for good
+        oneWord := false
+    if vk = 0x20 {  ; VK_SPACE
+        if spaceHeld {
+            if !down
+                spaceHeld := false
+            return true
+        }
+        shift := GetKeyState("Shift") && !(GetKeyState("Ctrl") || GetKeyState("Alt") || GetKeyState("LWin") || GetKeyState("RWin"))
+        if down && (shift || oneWord) {
+            if pending
+                Expire()
+            ; Shift+Space again before a Space only switches back.
+            oneWord := shift && !oneWord, spaceHeld := shift
+            keys := [[0x15, HANGUL_SC, false], [0x15, HANGUL_SC, true]]
+            if !shift
+                keys.Push([vk, sc, false])  ; the space goes out after the switch back
+            SendKeys(keys*)
+            return true
+        }
+    }
     if !c := comboOf.Get(vk, 0) {
         if !pending
             return false
