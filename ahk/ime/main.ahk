@@ -4,7 +4,7 @@
 #Include %A_LineFile%\..\..\lib\winevent.ahk
 #Include %A_LineFile%\..\caret.ahk
 
-; Input mode: a small "한" / "A" box just below the text caret shows it, and it is kept the same
+; Input mode: a small "가" / "A" box just below the text caret shows it, and it is kept the same
 ; across windows (Windows keeps one per window).
 ; Kept apart from panes/main.ahk: its calls into other apps can block for a while, and AHK has one thread,
 ; so inside it they would stall the mouse hook.
@@ -48,7 +48,9 @@ ShiftTap(key, hangul) {
     held := A_TickCount - shiftDownAt.Delete(key)
     if A_PriorKey != key || held >= SHIFT_TAP_MAX_MS
         return
-    try SetHangul(ControlGetFocus("A"), hangul)
+    ; The 한/영 key rather than SetHangul: it first ends the syllable being composed, which Chrome would drop.
+    try if IsHangul(ControlGetFocus("A")) != hangul
+        Send("{vk15}")
     SetTimer(UpdateImeTip, -UPDATE_DELAY_MS)
 }
 
@@ -71,7 +73,7 @@ UpdateImeTip() {
     if !key
         return imeTip.Hide()
     imeTip.BackColor := hangul ? HANGUL_COLOR : ENGLISH_COLOR
-    imeLabel.Text := hangul ? "한" : "A"
+    imeLabel.Text := hangul ? "가" : "A"
     imeTip.Show("NA x" c.x " y" c.y + c.h + 2 " w20 h18")
 }
 
