@@ -45,8 +45,7 @@ class ModeLayer {
         ComboKeys.LetHeldBackGo(), SelectLayer.LetTriggerGo()
         focus := FocusedControl()
         this.wasHangul := focus && IsHangul(focus)
-        if focus
-            PressHangulKey()
+        ToggleInputMode(focus)
     }
 
     ; Leaves the mode alone when it is already back, as when 한/영 was pressed meanwhile.
@@ -55,6 +54,6 @@ class ModeLayer {
         if this.alone && A_TickCount - this.pressedAt < MODE_LAYER_TAP_MS  ; a tap: the switch stays
             return
         if (focus := FocusedControl()) && IsHangul(focus) != this.wasHangul
-            PressHangulKey()
+            ToggleInputMode(focus)
     }
 }

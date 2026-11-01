@@ -109,6 +109,6 @@ class ComboKeys {
     ; composed first, as on a real press, which SetHangul would not.
     static SetInputMode(hangul) {
         if (focus := FocusedControl()) && IsHangul(focus) != hangul
-            PressHangulKey()
+            ToggleInputMode(focus)
     }
 }

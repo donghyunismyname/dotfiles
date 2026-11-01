@@ -144,6 +144,7 @@ SendKeys(keys*) {
 }
 FocusedControl() => 1
 IsHangul(hwnd) => HANGUL
+HangulKeyPresses(hwnd) => 1
 
 KeyText(vk, up) => (up ? "^" : "") StrLower(GetKeyName(Format("vk{:x}", vk)) || Format("vk{:x}", vk))
 

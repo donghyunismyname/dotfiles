@@ -13,5 +13,12 @@ ScanCode(vk) => DllCall("MapVirtualKey", "uint", vk, "uint", 0, "uint")  ; MAPVK
 
 PressHangulKey() => SendKeys(Down(VK_HANGUL), Up(VK_HANGUL))
 
+; Presses 한/영 as often as it takes to reach the other input mode (HangulKeyPresses).
+ToggleInputMode(focus := 0) {
+    if focus := focus || FocusedControl()
+        loop HangulKeyPresses(focus)
+            PressHangulKey()
+}
+
 AnyModifierDown() => GetKeyState("Shift") || GetKeyState("Ctrl") || GetKeyState("Alt") || WinKeyDown()
 WinKeyDown() => GetKeyState("LWin") || GetKeyState("RWin")

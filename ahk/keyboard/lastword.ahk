@@ -37,7 +37,9 @@ class LastWord {
         if !this.letters.Length || FocusedControl() != this.focus
             return
         typed := (IsHangul(this.focus) ? HangulLength(this.letters) : this.letters.Length) + this.spaces
-        sequence := [Down(VK_HANGUL), Up(VK_HANGUL)]
+        sequence := []
+        loop HangulKeyPresses(this.focus)
+            sequence.Push(Down(VK_HANGUL), Up(VK_HANGUL))
         loop typed
             sequence.Push(Down(VK_BACK), Up(VK_BACK))
         for k in this.letters {
