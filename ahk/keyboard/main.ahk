@@ -10,12 +10,10 @@ Persistent
 
 ; Key remapping (remap.ahk) through one low-level keyboard hook of its own instead of hotkeys, so every
 ; physical key event is seen in order and a held-back key can be sent before the key that came after it.
-; A low-level mouse hook only tells it about clicks.
 
 A_IconTip := "keyboard"
 module := DllCall("GetModuleHandle", "ptr", 0, "ptr")
 keyboardHook := DllCall("SetWindowsHookEx", "int", 13, "ptr", CallbackCreate(KeyboardProc), "ptr", module, "uint", 0, "ptr")  ; WH_KEYBOARD_LL
-mouseHook := DllCall("SetWindowsHookEx", "int", 14, "ptr", CallbackCreate(MouseProc), "ptr", module, "uint", 0, "ptr")  ; WH_MOUSE_LL
 OnExit(Cleanup)
 
 KeyboardProc(nCode, wParam, lParam) {
@@ -27,15 +25,7 @@ KeyboardProc(nCode, wParam, lParam) {
     return DllCall("CallNextHookEx", "ptr", 0, "int", nCode, "ptr", wParam, "ptr", lParam, "ptr")
 }
 
-MouseProc(nCode, wParam, lParam) {
-    Critical
-    if nCode >= 0 && (wParam = 0x201 || wParam = 0x204 || wParam = 0x207 || wParam = 0x20B)  ; WM_L/R/M/XBUTTONDOWN
-        OnMouseDown()
-    return DllCall("CallNextHookEx", "ptr", 0, "int", nCode, "ptr", wParam, "ptr", lParam, "ptr")
-}
-
 Cleanup(*) {
     DllCall("UnhookWindowsHookEx", "ptr", keyboardHook)
-    DllCall("UnhookWindowsHookEx", "ptr", mouseHook)
     ComboKeys.EndAll()
 }
