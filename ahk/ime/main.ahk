@@ -3,7 +3,7 @@
 #Include %A_LineFile%\..\..\lib\util.ahk
 #Include %A_LineFile%\..\..\lib\winevent.ahk
 #Include %A_LineFile%\..\caret.ahk
-#Include %A_LineFile%\..\ime.ahk
+#Include %A_LineFile%\..\..\lib\ime.ahk
 
 ; Input mode: a small "가" / "A" box just below the text caret shows it, and it is kept the same
 ; across windows (Windows keeps one per window).
@@ -27,7 +27,7 @@ imeLabel := imeTip.AddText("x0 y0 w20 h18 Center 0x200", "")  ; 0x200: verticall
 HookWinEvents([EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MOVESIZEEND, EVENT_OBJECT_SHOW, EVENT_OBJECT_HIDE,
     EVENT_OBJECT_FOCUS, EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_TEXTSELECTIONCHANGED,
     IA2_EVENT_TEXT_CARET_MOVED, IA2_EVENT_TEXT_INSERTED, IA2_EVENT_TEXT_REMOVED], OnImeEvent)
-Hotkey("~vk15", (*) => SetTimer(UpdateImeTip, -UPDATE_DELAY_MS))  ; 한/영 key, also sent by combo.ahk
+Hotkey("~vk15", (*) => SetTimer(UpdateImeTip, -UPDATE_DELAY_MS))  ; 한/영 key, also sent by keyboard/combo.ahk
 UpdateImeTip()
 
 ; Location changes come from every window and the cursor; only the caret's matter.

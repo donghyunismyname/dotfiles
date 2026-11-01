@@ -9,7 +9,7 @@ FocusedControl() {
 }
 
 ; Sets the focused control's mode by pressing the 한/영 key when it differs, rather than with SetHangul,
-; so the syllable being composed is finished first as on a real press. SendLevel 1, so imetip.ahk's
+; so the syllable being composed is finished first as on a real press. SendLevel 1, so ime/main.ahk's
 ; 한/영 hotkey sees it.
 SwitchHangul(on) {
     if !(focus := FocusedControl()) || IsHangul(focus) = on

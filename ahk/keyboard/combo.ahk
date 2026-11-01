@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 Persistent
-#Include %A_LineFile%\..\ime.ahk
+#Include %A_LineFile%\..\..\lib\ime.ahk
 
 ; Combos: pressing both keys of a pair together (the second within COMBO_MS of the first) holds its
 ; modifier until either key is released; the other key is then ignored until it is released too.
