@@ -1,26 +1,26 @@
-; English layer: while ENGLISH_LAYER_KEY is down the input mode is English, and on release it goes back to
-; Hangul if it was Hangul before. Meanwhile the keys of ENGLISH_LAYER_MAP send what it maps them to, once
-; per press or key repeat, with any modifier held; letters stay letters, so English can be typed through it.
-; The mode is read and set inside the hook, so a letter typed right after the press already comes in
-; English. Keys held back by the other handlers go out first, in the old mode.
-class EnglishLayer {
+; Mode layer: while MODE_LAYER_KEY is down the input mode is the other one (Hangul <-> English), and on
+; release it goes back to the mode from before the press. Meanwhile the keys of MODE_LAYER_MAP send what it
+; maps them to, once per press or key repeat, with any modifier held; letters stay letters.
+; The mode is read and set inside the hook, so a letter typed right after the press already comes in the
+; other mode. Keys held back by the other handlers go out first, in the old mode.
+class ModeLayer {
     static held := false
-    static restore := false     ; it was Hangul before the press
+    static wasHangul := false   ; the mode before the press
     static mappedKeys := Map()  ; keys pressed as their mapping, ignored until released
 
     static OnKey(key) {
         vk := key.vk
-        if vk = ENGLISH_LAYER_KEY {
+        if vk = MODE_LAYER_KEY {
             if key.down && !this.held
                 this.Start()
             else if !key.down
                 this.End()
             return SWALLOW
         }
-        if this.held && key.down && ENGLISH_LAYER_MAP.Has(vk) {
+        if this.held && key.down && MODE_LAYER_MAP.Has(vk) {
             ComboKeys.LetHeldBackGo(), SelectLayer.LetTriggerGo()
             this.mappedKeys[vk] := true
-            out := ENGLISH_LAYER_MAP[vk], sequence := [Down(out.vk), Up(out.vk)]
+            out := MODE_LAYER_MAP[vk], sequence := [Down(out.vk), Up(out.vk)]
             if out.HasProp("shift")
                 sequence.InsertAt(1, Down(VK_LSHIFT)), sequence.Push(Up(VK_LSHIFT))
             SendKeys(sequence*)
@@ -38,14 +38,15 @@ class EnglishLayer {
         this.held := true
         ComboKeys.LetHeldBackGo(), SelectLayer.LetTriggerGo()
         focus := FocusedControl()
-        this.restore := focus && IsHangul(focus)
-        if this.restore
+        this.wasHangul := focus && IsHangul(focus)
+        if focus
             PressHangulKey()
     }
 
+    ; Leaves the mode alone when it is already back, as when 한/영 was pressed meanwhile.
     static End() {
         this.held := false
-        if this.restore && (focus := FocusedControl()) && !IsHangul(focus)
+        if (focus := FocusedControl()) && IsHangul(focus) != this.wasHangul
             PressHangulKey()
     }
 }

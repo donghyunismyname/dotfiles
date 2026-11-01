@@ -38,20 +38,21 @@ Check("X+C in Hangul", Keys("hangul", "X", "C", "^C", "^X"), HangulKey())
 Check("X+C in English", Keys("english", "X", "C", "^C", "^X"), "")
 Check(",+. in English", Keys("english", ",", ".", "^.", "^,"), HangulKey())
 Check("F13 held in Hangul", Keys("hangul", "F13", "A", "^A", "^F13"), HangulKey() " (a) (^a) " HangulKey())
-Check("F13 held in English", Keys("english", "F13", "A", "^A", "^F13"), "(a) (^a)")
+Check("F13 held in English", Keys("english", "F13", "A", "^A", "^F13"), HangulKey() " (a) (^a) " HangulKey())
 Check("F13 lets a held-back key go first", Keys("hangul", "D", "F13", "^F13", "^D"), "d " HangulKey() " " HangulKey() " (^d)")
-Check("F13+1 is F1", Keys("english", "F13", "1", "^1", "^F13"), "f1 ^f1")
-Check("F13+= is F12", Keys("english", "F13", "=", "^=", "^F13"), "f12 ^f12")
-Check("F13+Esc is a backtick", Keys("english", "F13", "Esc", "^Esc", "^F13"), "`` ^``")
-Check("F13+Tab is a tilde", Keys("english", "F13", "Tab", "^Tab", "^F13"), "lshift `` ^`` ^lshift")
-Check("F13 keeps letters", Keys("english", "F13", "H", "^H", "^F13"), "(h) (^h)")
-Check("F13 keeps Space", Keys("english", "F13", "Space", "^Space", "^F13"), "(space) (^space)")
-Check("1 held on after F13 is released", Keys("english", "F13", "1", "^F13", "1", "^1"), "f1 ^f1")
+Check("F13+1 is F1", Keys("english", "F13", "1", "^1", "^F13"), Toggled("f1 ^f1"))
+Check("F13+= is F12", Keys("english", "F13", "=", "^=", "^F13"), Toggled("f12 ^f12"))
+Check("F13+Esc is a backtick", Keys("english", "F13", "Esc", "^Esc", "^F13"), Toggled("`` ^``"))
+Check("F13+Tab is a tilde", Keys("english", "F13", "Tab", "^Tab", "^F13"), Toggled("lshift `` ^`` ^lshift"))
+Check("F13 keeps letters", Keys("english", "F13", "H", "^H", "^F13"), Toggled("(h) (^h)"))
+Check("F13 keeps Space", Keys("english", "F13", "Space", "^Space", "^F13"), Toggled("(space) (^space)"))
+Check("1 held on after F13 is released", Keys("english", "F13", "1", "^F13", "1", "^1"), HangulKey() " f1 ^f1 " HangulKey())
 ExitApp(FAILURES)
 
 SelLeft() => "lshift left ^left ^lshift"
 SelRight() => "lshift right ^right ^lshift"
 HangulKey() => "vk15 ^vk15"
+Toggled(inner) => HangulKey() " " inner " " HangulKey()  ; between the mode layer's two 한/영 presses
 
 ; Steps may also be "hangul" or "english", to set the made-up mode.
 Keys(steps*) {
