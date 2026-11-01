@@ -10,7 +10,7 @@ Persistent
 ; A lone combo key is held back until its partner, another key, its own release or COMBO_MS decides.
 ; Skipped while a modifier is already down, so Ctrl+D or a Shift-held J goes out at once.
 ; Tapping Left Shift alone (released within SHIFT_TAP_MS, no other key meanwhile) presses 한/영.
-; L is held back for LAYER_MS: a J or K pressed meanwhile (before L is released) is Left / Right, and so is
+; L is held back for LAYER_MS: a J or K pressed meanwhile (before L is released) is Shift+Left / Shift+Right, and so is
 ; every J or K press or key repeat until L is released. Otherwise L goes out as the letter.
 ; Uses its own low-level keyboard hook instead of hotkeys, so every key event is seen in order and a
 ; held-back key can be sent before the key that came after it. Injected input (Send, other scripts,
@@ -21,7 +21,7 @@ COMBO_MS := 50
 SHIFT_TAP_MS := 250
 LAYER_KEY := 0x4C                                 ; L
 LAYER_MS := 100
-LAYER_ARROWS := Map(0x4A, 0x25, 0x4B, 0x27)       ; J: Left, K: Right
+LAYER_ARROWS := Map(0x4A, 0x25, 0x4B, 0x27)       ; J: Shift+Left, K: Shift+Right
 COMBOS := [
     {keys: [0x44, 0x46], shift: 0xA0},    ; D+F: Left Shift
     {keys: [0x4A, 0x4B], shift: 0xA1},    ; J+K: Right Shift
@@ -130,6 +130,7 @@ EndCombo(c, partner) {
 ; The L layer's part of OnKey: true or false as OnKey returns, or "" to go on to the combos.
 OnLayerKey(vk, sc, ext, down) {
     global layer, layerSc, layerKeyDown
+    static shiftSc := ScanCode(VK_LSHIFT)
     if vk = LAYER_KEY {
         repeat := down && layerKeyDown
         layerKeyDown := down
@@ -152,7 +153,8 @@ OnLayerKey(vk, sc, ext, down) {
     if layer && down && LAYER_ARROWS.Has(vk) {
         layer := "on", SetTimer(LayerExpire, 0)
         arrow := LAYER_ARROWS[vk], arrowSc := ScanCode(arrow), layerOwned[vk] := true
-        SendKeys([arrow, arrowSc, false, true], [arrow, arrowSc, true, true])
+        SendKeys([VK_LSHIFT, shiftSc, false], [arrow, arrowSc, false, true], [arrow, arrowSc, true, true],
+            [VK_LSHIFT, shiftSc, true])
         return true
     }
     if layerOwned.Has(vk) {  ; its release, or a repeat after L was released
