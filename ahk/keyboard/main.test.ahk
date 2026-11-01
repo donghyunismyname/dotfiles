@@ -1,16 +1,15 @@
 #Requires AutoHotkey v2.0
 #Warn All, StdOut
 ; Tests of the key remapping (remap.ahk) on made-up key events; SendKeys records instead of sending, so
-; no key reaches any app. Mode combos (X+C, ,+.) are left out: they read the real focused window's mode.
+; no key reaches any app, and the input mode is a made-up one that a sent 한/영 flips.
 ; Modifier checks read the real keyboard, so keep hands off Shift / Ctrl / Alt / Win while it runs.
 ; Run: AutoHotkey64.exe /ErrorStdOut=UTF-8 main.test.ahk  (prints a line per check; exit code = failures)
-#Include %A_LineFile%\..\..\lib\util.ahk
-#Include %A_LineFile%\..\..\lib\ime.ahk
 #Include %A_LineFile%\..\keys.ahk
 #Include %A_LineFile%\..\config.ahk
 #Include %A_LineFile%\..\remap.ahk
 
 SENT := ""
+HANGUL := false  ; the made-up input mode
 FAILURES := 0
 OnError((e, *) => (FileAppend("ERROR " e.Message " at " e.File ":" e.Line "`n", "*", "UTF-8"), ExitApp(99)))
 
@@ -35,17 +34,29 @@ Check("Ctrl inside the layer", Keys("L", "J", "^J", "LCtrl", "K", "^K", "^LCtrl"
     SelLeft() " (lcontrol) " SelRight() " (^lcontrol)")
 Check("Left Shift tapped", Keys("LShift", "^LShift"), "(lshift) (^lshift) vk15 ^vk15")
 Check("Left Shift with a letter", Keys("LShift", "A", "^A", "^LShift"), "(lshift) (a) (^a) (^lshift)")
+Check("X+C in Hangul", Keys("hangul", "X", "C", "^C", "^X"), HangulKey())
+Check("X+C in English", Keys("english", "X", "C", "^C", "^X"), "")
+Check(",+. in English", Keys("english", ",", ".", "^.", "^,"), HangulKey())
+Check("F13 held in Hangul", Keys("hangul", "F13", "A", "^A", "^F13"), HangulKey() " (a) (^a) " HangulKey())
+Check("F13 held in English", Keys("english", "F13", "A", "^A", "^F13"), "(a) (^a)")
+Check("F13 lets a held-back key go first", Keys("hangul", "D", "F13", "^F13", "^D"), "d " HangulKey() " " HangulKey() " (^d)")
 ExitApp(FAILURES)
 
 SelLeft() => "lshift left ^left ^lshift"
 SelRight() => "lshift right ^right ^lshift"
+HangulKey() => "vk15 ^vk15"
 
+; Steps may also be "hangul" or "english", to set the made-up mode.
 Keys(steps*) {
-    global SENT
+    global SENT, HANGUL
     SENT := ""
     for step in steps {
         if IsNumber(step) {
             Critical("Off"), Sleep(step)  ; the handlers' Critical lasts for the thread, which would hold off timers
+            continue
+        }
+        if step = "hangul" || step = "english" {
+            HANGUL := step = "hangul"
             continue
         }
         release := SubStr(step, 1, 1) = "^", name := LTrim(step, "^")
@@ -56,12 +67,17 @@ Keys(steps*) {
     return Trim(SENT)
 }
 
-; Stands in for send.ahk.
+; Stand in for send.ahk and lib/ime.ahk.
 SendKeys(keys*) {
-    global SENT
-    for k in keys
+    global SENT, HANGUL
+    for k in keys {
         SENT .= KeyText(k[1], k[3]) " "
+        if k[1] = VK_HANGUL && !k[3]
+            HANGUL := !HANGUL
+    }
 }
+FocusedControl() => 1
+IsHangul(hwnd) => HANGUL
 
 KeyText(vk, up) => (up ? "^" : "") StrLower(GetKeyName(Format("vk{:x}", vk)) || Format("vk{:x}", vk))
 

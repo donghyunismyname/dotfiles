@@ -12,3 +12,4 @@ SELECT_LAYER_START := Ord("J")  ; the key that turns the layer on
 SELECT_LAYER_MS := 100
 SELECT_LAYER_ARROWS := Map(Ord("J"), VK_LEFT, Ord("K"), VK_RIGHT)  ; sent with Shift
 HANGUL_TAP_MS := 250
+ENGLISH_HOLD_KEY := VK_F13  ; the left space half sends it (via/)
