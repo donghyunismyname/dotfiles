@@ -8,7 +8,7 @@
 | `GUTS_WECAT6_v7.hex` | Vendor firmware v7 that the definition matches. |
 
 In the factory keymap, layers 0/1 are the Windows base and its Fn layer; layers 2/3 are the macOS base and its Fn layer.
-In the current keymap, left space sends F13, which `ahk/keyboard` (modelayer.ahk) turns into a layer: the other input mode (Hangul / English) while held, F1–F12 on the number row, `` ` `` on Esc, `~` on Tab.
+In the current keymap, left space sends F13, which `ahk/keyboard` (modelayer.ahk) turns into a layer: the other input mode (Hangul / English) while held, `` ` `` on Esc, `~` on Tab.
 Layer 2 is no longer reachable (left space used to be `MO(2)` for it: F1–F12 on the number row, arrows on HJKL, Y on U, Home/End on I/O, Shift on F, digits on the bottom row, Right Alt on right space).
 Layer 3 is unused.
 The firmware fixes the layer count at 4.

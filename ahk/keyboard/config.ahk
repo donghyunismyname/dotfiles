@@ -18,7 +18,4 @@ MODE_LAYER_TAP_MS := 250
 MODE_LAYER_MAP := Map(    ; key -> what it sends while MODE_LAYER_KEY is held: {vk, shift?}
     VK_ESC, {vk: VK_OEM_3},               ; `
     VK_TAB, {vk: VK_OEM_3, shift: true},  ; ~
-    Ord("1"), {vk: VK_F1}, Ord("2"), {vk: VK_F1 + 1}, Ord("3"), {vk: VK_F1 + 2}, Ord("4"), {vk: VK_F1 + 3},
-    Ord("5"), {vk: VK_F1 + 4}, Ord("6"), {vk: VK_F1 + 5}, Ord("7"), {vk: VK_F1 + 6}, Ord("8"), {vk: VK_F1 + 7},
-    Ord("9"), {vk: VK_F1 + 8}, Ord("0"), {vk: VK_F1 + 9}, VK_OEM_MINUS, {vk: VK_F1 + 10}, VK_OEM_PLUS, {vk: VK_F1 + 11},
 )
