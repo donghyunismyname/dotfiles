@@ -1,6 +1,5 @@
 ; Mode layer: while MODE_LAYER_KEY is down the input mode is the other one (Hangul <-> English), and on
-; release it goes back to the mode from before the press. A tap (released within MODE_LAYER_TAP_MS, no
-; other key pressed meanwhile) keeps the other mode instead, so it toggles. Meanwhile the keys of
+; release it goes back to the mode from before the press, a tap included. Meanwhile the keys of
 ; MODE_LAYER_MAP send what it maps them to, once per press or key repeat, with any modifier held, and
 ; MODE_LAYER_SHIFT_KEY holds Shift until it is released; letters stay letters.
 ; The mode is read and set inside the hook, so a letter typed right after the press already comes in the
@@ -8,8 +7,6 @@
 class ModeLayer {
     static held := false
     static wasHangul := false   ; the mode before the press
-    static pressedAt := 0
-    static alone := false       ; no other key pressed since the press
     static mappedKeys := Map()  ; keys pressed as their mapping, ignored until released
 
     static OnKey(key) {
@@ -21,8 +18,6 @@ class ModeLayer {
                 this.End()
             return SWALLOW
         }
-        if key.down
-            this.alone := false
         if this.held && key.down && vk = MODE_LAYER_SHIFT_KEY {
             if !this.mappedKeys.Has(vk) {  ; not a repeat
                 ComboKeys.LetHeldBackGo(), SelectLayer.LetTriggerGo()
@@ -52,7 +47,7 @@ class ModeLayer {
     }
 
     static Start() {
-        this.held := true, this.pressedAt := A_TickCount, this.alone := true
+        this.held := true
         ComboKeys.LetHeldBackGo(), SelectLayer.LetTriggerGo()
         focus := FocusedControl()
         this.wasHangul := focus && IsHangul(focus)
@@ -62,8 +57,6 @@ class ModeLayer {
     ; Leaves the mode alone when it is already back, as when 한/영 was pressed meanwhile.
     static End() {
         this.held := false
-        if this.alone && A_TickCount - this.pressedAt < MODE_LAYER_TAP_MS  ; a tap: the switch stays
-            return
         if (focus := FocusedControl()) && IsHangul(focus) != this.wasHangul
             ToggleInputMode(focus)
     }
