@@ -2,7 +2,7 @@
 ;   combos.ahk       two keys pressed together: Shift (D+F, J+K) or an input mode (X+C, ,+.)
 ;   selectlayer.ahk  L then J: J / K select a character at a time while L is held
 ;   shifttaps.ahk    a Left Shift tap presses 한/영
-;   modelayer.ahk    the other input mode while F13 is held, with ` on Esc and ~ on Tab
+;   modelayer.ahk    the other input mode while F13 is held, with ` on Esc, ~ on Tab and Shift on Space
 #Include %A_LineFile%\..\combos.ahk
 #Include %A_LineFile%\..\selectlayer.ahk
 #Include %A_LineFile%\..\shifttaps.ahk

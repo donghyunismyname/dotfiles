@@ -47,7 +47,10 @@ Check("F13 keeps digits", Keys("english", "F13", "1", "^1", "^F13"), Toggled("(1
 Check("F13+Esc is a backtick", Keys("english", "F13", "Esc", "^Esc", "^F13"), Toggled("`` ^``"))
 Check("F13+Tab is a tilde", Keys("english", "F13", "Tab", "^Tab", "^F13"), Toggled("lshift `` ^`` ^lshift"))
 Check("F13 keeps letters", Keys("english", "F13", "H", "^H", "^F13"), Toggled("(h) (^h)"))
-Check("F13 keeps Space", Keys("english", "F13", "Space", "^Space", "^F13"), Toggled("(space) (^space)"))
+Check("F13+Space holds Shift", Keys("english", "F13", "Space", "H", "^H", "Space", "^Space", "^F13"),
+    Toggled("lshift (h) (^h) ^lshift"))
+Check("Space held on after F13 is released", Keys("english", "F13", "Space", "^F13", "^Space"),
+    HangulKey() " lshift " HangulKey() " ^lshift")
 Check("Esc held on after F13 is released", Keys("english", "F13", "Esc", "^F13", "Esc", "^Esc"), HangulKey() " `` ^`` " HangulKey())
 Check("Right Shift tapped is just Shift", Keys("RShift", "^RShift"), "(rshift) (^rshift)")
 ExitApp(FAILURES)
