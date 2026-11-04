@@ -356,7 +356,8 @@ gcm() {
 #   e <path>     that directory, or that file in its default app
 #   e <words>    best zoxide match for the words
 #   ei [words]   pick a zoxide match with fzf
-#   ef [words]   pick a file from the CTRL-T list, with its fzf options
+#   et [words]   pick a file like CTRL-T (current directory)
+#   eg [words]   pick a file like CTRL-G (home)
 # Refuses over SSH, where the window would appear on the remote machine's
 # screen instead of yours.
 e() {
@@ -372,11 +373,16 @@ ei() {
   _e_can_open && _e_zoxide -i -- "$@"
 }
 
-ef() {
+et() { _e_pick "$FZF_CTRL_T_COMMAND" "$FZF_CTRL_T_OPTS" "$@" }
+eg() { _e_pick "$FZF_CTRL_G_COMMAND" "$FZF_CTRL_G_OPTS" "$@" }
+
+# _e_pick <list command> <fzf options> [query]
+_e_pick() {
   _e_can_open || return
-  local file
+  local cmd=$1 opts=$2 file
+  shift 2
   # Same layout flags fzf's own CTRL-T widget adds before FZF_CTRL_T_OPTS
-  file=$(eval "$FZF_CTRL_T_COMMAND" | FZF_DEFAULT_OPTS="--height 40% --reverse --scheme=path $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS" fzf --query="$*") || return
+  file=$(eval "$cmd" | FZF_DEFAULT_OPTS="--height 40% --reverse --scheme=path $FZF_DEFAULT_OPTS $opts" fzf --query="$*") || return
   _e_open $file
 }
 
@@ -444,19 +450,35 @@ _cached_init fzf --zsh
 
 # Use fd for fzf: fast, respects .gitignore, includes hidden files
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-# CTRL-T searches all of home, recently modified first; on equal fuzzy scores
-# --tiebreak=index keeps that order, and CTRL-T again drops fuzzy ranking
-# entirely (like fzf's own CTRL-R widget does with ctrl-r:toggle-sort)
-export FZF_CTRL_T_COMMAND="sh '${${(%):-%x}:A:h}/recent-files.sh'"
+# CTRL-T searches the current directory, CTRL-G all of home; both list
+# recently modified files first. On equal fuzzy scores --tiebreak=index keeps
+# that order, and the same key again drops fuzzy ranking entirely (like fzf's
+# own CTRL-R widget does with ctrl-r:toggle-sort).
+_fzf_dir=${${(%):-%x}:A:h}
+export FZF_CTRL_T_COMMAND="sh '$_fzf_dir/recent-files.sh' --exclude .git"
+FZF_CTRL_G_COMMAND="sh '$_fzf_dir/recent-files.sh' --ignore-file '$_fzf_dir/fzf-home.ignore' . '$HOME'"
+unset _fzf_dir
 
 # Preview file content using bat (https://github.com/sharkdp/bat)
-export FZF_CTRL_T_OPTS="
+_fzf_file_opts="
   --tiebreak=index
-  --bind 'ctrl-t:toggle-sort'
   --preview 'bat -n --color=always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'
-  --color header:italic
+  --color header:italic"
+export FZF_CTRL_T_OPTS="$_fzf_file_opts
+  --bind 'ctrl-t:toggle-sort'
   --header 'CTRL-T: toggle recent-first order'"
+FZF_CTRL_G_OPTS="$_fzf_file_opts
+  --bind 'ctrl-g:toggle-sort'
+  --header 'CTRL-G: toggle recent-first order'"
+unset _fzf_file_opts
+
+# CTRL-G: fzf's CTRL-T widget with the home list and options
+fzf-home-widget() {
+  FZF_CTRL_T_COMMAND=$FZF_CTRL_G_COMMAND FZF_CTRL_T_OPTS=$FZF_CTRL_G_OPTS fzf-file-widget
+}
+zle -N fzf-home-widget
+bindkey '^G' fzf-home-widget
 
 # CTRL-/ to toggle small preview window to see the full command
 # CTRL-Y to copy the command into clipboard (pbcopy; /dev/clipboard on MSYS2)
