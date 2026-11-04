@@ -33,12 +33,6 @@ Put(l, hwnd, p) {
     PushAside(l, w, from)
 }
 
-; A new window takes the first free cell, or else the pane of the window whose top claim is oldest.
-Open(l, hwnd) {
-    if p := FirstFree(l.grids, TakenCells(l), 1, 1) || OldestPane(l)
-        Put(l, hwnd, p)
-}
-
 ; The user brought the window back (restored it, or showed it again): it claims its top pane anew, or the
 ; one under a minimized claim.
 Reclaim(l, hwnd) {
@@ -48,14 +42,6 @@ Reclaim(l, hwnd) {
         w.claims.Pop()
     Top(w).time := NewClaimTime()
     PushAside(l, w, "")
-}
-
-OldestPane(l) {
-    oldest := ""
-    for hwnd, w in l.wins
-        if InPlay(w) && Top(w).pane && (!oldest || Top(w).time < Top(oldest).time)
-            oldest := w
-    return oldest ? Top(oldest).pane : ""
 }
 
 ; ---- Resolution: push, then pop ----

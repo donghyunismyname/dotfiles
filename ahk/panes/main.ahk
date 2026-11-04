@@ -20,8 +20,8 @@
 ; the ones above are where it was pushed to since, and the top one is where it is now. A claim is a pane,
 ; or "minimized" when the window was pushed out with nowhere to go, and carries the time it was made, so
 ; no two tie. A change runs in two steps:
-;   action      the user puts a window in a pane, opens a new one, or restores one: a new claim, which
-;               may land on cells another window holds
+;   action      the user puts a window in a pane or restores one: a new claim, which may land on
+;               cells another window holds
 ;   resolution  push: the windows in the way move aside onto new claims (PushAside), so no two windows
 ;               hold a cell; pop: windows drop back to the deepest claim in their stack whose cells are
 ;               free, the most recent claim first when several want the same cells (PopBack). A window
@@ -39,8 +39,8 @@
 ;                     or a floating window: the cell there. Both preview where every window will go
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
-; A newly opened app window goes to the first free cell, else takes the pane of the window claimed longest
-; ago. Dialogs and other fixed-size windows float. The active window also gets a colored border.
+; A newly opened window floats until the user puts it on the grid. The active window also gets a colored
+; border.
 
 ; ---- Config ----
 GRID_LANDSCAPE := {rows: 2, cols: 4}  ; cells of a monitor wider than tall

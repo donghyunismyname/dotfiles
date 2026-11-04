@@ -100,14 +100,6 @@ IsFree(p, taken, holder := "") {
     return true
 }
 
-; The first free pane of the size, in cell order, or "".
-FirstFree(grids, taken, rows, cols) {
-    for p in PanesOfSize(grids, rows, cols)
-        if IsFree(p, taken)
-            return p
-    return ""
-}
-
 ; The free pane of the size nearest to `near`, or "".
 NearestFree(grids, taken, near, rows, cols) {
     best := "", bestDistance := 0

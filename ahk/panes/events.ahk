@@ -53,19 +53,15 @@ Adopt(l) {
 ; off the grid.
 FilledPane(hwnd, grids) => RectPane(WinGetMinMax(hwnd) = 0 ? FrameRect(hwnd) : NormalFrame(hwnd), grids)
 
-; A window shown for the first time joins the grid when it can be resized, else floats; one shown again
-; (e.g. back from the tray) claims its pane anew.
+; A window shown for the first time floats until the user puts it on the grid; one shown again (e.g. back
+; from the tray) claims its pane anew.
 Shown(hwnd) {
     try {
         if IsOwn(hwnd) || !IsAppWindow(hwnd)
             return
         if IsManaged(hwnd)
             return Update((l) => Reclaim(l, hwnd))
-        if GetProp(hwnd, "panes.claims")  ; floating
-            return
-        if WinGetMinMax(hwnd) != -1 && WinGetStyle(hwnd) & 0x40000  ; WS_THICKFRAME: resizable
-            Update((l) => Open(l, hwnd))
-        else
+        if !GetProp(hwnd, "panes.claims")
             SetFloating(hwnd)
     }
 }
