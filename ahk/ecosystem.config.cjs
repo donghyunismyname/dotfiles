@@ -1,6 +1,6 @@
 // The AutoHotkey scripts, under pm2 in the namespace `ahk`: `pm2 ls`, `pm2 restart ahk-panes` after editing one,
 // and `pm2 restart ahk` / `pm2 stop ahk` for all of them at once.
-// Started at logon by the Task Scheduler task `pm2-ahk` (install-pm2-task.ps1). They run without admin rights, so
+// Started at logon by the Task Scheduler task `pm2-ahk` (install-pm2-task.ps1, start-pm2.ps1). They run without admin rights, so
 // they can't reach elevated windows (an admin terminal, Task Manager).
 const { join } = require("node:path");
 
