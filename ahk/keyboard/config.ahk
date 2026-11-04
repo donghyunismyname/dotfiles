@@ -4,8 +4,6 @@ COMBO_MS := 50
 COMBOS := [
     {keys: [Ord("D"), Ord("F")], shift: VK_LSHIFT},
     {keys: [Ord("J"), Ord("K")], shift: VK_RSHIFT},
-    {keys: [Ord("X"), Ord("C")], hangul: false},  ; English
-    {keys: [VK_OEM_COMMA, VK_OEM_PERIOD], hangul: true},
 ]
 SELECT_LAYER_KEY := Ord("L")
 SELECT_LAYER_START := Ord("J")  ; the key that turns the layer on

@@ -1,5 +1,5 @@
 ; Deciding what each key event becomes. Needs keys.ahk, send.ahk (or a stand-in) and config.ahk.
-;   combos.ahk       two keys pressed together: Shift (D+F, J+K) or an input mode (X+C, ,+.)
+;   combos.ahk       two keys pressed together hold Shift (D+F, J+K)
 ;   selectlayer.ahk  L then J: J / K select a character at a time while L is held
 ;   shifttaps.ahk    a Left Shift tap presses 한/영
 ;   modelayer.ahk    the other input mode while F13 is held, with ` on Esc, ~ on Tab and Shift on Space

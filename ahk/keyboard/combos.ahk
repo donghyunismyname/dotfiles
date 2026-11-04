@@ -1,5 +1,5 @@
 ; Combos: pressing both keys of a pair together (the second within COMBO_MS of the first) starts one.
-; A shift combo holds its Shift until either key is released; a mode combo sets the input mode.
+; A combo holds its Shift until either key is released.
 ; The other key is then ignored until it is released too.
 ; A lone combo key is held back until its partner, another key, its own release or COMBO_MS decides.
 ; Skipped while a modifier is already down, so Ctrl+D or a Shift-held J goes out at once.
@@ -68,16 +68,12 @@ class ComboKeys {
 
     static Start(c) {
         c.active := true
-        if c.HasProp("shift")
-            SendKeys(Down(c.shift))
-        else
-            SetTimer(ObjBindMethod(this, "SetInputMode", c.hangul), -1)  ; out of the hook, which must return quickly
+        SendKeys(Down(c.shift))
     }
 
     static End(c, partner := 0) {
         c.active := false
-        if c.HasProp("shift")
-            SendKeys(Up(c.shift))
+        SendKeys(Up(c.shift))
         if this.pressed.Has(partner)
             this.ignored[partner] := true
     }
@@ -104,11 +100,4 @@ class ComboKeys {
     }
 
     static IsHeldBack(vk) => this.heldBack && this.heldBack.vk = vk
-
-    ; Presses 한/영 when the focused control's mode differs; the IME then finishes the syllable being
-    ; composed first, as on a real press, which SetHangul would not.
-    static SetInputMode(hangul) {
-        if (focus := FocusedControl()) && IsHangul(focus) != hangul
-            ToggleInputMode(focus)
-    }
 }
