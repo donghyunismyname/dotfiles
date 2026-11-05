@@ -7,7 +7,7 @@ Applies to chat, code comments, log messages, UI text, docs and commit messages.
 
 - Use general CS, math or industry terms. A name that exists only in this codebase (a module called `extractor`, a coined label) is explained in general terms, even if AI wrote it.
 - No em dash (—).
-- In Korean, use Sino-Korean technical terms (한자어) or English (버전, 매칭), not native Korean words (고유어) or paraphrases; they read as vague.
+- In Korean, use Sino-Korean technical terms (한자어) or English, not native Korean words (고유어) or paraphrases; they read as vague.
 
 | not | but |
 |---|---|
