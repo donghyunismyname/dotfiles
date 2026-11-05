@@ -31,7 +31,6 @@ Applies to chat, code comments, log messages, UI text, docs and commit messages.
 | 맨 위 | 최상단, 최상부 |
 | 맨 아래층 | 최하층 |
 | 맨 (맨 모델) | 바닐라 (바닐라 모델) |
-| 발사 (에이전트 발사) | 실행 |
 | 가운데 절반 | 사분위 범위 |
 | 잡음 | 편차, 노이즈 |
 | 빠짐 | 누락 |
