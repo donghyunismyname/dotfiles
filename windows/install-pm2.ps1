@@ -1,6 +1,6 @@
-# Sets up pm2, the process manager that dotfiles/ahk and other repos run their apps under: one daemon for
-# the user (~/.pm2), started at logon by the Task Scheduler task `pm2`, which runs pm2-logon.ps1. A project adds
-# its ecosystem file to ~\.pm2\ecosystems.txt (a path per line) from its own install script; this knows no project.
+# Sets up pm2, the process manager that dotfiles/ahk and other repos run their apps under: one daemon for the user
+# (~/.pm2), started at logon by the Task Scheduler task `pm2`, which runs pm2-logon.ps1 (`pm2 resurrect`). A
+# project adds its apps once with `pm2 start ecosystem.config.cjs` and `pm2 save`; this knows no project.
 # Run from a normal (non-sandboxed) shell.
 $ErrorActionPreference = 'Stop'
 $PM2_VERSION = '7.0.4'  # what projects pin in their own devDependencies, so their pm2 commands match the daemon
@@ -15,7 +15,7 @@ $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoi
   -ExecutionTimeLimit (New-TimeSpan -Minutes 5) -MultipleInstances IgnoreNew -StartWhenAvailable -Priority 4
 $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive
 Register-ScheduledTask -TaskName 'pm2' -Force -Action $action -Trigger $trigger -Settings $settings `
-  -Principal $principal -Description "dotfiles: start the pm2 apps listed in ~\.pm2\ecosystems.txt ($PSScriptRoot\pm2-logon.ps1)" | Out-Null
+  -Principal $principal -Description "dotfiles: bring back the pm2 apps of the last pm2 save ($PSScriptRoot\pm2-logon.ps1)" | Out-Null
 
 # Keeps the logs pm2 writes of each app's output small; a pm2 module, started with the daemon from then on.
 if (-not (Test-Path "$HOME\.pm2\modules\pm2-logrotate")) { & node $pm2 install pm2-logrotate }

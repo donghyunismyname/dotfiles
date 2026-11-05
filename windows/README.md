@@ -34,7 +34,7 @@ copied, so repo edits apply without re-running `install-configs.ps1`.
 | ---- | ---- | ----- |
 | `terminal/` | Windows Terminal `settings.json`, including the "MSYS2 zsh" profile | `.\terminal\sync.ps1` (repo → app), `.\terminal\sync.ps1 backup` (app → repo) |
 | `keyboard/` | Key remaps via the registry `Scancode Map` | Double-click a `.reg`, then reboot |
-| `install-pm2.ps1` | pm2 (process manager) and the logon task `pm2`, which runs `pm2-logon.ps1`: `pm2 start` for each ecosystem file in `~\.pm2\ecosystems.txt`. Projects (`ahk/`, others) add theirs with their own `install-pm2.ps1` | Run once from a normal shell |
+| `install-pm2.ps1` | pm2 (process manager) and the logon task `pm2`, which runs `pm2-logon.ps1`: `pm2 resurrect`, then one run of each cron-only app. A project adds its apps once with `pm2 start ecosystem.config.cjs` and `pm2 save` (again after adding or removing an app) | Run once from a normal shell |
 | `wsl/.wslconfig` | WSL2 memory limit | Copy to `%USERPROFILE%\.wslconfig`, then `wsl --shutdown` |
 | `wsl/sshserver.ps1` | Starts sshd in WSL and forwards Windows port 2222 to it | Copy to Desktop |
 | `wsl/startup.cmd` | Runs `sshserver.ps1` from Desktop at login | Put in `shell:startup` |
