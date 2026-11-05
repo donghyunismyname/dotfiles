@@ -21,7 +21,7 @@ Or run them individually:
 ```powershell
 .\install-tools.ps1    # CLI tools (uses Scoop)
 .\install-shell.ps1    # MSYS2, zsh, vim, zsh plugins
-.\install-configs.ps1  # Link vim, yazi; stub ~/.vimrc, ~/.zshenv, ~/.zshrc and ~/.gitconfig
+.\install-configs.ps1  # Link vim, yazi, Claude skills; stub ~/.vimrc, ~/.zshenv, ~/.zshrc, ~/.gitconfig and ~/.claude/CLAUDE.md
 ```
 
 Symlinks need admin rights or developer mode, so directories are linked with

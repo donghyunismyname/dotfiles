@@ -44,10 +44,15 @@ foreach ($f in "$HOME\.vimrc", "$HOME\.zshenv") {
 
 Link-Config vim "$HOME\.config\vim"
 Link-Config yazi "$env:APPDATA\yazi\config"
+# One junction per skill: ~/.claude/skills also holds machine-owned entries (synced)
+foreach ($skill in Get-ChildItem -Directory "$repo\claude\skills") {
+    Link-Config "claude\skills\$($skill.Name)" "$HOME\.claude\skills\$($skill.Name)"
+}
 
 Add-Stub "$HOME\.vimrc" "source ~/.config/vim/vimrc"
 Add-Stub "$HOME\.zshenv" "source $repoMsys/zsh/zshenv"
 Add-Stub "$HOME\.zshrc" "source $repoMsys/zsh/zshrc"
 # Git for Windows ignores /c/... include paths, so use C:/...
 Add-Stub "$HOME\.gitconfig" "[include]`n`tpath = $repoWin/git/config"
+Add-Stub "$HOME\.claude\CLAUDE.md" "@$repoWin/claude/CLAUDE.md"
 exit 0
