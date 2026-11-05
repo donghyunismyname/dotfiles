@@ -9,11 +9,12 @@ Applies to chat, code comments, log messages, UI text, docs and commit messages.
 - No em dash (—).
 - In Korean, use Sino-Korean technical terms (한자어) or English, not native Korean words (고유어) or paraphrases; they read as vague.
 
-| 고유어 | 용어 |
+| not | but |
 |---|---|
 | 표 | 테이블 |
 | 줄 | 행 |
 | 칸 | 열, 컬럼, 셀, 필드 |
+| 머리글 | 헤더 |
 | 짝 | 대응, 매칭 |
 | 지은 쪽 (짝을 지은 쪽) | 주체 (매칭 주체, 대응 주체) |
 | 판 (도면 판) | 버전 (도면 버전) |
