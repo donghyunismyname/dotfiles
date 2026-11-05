@@ -13,7 +13,7 @@ Applies to chat, code comments, log messages, UI text, docs and commit messages.
 |---|---|
 | 표, 줄, 칸 | 테이블, 행, 열·컬럼·셀·필드 |
 | 쓴, 쓰다 | 사용한, 적용한 |
-| 잰, 재다 | 측정한, 산출한 |
+| 잰, 재다 | 측정한, 측정하다 |
 | 낸, 내다 | 산출한, 출력한 |
 | 뺀, 빼다 | 제외한, 공제한 |
 | 맨 위, 맨 아래층 | 최상단, 최하층 |
