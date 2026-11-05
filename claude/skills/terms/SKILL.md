@@ -1,13 +1,13 @@
 ---
 name: terms
-description: Word choice for everything written for the user (chat, code comments, log messages, UI text, docs, commit messages). Use general CS and industry terms, never codebase-only names; in Korean, Sino-Korean technical terms over native Korean words.
+description: Word choice for everything written for the user (chat, code comments, log messages, UI text, docs, commit messages). Use general CS and industry terms, never codebase-only names; in Korean, Sino-Korean technical terms or English over native Korean words.
 ---
 
 Applies to chat, code comments, log messages, UI text, docs and commit messages.
 
 - Use general CS, math or industry terms. A name that exists only in this codebase (a module called `extractor`, a coined label) is explained in general terms, even if AI wrote it.
 - No em dash (—).
-- In Korean, use the Sino-Korean (한자어) and loanword terms of the field, not native Korean words (고유어) or paraphrases; they read as vague.
+- In Korean, use Sino-Korean technical terms (한자어) or English (버전, 매칭), not native Korean words (고유어) or paraphrases; they read as vague.
 
 | not | but |
 |---|---|

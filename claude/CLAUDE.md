@@ -2,7 +2,7 @@
 
 ## Language
 
-Word choice follows the `terms` skill, in chat, code comments, UI text and docs: general CS and industry terms, not codebase-only names; in Korean, Sino-Korean technical terms, not native Korean words; no em dash.
+Word choice follows the `terms` skill, in chat, code comments, UI text and docs: general CS and industry terms, not codebase-only names; in Korean, Sino-Korean technical terms or English, not native Korean words (판 → 버전); no em dash.
 
 ## Code Style
 
