@@ -11,7 +11,7 @@ Applies to chat, code comments, log messages, UI text, docs and commit messages.
 
 | not | but |
 |---|---|
-| 표 | 테이블 |
+| 표 (데이터베이스 테이블) | 테이블 (일반 표: 인쇄된 표, 일람표, 문서·화면의 표는 그대로 표) |
 | 줄 | 행 |
 | 칸 | 열, 컬럼, 셀, 필드 |
 | 머리글 | 헤더 |
