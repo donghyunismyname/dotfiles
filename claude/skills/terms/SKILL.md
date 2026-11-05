@@ -6,6 +6,7 @@ description: Word choice for everything written for the user (chat, code comment
 Applies to chat, code comments, log messages, UI copy, docs and commit messages.
 
 - Use general CS, math or industry terms. A name that exists only in this codebase (a module called `extractor`, a coined label) is explained in general terms, even if AI wrote it.
+- No em dash (—). Use a colon, comma, parentheses or a new sentence.
 - In Korean, use the Sino-Korean (한자어) and loanword terms of the field, not native Korean words (고유어) or paraphrases; they read as vague.
 
 | not | but |
