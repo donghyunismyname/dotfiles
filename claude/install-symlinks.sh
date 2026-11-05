@@ -7,6 +7,7 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 # Define symlinks as "source:target" pairs
 SYMLINKS="
 skills/discuss:$HOME/.claude/skills/discuss
+skills/terms:$HOME/.claude/skills/terms
 CLAUDE.md:$HOME/.claude/CLAUDE.md
 "
 
