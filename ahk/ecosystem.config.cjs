@@ -1,7 +1,7 @@
 // The AutoHotkey scripts, under pm2 in the namespace `ahk`: `pm2 ls`, `pm2 restart ahk-panes` after editing one,
 // and `pm2 restart ahk` / `pm2 stop ahk` for all of them at once.
 // Added once with `pm2 start ecosystem.config.cjs` and `pm2 save` (from a normal shell, as it reads LOCALAPPDATA);
-// the pm2 logon task (windows/install-pm2.ps1) brings them back from then on.
+// the pm2 logon task (windows/pm2/install.ps1) brings them back from then on.
 // They run without admin rights, so they can't reach elevated windows (an admin terminal, Task Manager).
 const { join } = require("node:path");
 
