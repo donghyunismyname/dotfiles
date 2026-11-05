@@ -20,7 +20,7 @@ Applies to chat, code comments, log messages, UI text, docs and commit messages.
 | 굵기 | 직경 |
 | 맨 위 | 최상단 |
 | 맨 아래층 | 최하층 |
-| 맨 (맨 모델) | 단독 (단독 모델) |
+| 맨 (맨 모델) | 바닐라 (바닐라 모델) |
 | 쓰다, 쓴 | 사용하다, 사용한 / 적용하다, 적용한 |
 | 재다, 잰 | 측정하다, 측정한 |
 | 내다, 낸 | 산출하다, 산출한 / 출력하다, 출력한 |
