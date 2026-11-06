@@ -22,7 +22,8 @@
 ; no two tie. A change runs in two steps:
 ;   action      the user puts a window in a pane or restores one: a new claim, which may land on
 ;               cells another window holds
-;   resolution  push: the windows in the way move aside onto new claims (PushAside), so no two windows
+;   resolution  push: the windows in the way shrink to the part of their pane left outside the new
+;               claim, or when none is left move aside, onto new claims (PushAside), so no two windows
 ;               hold a cell; pop: windows drop back to the deepest claim in their stack whose cells are
 ;               free, the most recent claim first when several want the same cells (PopBack). A window
 ;               in place is never moved by popping.

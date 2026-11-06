@@ -12,6 +12,7 @@ FAILURES := 0
 OnError((e, *) => (FileAppend("ERROR " e.Message " at " e.File ":" e.Line "`n", "*", "UTF-8"), ExitApp(99)))
 
 SwapOnPut()
+ShrinkAroundPut()
 SwapBackRemovesCycle()
 ReturnAfterTemporaryWindow()
 RestoreReclaimsLastPlace()
@@ -28,6 +29,17 @@ SwapOnPut() {
     Run(l, (l) => Put(l, 1, Cell(1, 2)))
     Check("swap: the put window", Where(l, 1), Key(Cell(1, 2), 1))
     Check("swap: the other window", Where(l, 2), Key(Cell(1, 1), 2))
+}
+
+; Putting a window inside a larger window's pane shrinks that one to the largest part left; once the
+; put window leaves, it grows back.
+ShrinkAroundPut() {
+    l := Layout([1, Cell(1, 4)], [2, Pane(GRIDS[1], 1, 1, 2, 3)])
+    Run(l, (l) => Put(l, 1, Cell(1, 1)))
+    Check("shrink: the put window", Where(l, 1), Key(Cell(1, 1), 1))
+    Check("shrink: the larger window", Where(l, 2), Key(Pane(GRIDS[1], 1, 2, 2, 3), 2))
+    Run(l, (l) => Put(l, 1, Cell(1, 4)))
+    Check("shrink: grows back", Where(l, 2), Key(Pane(GRIDS[1], 1, 1, 2, 3), 1))
 }
 
 ; Swapping back pushes B onto a pane already in its stack: the stack is cut back to it, not grown, and

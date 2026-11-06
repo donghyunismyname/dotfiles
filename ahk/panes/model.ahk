@@ -48,6 +48,8 @@ Reclaim(l, hwnd) {
 
 ; Pushes the windows in the way of w's top claim aside, each onto a new claim (see Claim), so no two
 ; windows hold the same cell:
+; - one whose pane keeps cells outside the new one shrinks to the largest part left (Leftover), staying
+;   where it is; the rest go as below
 ; - when w came from a pane of the same shape apart from its new one, and they all lie inside the new
 ;   one, they move there keeping their places, so a layout swaps as a whole
 ; - when there is one and w came from a pane apart from its new one, it takes that pane
@@ -58,8 +60,8 @@ PushAside(l, w, from) {
         return
     inWay := []
     for hwnd, v in l.wins
-        if v != w && InPlay(v) && Top(v).pane && Overlaps(Top(v).pane, p)
-            inWay.Push(v)
+        if v != w && InPlay(v) && (q := Top(v).pane) && Overlaps(q, p)
+            (rest := Leftover(q, p)) ? Claim(v, rest) : inWay.Push(v)
     if !inWay.Length
         return
     SortByCell(inWay)

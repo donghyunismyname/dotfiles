@@ -41,6 +41,25 @@ Overlaps(p, q) => p.grid.mon = q.grid.mon && p.r1 <= q.r2 && q.r1 <= p.r2 && p.c
 Inside(p, q) => p.grid.mon = q.grid.mon && p.r1 >= q.r1 && p.r2 <= q.r2 && p.c1 >= q.c1 && p.c2 <= q.c2
 SameShape(p, q) => PaneRows(p) = PaneRows(q) && PaneCols(p) = PaneCols(q)
 
+; The largest part of q beside the overlapping pane p: its rows above or below p, or its columns left or
+; right of p, the first of those on a tie; "" when p covers q.
+Leftover(q, p) {
+    g := q.grid, parts := []
+    if p.r1 > q.r1
+        parts.Push(Pane(g, q.r1, q.c1, p.r1 - 1, q.c2))
+    if p.r2 < q.r2
+        parts.Push(Pane(g, p.r2 + 1, q.c1, q.r2, q.c2))
+    if p.c1 > q.c1
+        parts.Push(Pane(g, q.r1, q.c1, q.r2, p.c1 - 1))
+    if p.c2 < q.c2
+        parts.Push(Pane(g, q.r1, p.c2 + 1, q.r2, q.c2))
+    best := ""
+    for part in parts
+        if !best || PaneRows(part) * PaneCols(part) > PaneRows(best) * PaneCols(best)
+            best := part
+    return best
+}
+
 ; The pane packed into an integer, its numbers as decimal digits (a grid has fewer than 10 rows and columns).
 PackPane(p) => p.grid.mon * 10000 + p.r1 * 1000 + p.c1 * 100 + p.r2 * 10 + p.c2
 
