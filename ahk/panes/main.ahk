@@ -52,7 +52,6 @@ NEW_WINDOW_DELAY_MS := 300 ; after a new window is shown, so its app has placed 
 SETTLE_DELAY_MS := 50      ; after windows close or hide, so a burst of them settles once
 DRIFT_CHECK_DELAY_MS := 500 ; after a window on the grid moves by other means, before checking where it is
 OWN_CHANGE_MS := 1000      ; how long events from a window the script changed are taken for its own
-SIZE_MOVE_NOTICE_MS := 100 ; how long to wait for a window to take the resize start and end notices
 POLL_MS := 20              ; how often the rocker and drag previews follow the cursor
 WHILE_RIGHT_HELD := Map(  ; button pressed while Right is held -> action
     "LButton",   StartSelection,            ; rocker
