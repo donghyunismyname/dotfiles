@@ -67,10 +67,13 @@ MoveTo(hwnd, r, activate := true) {
 
 ; Moves windows shown normally, each {hwnd, rect}, so their visible frames fill their rects, all in one
 ; step: one-by-one moves would briefly show windows overlapping or the desktop between them. When the
-; batch fails (e.g. a window closed meanwhile), each is moved on its own.
+; batch fails (e.g. a window closed meanwhile), each is moved on its own. Around the move each window is
+; told a resize by hand starts and ends, so apps that paint differently then (Chromium, Electron) wait
+; for a frame of the new size instead of flashing a blank one.
 MoveTogether(moves) {
     if !moves.Length
         return
+    NotifyAll(moves, 0x231)  ; WM_ENTERSIZEMOVE
     batch := DllCall("BeginDeferWindowPos", "int", moves.Length, "ptr")
     for m in moves {
         try i := Insets(m.hwnd), r := m.rect
@@ -81,10 +84,16 @@ MoveTogether(moves) {
                 "int", r.x - i.l, "int", r.y - i.t, "int", r.w + i.l + i.r, "int", r.h + i.t + i.b, "uint", 0x214, "ptr"))
             break
     }
-    if batch && DllCall("EndDeferWindowPos", "ptr", batch)
-        return
+    if !(batch && DllCall("EndDeferWindowPos", "ptr", batch))
+        for m in moves
+            try MoveTo(m.hwnd, m.rect, false)
+    NotifyAll(moves, 0x232)  ; WM_EXITSIZEMOVE
+}
+
+; Sends the message to each window, going on when one is hung or does not answer in SIZE_MOVE_NOTICE_MS.
+NotifyAll(moves, msg) {
     for m in moves
-        try MoveTo(m.hwnd, m.rect, false)
+        DllCall("SendMessageTimeout", "ptr", m.hwnd, "uint", msg, "ptr", 0, "ptr", 0, "uint", 0x2, "uint", SIZE_MOVE_NOTICE_MS, "ptr*", 0)  ; SMTO_ABORTIFHUNG
 }
 
 ; Sets where the window goes when restored to normal (its visible frame filling r), then shows it
