@@ -41,8 +41,10 @@ ClaimsKey(w) {
 }
 
 ; Carries out the moves, the first last so it ends on top, without the focus. A maximized window stays so,
-; and only its restore position moves. Each is marked as the script's own change (events.ahk).
+; and only its restore position moves. Windows shown normally move together in one step (MoveTogether).
+; Each is marked as the script's own change (events.ahk).
 ApplyMoves(list) {
+    together := []
     loop list.Length {
         m := list[list.Length - A_Index + 1]
         MarkOwn(m.hwnd)
@@ -51,8 +53,11 @@ ApplyMoves(list) {
                 WinMinimize(m.hwnd)
             else if m.maximized
                 SetNormalRect(m.hwnd, m.rect, 3)  ; SW_SHOWMAXIMIZED
-            else
+            else if WinGetMinMax(m.hwnd) != 0
                 MoveTo(m.hwnd, m.rect, false)
+            else
+                together.Push(m)
         }
     }
+    MoveTogether(together)
 }
