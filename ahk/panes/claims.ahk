@@ -1,14 +1,14 @@
-; A window's claims, its stack, are stored on the window itself as window properties, so they go away
+; A window's claims (model.ahk) are stored on the window itself as window properties, so they go away
 ; with the window and outlive a restart of the script. panes.claims holds how many there are, and
-; panes.claim1, panes.claim2, ... each one, bottom first, as its time and its pane (PackPane, or 0 for a
-; minimized claim). panes.claims is FLOATING for a window that left the grid; a window without it has
-; not been seen by the script yet.
+; panes.claim1, panes.claim2, ... each one, in rank order, as its time and its pane (PackPane, or 0 for
+; the claim of a parked window). panes.claims is FLOATING for a window that left the grid; a window
+; without it has not been seen by the script yet.
 
 FLOATING := -1
 
-; The window's claims, bottom first, each {pane, time} with pane "" for a minimized claim; "floating";
-; or "" for a window not seen yet. Claims on cells that are gone (a monitor unplugged) are dropped, and a
-; window left without a pane to claim floats.
+; The window's claims in rank order, each {pane, time} with pane "" for a parked window; "floating"; or ""
+; for a window not seen yet. Claims on cells that are gone (a monitor unplugged) are dropped, the next one
+; then being the home, and a window left without a pane to claim floats.
 ReadClaims(hwnd, grids) {
     n := GetProp(hwnd, "panes.claims")
     if !n

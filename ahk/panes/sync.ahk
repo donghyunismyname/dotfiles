@@ -18,8 +18,7 @@ Win(hwnd, claims) => {hwnd: hwnd, claims: claims, minimized: WinGetMinMax(hwnd) 
 Update(change, focus := 0) {
     Critical
     before := LoadLayout(), after := CopyLayout(before)
-    change(after)
-    PopBack(after)
+    Resolve(after, change(after))
     Commit(before, after, focus)
 }
 

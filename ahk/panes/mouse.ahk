@@ -62,8 +62,8 @@ DropPane(l, hwnd, x, y) {
     under := WindowAt(x, y)
     if under = hwnd
         return ""
-    if (w := l.wins.Get(under, "")) && InPlay(w) && Top(w).pane
-        return Top(w).pane
+    if (w := l.wins.Get(under, "")) && InPlay(w) && Current(w)
+        return Current(w)
     return IsDesktop(under) || IsAppWindow(under) ? CellAt(GridAt(l.grids, x, y), x, y) : ""
 }
 

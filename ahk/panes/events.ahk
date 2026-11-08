@@ -23,28 +23,26 @@ StartEvents() {
 Soon(fn) => SetTimer(fn, -1)
 IsTopLevel(hwnd) => DllCall("GetAncestor", "ptr", hwnd, "uint", 1, "ptr") = DllCall("GetDesktopWindow", "ptr")  ; GA_PARENT
 
-; Resolves without an action, e.g. after windows closed: those left drop back where they can.
-Settle() => Update((l) => 0)
+; Resolves without an action, e.g. after windows closed: those left go back where they can.
+Settle() => Update((l) => "")
 
 ; Settles once a burst of closing or hiding windows is over.
 SettleSoon() => SetTimer(Settle, -SETTLE_DELAY_MS)
 
 ; Windows the script has not seen yet (from before it ran) join the grid where they fill a pane, or would
-; when shown normally, the topmost last so it wins; the others float. Unlike Put, a maximized or
-; minimized window stays so.
+; when shown normally, that pane its home, made topmost last so it wins an overlap; the others float.
+; Unlike Put, a maximized or minimized window stays so.
 Adopt(l) {
-    stack := Windows()
-    loop stack.Length {
-        hwnd := stack[stack.Length - A_Index + 1]
+    zOrder := Windows()
+    loop zOrder.Length {
+        hwnd := zOrder[zOrder.Length - A_Index + 1]
         try {
             if GetProp(hwnd, "panes.claims")
                 continue
-            if !(p := FilledPane(hwnd, l.grids)) {
+            if p := FilledPane(hwnd, l.grids)
+                l.wins[hwnd] := Win(hwnd, [{pane: p, time: NewClaimTime()}])
+            else
                 SetFloating(hwnd)
-                continue
-            }
-            l.wins[hwnd] := w := Win(hwnd, [{pane: p, time: NewClaimTime()}])
-            PushAside(l, w, "")
         }
     }
 }
@@ -79,7 +77,7 @@ CheckDrift() {
     Critical
     for hwnd, w in LoadLayout().wins
         try {
-            if w.minimized || w.maximized || IsOwn(hwnd) || !(p := Top(w).pane)
+            if w.minimized || w.maximized || IsOwn(hwnd) || !(p := Current(w))
                 continue
             f := FrameRect(hwnd), r := PaneRect(p)
             if f.x = r.x && f.y = r.y && f.w = r.w && f.h = r.h || KeptLarger(f, r)

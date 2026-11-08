@@ -16,21 +16,21 @@
 ; Window placement on a grid, like tmux panes. Each monitor's work area is split into equal cells; a pane
 ; is a rectangle of cells.
 ;
-; Model. Each window on the grid has a stack of claims: the bottom one is the pane the user put it in,
-; the ones above are where it was pushed to since, and the top one is where it is now. A claim is a pane,
-; or "minimized" when the window was pushed out with nowhere to go, and carries the time it was made, so
-; no two tie. A change runs in two steps:
-;   action      the user puts a window in a pane or restores one: a new claim, which may land on
-;               cells another window holds
-;   resolution  push: the windows in the way shrink to the part of their pane left outside the new
-;               claim, or when none is left move aside, onto new claims (PushAside), so no two windows
-;               hold a cell; pop: windows drop back to the deepest claim in their stack whose cells are
-;               free, the most recent claim first when several want the same cells (PopBack). A window
-;               in place is never moved by popping.
+; Model. A window on the grid has claims, edges between it and panes, each made at its own time: its
+; home, the pane the user put it in, and the panes it was moved aside to since. All claims are ranked in
+; one order: homes before asides, homes newest first so the latest action wins, asides oldest first so a
+; window returns to the first place it was moved aside to. A change runs in two steps:
+;   action      the user puts a window in a pane, which becomes its home and only claim, or restores
+;               one, which puts it back where it was
+;   resolution  the claims are taken in rank order, each whose window has no place yet and whose cells
+;               are free (Resolve). Any claims give exactly one layout this way. A window left without a
+;               place moves aside onto a new claim: it shrinks in place, swaps into the pane the moved
+;               window left, or goes to the nearest free pane; with no free cell it is parked
+;               (minimized) until one of its claims frees. Claims ranked below a window's place go.
 ; So closing or minimizing a window brings back what it pushed aside, as close to where the user wants it
-; as the free cells allow. A window the user minimizes holds nothing until restored, when it claims its
-; place anew; maximizing changes only how a window shows; one moved or resized by other means floats, off
-; the grid and out of the model, until the user puts it on the grid again.
+; as the free cells allow. A window the user minimizes holds nothing until restored; maximizing changes
+; only how a window shows; one moved or resized by other means floats, off the grid and out of the model,
+; until the user puts it on the grid again.
 ;
 ; Controls:
 ;   hold Right, press Left (rocker) and drag: every cell shows; the cells between where Left went down
