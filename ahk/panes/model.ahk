@@ -49,8 +49,8 @@ Reclaim(l, hwnd) {
 ; whose window has no place yet and whose cells are free. Any claims give exactly one layout this way, so
 ; no two windows can wait on each other. A window left without a place moves aside onto a new claim
 ; (AsidePane), ranked below every other as the newest aside, or with no free cell is parked until one of
-; its claims frees. Last, the claims ranked below each window's place are dropped. move, from Put, steers
-; where windows go aside.
+; its claims frees. Last, the claims ranked below each window's place are dropped, and each window is shown
+; or minimized to match. move, from Put, steers where windows go aside.
 Resolve(l, move := "") {
     wins := [], ranked := []
     for hwnd, w in l.wins
@@ -75,9 +75,9 @@ Resolve(l, move := "") {
             Take(taken, p), w.claims.Push(placed[w] := {pane: p, time: NewClaimTime()})
     for w in wins
         if placed.Has(w)
-            DropBelow(w, placed[w])
+            DropBelow(w, placed[w]), w.minimized := false
         else if Current(w)
-            w.claims.Push({pane: "", time: NewClaimTime()})
+            w.claims.Push({pane: "", time: NewClaimTime()}), w.minimized := true
 }
 
 ; Homes before asides; homes newest first, so the latest action wins; asides oldest first, so a window

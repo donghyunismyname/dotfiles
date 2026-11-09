@@ -106,8 +106,10 @@ FullGridParksAndBringsBack() {
     Check("full grid: occupant parked", Where(l, 101), "parked/2")
     l.wins.Delete(104), Resolve(l)
     Check("full grid: another cell frees", Where(l, 101), "parked/2")
-    l.wins.Delete(999), Resolve(l)
+    l.wins[101].minimized := true  ; as loaded from the window once parked
+    l.wins.Delete(999), before := CopyLayout(l), Resolve(l)
     Check("full grid: its cell frees", Where(l, 101), Key(Cell(1, 1), 1))
+    Check("full grid: shown again", Moves(LayoutMoves(before, l)), "101 to " PaneKey(Cell(1, 1)))
 }
 
 ; A resolved layout is stable: resolving it again moves nothing and makes no claim.
@@ -162,6 +164,13 @@ Run(l, change) => Resolve(l, change(l))
 ; Where the window is and how many claims it holds.
 Where(l, hwnd) => (w := l.wins[hwnd], (Current(w) ? PaneKey(Current(w)) : "parked") "/" w.claims.Length)
 Key(p, count) => PaneKey(p) "/" count
+
+Moves(list) {
+    s := ""
+    for m in list
+        s .= m.hwnd " to " (m.rect ? PaneKey(RectPane(m.rect, GRIDS)) : "minimized")
+    return s
+}
 
 ClaimsText(l) {
     s := ""
