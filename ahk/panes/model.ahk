@@ -2,7 +2,8 @@
 ; on its own (model.test.ahk). A layout is {grids, wins: Map(hwnd -> win)}; a win is {hwnd, claims,
 ; minimized, maximized}, its claims in rank order: its home, then the panes it was moved aside to, oldest
 ; first, then, when it is parked, a claim with pane "". The last claim is where the window is. sync.ahk
-; loads a layout from the windows and carries one out.
+; loads a layout from the windows, minimized and maximized as they are, and carries one out; Resolve sets
+; minimized to how each window should be.
 
 CopyLayout(l) {
     wins := Map()
@@ -35,8 +36,9 @@ Put(l, hwnd, p) {
     return {from: from, to: p}
 }
 
-; The user brought the window back (restored it, or showed it again): it is put back where it last was.
-Reclaim(l, hwnd) {
+; The user brought the window back (restored it, or showed it again): it is put where it last was, for a
+; parked one the pane under its parked claim.
+PutBack(l, hwnd) {
     if !(w := l.wins.Get(hwnd, ""))
         return ""
     n := w.claims.Length
@@ -96,8 +98,7 @@ AsidePane(l, w, taken, move) {
     if p := LargestFreePart(q, taken)
         return p
     if move && move.from && !Overlaps(move.from, move.to) && Overlaps(q, move.to) {
-        f := move.from, t := move.to
-        p := Inside(q, t) && SameShape(f, t) ? Pane(f.grid, f.r1 + q.r1 - t.r1, f.c1 + q.c1 - t.c1, f.r1 + q.r2 - t.r1, f.c1 + q.c2 - t.c1) : f
+        p := Inside(q, move.to) && SameShape(move.from, move.to) ? ShiftPane(q, move.to, move.from) : move.from
         if IsFree(p, taken)
             return p
     }
@@ -113,23 +114,26 @@ DropBelow(w, c) {
 
 ; ---- Results ----
 
-; The moves change(layout) would make from `base`, for a preview.
-Preview(base, change, first) {
+; A copy of `base` with change(layout) made and resolved; `base` stays as it is.
+Changed(base, change) {
     after := CopyLayout(base)
     Resolve(after, change(after))
-    return LayoutMoves(base, after, first)
+    return after
 }
 
-; What turning `before` into `after` does to the windows, as moves: {hwnd, rect, maximized}, rect "" to
-; minimize. A window moves when its pane changed, when it comes back from minimized, or when it is put
-; out of maximized; `first` leads.
+; The moves change(layout) would make from `base`, for a preview.
+Preview(base, change, first) => LayoutMoves(base, Changed(base, change), first)
+
+; What turning `before` into `after` does to the windows in play, as moves: {hwnd, rect, maximized}, rect
+; "" to minimize. A window moves when its pane, or whether it is minimized or maximized, changed; `first`
+; leads.
 LayoutMoves(before, after, first := 0) {
     list := []
     for hwnd, w in after.wins {
         if !InPlay(w)
             continue
         b := before.wins.Get(hwnd, ""), p := Current(w)
-        if b && InPlay(b) && PaneKey(Current(b)) = PaneKey(p) && !(b.minimized && p) && b.maximized = w.maximized
+        if b && PaneKey(Current(b)) = PaneKey(p) && b.minimized = w.minimized && b.maximized = w.maximized
             continue
         m := {hwnd: hwnd, rect: p ? PaneRect(p) : "", maximized: w.maximized}
         hwnd = first ? list.InsertAt(1, m) : list.Push(m)

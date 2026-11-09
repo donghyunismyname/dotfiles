@@ -16,7 +16,7 @@ SwapBackReturnsHome()
 ShrinkAroundPut()
 MovesThroughOthersUndone()
 ReturnAfterTemporaryWindow()
-RestoreReclaimsLastPlace()
+RestorePutsBackInLastPlace()
 MinimizedWindowLendsItsPlace()
 FullGridParksAndBringsBack()
 ResolvingAgainChangesNothing()
@@ -77,12 +77,12 @@ ReturnAfterTemporaryWindow() {
 }
 
 ; Restoring M puts it back where it last was, not in its home that X has taken since.
-RestoreReclaimsLastPlace() {
+RestorePutsBackInLastPlace() {
     l := Layout([30, Cell(1, 1), Cell(1, 2)], [31, Cell(1, 1)])
     l.wins[30].claims[1].time := 1
     l.wins[30].minimized := true, Resolve(l)
     l.wins[30].minimized := false
-    Run(l, (l) => Reclaim(l, 30))
+    Run(l, (l) => PutBack(l, 30))
     Check("restore: M", Where(l, 30), Key(Cell(1, 2), 1))
     Check("restore: X stays", Where(l, 31), Key(Cell(1, 1), 1))
 }
@@ -94,7 +94,7 @@ MinimizedWindowLendsItsPlace() {
     l.wins[41].minimized := true, Resolve(l)
     Check("M minimized: Y home", Where(l, 40), Key(Cell(1, 1), 1))
     l.wins[41].minimized := false
-    Run(l, (l) => Reclaim(l, 41))
+    Run(l, (l) => PutBack(l, 41))
     Check("M restored", Where(l, 41), Key(Cell(1, 1), 1))
     Check("M restored: Y aside", PaneKey(Current(l.wins[40])) != PaneKey(Cell(1, 1)), true)
 }

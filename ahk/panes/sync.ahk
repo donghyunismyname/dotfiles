@@ -12,14 +12,13 @@ LoadLayout() {
 }
 
 ; The window with the claims, as the model sees it, its state read from the window.
-Win(hwnd, claims) => {hwnd: hwnd, claims: claims, minimized: WinGetMinMax(hwnd) = -1, maximized: WinGetMinMax(hwnd) = 1}
+Win(hwnd, claims) => (state := WinGetMinMax(hwnd), {hwnd: hwnd, claims: claims, minimized: state = -1, maximized: state = 1})
 
 ; Runs change(layout) on the current layout, resolves, and commits; focus, when given, is activated.
 Update(change, focus := 0) {
     Critical
-    before := LoadLayout(), after := CopyLayout(before)
-    Resolve(after, change(after))
-    Commit(before, after, focus)
+    before := LoadLayout()
+    Commit(before, Changed(before, change), focus)
 }
 
 ; Stores the claims that changed, and moves the windows to match `after`.

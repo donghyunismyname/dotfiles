@@ -39,9 +39,11 @@ PaneKey(p) => p ? p.grid.mon ":" p.r1 "," p.c1 "," p.r2 "," p.c2 : ""
 CellOrder(p) => p.grid.mon * 10000 + p.r1 * 100 + p.c1
 Overlaps(p, q) => p.grid.mon = q.grid.mon && p.r1 <= q.r2 && q.r1 <= p.r2 && p.c1 <= q.c2 && q.c1 <= p.c2
 Inside(p, q) => p.grid.mon = q.grid.mon && p.r1 >= q.r1 && p.r2 <= q.r2 && p.c1 >= q.c1 && p.c2 <= q.c2
+PaneArea(p) => PaneRows(p) * PaneCols(p)
 SameShape(p, q) => PaneRows(p) = PaneRows(q) && PaneCols(p) = PaneCols(q)
 
-PaneArea(p) => PaneRows(p) * PaneCols(p)
+; Pane q moved the way pane `from` moves to pane `to`.
+ShiftPane(q, from, to) => Pane(to.grid, q.r1 + to.r1 - from.r1, q.c1 + to.c1 - from.c1, q.r2 + to.r1 - from.r1, q.c2 + to.c1 - from.c1)
 
 ; The pane packed into an integer, its numbers as decimal digits (a grid has fewer than 10 rows and columns).
 PackPane(p) => p.grid.mon * 10000 + p.r1 * 1000 + p.c1 * 100 + p.r2 * 10 + p.c2
@@ -77,7 +79,7 @@ PanesOfSize(grids, rows, cols) {
     return list
 }
 
-; ---- Taken cells: a map from cell keys to who holds them ----
+; ---- Taken cells: a set of cell keys ----
 
 CellKeys(p) {
     keys := []
@@ -89,15 +91,14 @@ CellKeys(p) {
     return keys
 }
 
-Take(taken, p, holder := true) {
+Take(taken, p) {
     for k in CellKeys(p)
-        taken[k] := holder
+        taken[k] := true
 }
 
-; Whether none of the pane's cells is taken, but by `holder`.
-IsFree(p, taken, holder := "") {
+IsFree(p, taken) {
     for k in CellKeys(p)
-        if taken.Has(k) && taken[k] != holder
+        if taken.Has(k)
             return false
     return true
 }
