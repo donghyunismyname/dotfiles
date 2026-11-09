@@ -3,7 +3,6 @@
 ; Tests of the layout model (model.ahk) on made-up windows and monitors; no real window is touched.
 ; Run: AutoHotkey64.exe /ErrorStdOut=UTF-8 model.test.ahk  (prints a line per check; exit code = failures)
 #Include %A_LineFile%\..\grid.ahk
-#Include %A_LineFile%\..\claims.ahk
 #Include %A_LineFile%\..\model.ahk
 
 GRID_LANDSCAPE := {rows: 2, cols: 4}, GRID_PORTRAIT := {rows: 4, cols: 2}, GRID_GAP := 6, MATCH_TOLERANCE := 16

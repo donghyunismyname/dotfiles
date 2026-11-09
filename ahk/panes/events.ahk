@@ -37,7 +37,7 @@ Adopt(l) {
     loop zOrder.Length {
         hwnd := zOrder[zOrder.Length - A_Index + 1]
         try {
-            if GetProp(hwnd, "panes.claims")
+            if IsSeen(hwnd)
                 continue
             if p := FilledPane(hwnd, l.grids)
                 l.wins[hwnd] := Win(hwnd, [{pane: p, time: NewClaimTime()}])
@@ -59,7 +59,7 @@ Shown(hwnd) {
             return
         if IsManaged(hwnd)
             return Update((l) => PutBack(l, hwnd))
-        if !GetProp(hwnd, "panes.claims")
+        if !IsSeen(hwnd)
             SetFloating(hwnd)
     }
 }

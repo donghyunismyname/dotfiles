@@ -23,6 +23,13 @@ Current(w) => w.claims[w.claims.Length].pane
 ; claims but hold nothing until restored.
 InPlay(w) => !(w.minimized && Current(w))
 
+; The time for a new claim: milliseconds since 2020, and later than any claim before, so no two tie.
+NewClaimTime() {
+    static last := 0
+    DllCall("GetSystemTimeAsFileTime", "int64*", &now := 0)  ; 100 ns units since 1601
+    return last := Max(now // 10000 - 13222310400000, last + 1)
+}
+
 ; ---- Actions: each changes claims, and returns what Resolve should know of it or "" ----
 
 ; The user put the window in pane p: p becomes its home and only claim. Returns the move, {from, to}.
