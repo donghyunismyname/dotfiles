@@ -20,7 +20,7 @@
 ; one order: homes before asides, homes newest first so the latest action wins, asides oldest first so a
 ; window returns to the first place it was moved aside to. A change runs in two steps:
 ;   action      the user puts a window in a pane, which becomes its home and only claim, or restores
-;               one, which puts it back where it was
+;               one, which puts it in its home again
 ;   resolution  the claims are taken in rank order, each whose window has no place yet and whose cells
 ;               are free (Resolve). Any claims give exactly one layout this way. A window left without a
 ;               place moves aside onto a new claim: it shrinks in place, swaps into the pane the moved

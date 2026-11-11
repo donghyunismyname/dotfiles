@@ -15,7 +15,7 @@ SwapBackReturnsHome()
 ShrinkAroundPut()
 MovesThroughOthersUndone()
 ReturnAfterTemporaryWindow()
-RestorePutsBackInLastPlace()
+RestoreGoesHome()
 MinimizedWindowLendsItsPlace()
 FullGridParksAndBringsBack()
 ResolvingAgainChangesNothing()
@@ -75,15 +75,16 @@ ReturnAfterTemporaryWindow() {
     Check("temporary window closed: W back", Where(l, 11), Key(Cell(1, 2), 2))
 }
 
-; Restoring M puts it back where it last was, not in its home that X has taken since.
-RestorePutsBackInLastPlace() {
+; Restoring M, minimized while moved aside, takes it home, though X has been put there since; X takes the
+; place M left.
+RestoreGoesHome() {
     l := Layout([30, Cell(1, 1), Cell(1, 2)], [31, Cell(1, 1)])
     l.wins[30].claims[1].time := 1
     l.wins[30].minimized := true, Resolve(l)
     l.wins[30].minimized := false
-    Run(l, (l) => PutBack(l, 30))
-    Check("restore: M", Where(l, 30), Key(Cell(1, 2), 1))
-    Check("restore: X stays", Where(l, 31), Key(Cell(1, 1), 1))
+    Run(l, (l) => GoHome(l, 30))
+    Check("restore: M home", Where(l, 30), Key(Cell(1, 1), 1))
+    Check("restore: X aside", Where(l, 31), Key(Cell(1, 2), 2))
 }
 
 ; While M is minimized the window it moved aside goes home; restoring M moves that one aside again.
@@ -93,7 +94,7 @@ MinimizedWindowLendsItsPlace() {
     l.wins[41].minimized := true, Resolve(l)
     Check("M minimized: Y home", Where(l, 40), Key(Cell(1, 1), 1))
     l.wins[41].minimized := false
-    Run(l, (l) => PutBack(l, 41))
+    Run(l, (l) => GoHome(l, 41))
     Check("M restored", Where(l, 41), Key(Cell(1, 1), 1))
     Check("M restored: Y aside", PaneKey(Current(l.wins[40])) != PaneKey(Cell(1, 1)), true)
 }

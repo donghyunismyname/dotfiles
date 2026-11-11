@@ -43,14 +43,9 @@ Put(l, hwnd, p) {
     return {from: from, to: p}
 }
 
-; The user brought the window back (restored it, or showed it again): it is put where it last was, for a
-; parked one the pane under its parked claim.
-PutBack(l, hwnd) {
-    if !(w := l.wins.Get(hwnd, ""))
-        return ""
-    n := w.claims.Length
-    return Put(l, hwnd, w.claims[n].pane || w.claims[n - 1].pane)
-}
+; The user brought the window back (restored it, or showed it again): it is put in its home again, so it
+; shows there, ahead of any window put there since.
+GoHome(l, hwnd) => (w := l.wins.Get(hwnd, "")) ? Put(l, hwnd, w.claims[1].pane) : ""
 
 ; ---- Resolution ----
 

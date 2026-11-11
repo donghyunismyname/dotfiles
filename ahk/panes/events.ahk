@@ -8,7 +8,7 @@ MarkOwn(hwnd) => own[hwnd] := A_TickCount
 IsOwn(hwnd) => A_TickCount - own.Get(hwnd, -OWN_CHANGE_MS) < OWN_CHANGE_MS
 
 StartEvents() {
-    HookWinEvents([EVENT_SYSTEM_MINIMIZEEND], (event, hwnd, idObject) => IsOwn(hwnd) || Soon(() => Update((l) => PutBack(l, hwnd))))
+    HookWinEvents([EVENT_SYSTEM_MINIMIZEEND], (event, hwnd, idObject) => IsOwn(hwnd) || Soon(() => Update((l) => GoHome(l, hwnd))))
     HookWinEvents([EVENT_SYSTEM_MINIMIZESTART], (event, hwnd, idObject) => IsOwn(hwnd) || SettleSoon())
     HookWinEvents([EVENT_OBJECT_DESTROY], (event, hwnd, idObject) => idObject = OBJID_WINDOW && (own.Has(hwnd) && own.Delete(hwnd), SettleSoon()))
     HookWinEvents([EVENT_OBJECT_HIDE], (event, hwnd, idObject) => idObject = OBJID_WINDOW && IsManaged(hwnd) && SettleSoon())
@@ -52,13 +52,13 @@ Adopt(l) {
 FilledPane(hwnd, grids) => RectPane(WinGetMinMax(hwnd) = 0 ? FrameRect(hwnd) : NormalFrame(hwnd), grids)
 
 ; A window shown for the first time floats until the user puts it on the grid; one shown again (e.g. back
-; from the tray) is put back where it was.
+; from the tray) goes home.
 Shown(hwnd) {
     try {
         if IsOwn(hwnd) || !IsAppWindow(hwnd)
             return
         if IsManaged(hwnd)
-            return Update((l) => PutBack(l, hwnd))
+            return Update((l) => GoHome(l, hwnd))
         if !IsSeen(hwnd)
             SetFloating(hwnd)
     }
