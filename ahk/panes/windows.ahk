@@ -97,14 +97,6 @@ SetNormalRect(hwnd, r, showCmd) {
     return DllCall("SetWindowPlacement", "ptr", hwnd, "ptr", wp)
 }
 
-; The visible frame the window has when shown normally, neither minimized nor maximized.
-NormalFrame(hwnd) {
-    wp := Placement(hwnd), i := Insets(hwnd)
-    WorkspaceOffset(&dx, &dy)
-    x := NumGet(wp, 28, "int") + dx + i.l, y := NumGet(wp, 32, "int") + dy + i.t
-    return {x: x, y: y, w: NumGet(wp, 36, "int") + dx - i.r - x, h: NumGet(wp, 40, "int") + dy - i.b - y}
-}
-
 Placement(hwnd) {
     wp := Buffer(44, 0)  ; WINDOWPLACEMENT
     NumPut("uint", 44, wp)

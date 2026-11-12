@@ -14,10 +14,10 @@ StartEvents() {
     HookWinEvents([EVENT_OBJECT_HIDE], (event, hwnd, idObject) => idObject = OBJID_WINDOW && IsManaged(hwnd) && SettleSoon())
     HookWinEvents([EVENT_OBJECT_SHOW], (event, hwnd, idObject) => idObject = OBJID_WINDOW && IsTopLevel(hwnd)
         && SetTimer(Shown.Bind(hwnd), -NEW_WINDOW_DELAY_MS))
-    HookWinEvents([EVENT_SYSTEM_MOVESIZEEND], (event, hwnd, idObject) => IsManaged(hwnd) && !IsOwn(hwnd) && Soon(LeaveGrid.Bind(hwnd)))
+    HookWinEvents([EVENT_SYSTEM_MOVESIZEEND], (event, hwnd, idObject) => !IsOwn(hwnd) && Soon(LeaveGrid.Bind(hwnd)))
     HookWinEvents([EVENT_OBJECT_LOCATIONCHANGE], (event, hwnd, idObject) => idObject = OBJID_WINDOW && IsManaged(hwnd)
         && !IsOwn(hwnd) && SetTimer(CheckDrift, -DRIFT_CHECK_DELAY_MS))
-    Update(Adopt)
+    Settle()
 }
 
 Soon(fn) => SetTimer(fn, -1)
@@ -29,48 +29,24 @@ Settle() => Update((l) => "")
 ; Settles once a burst of closing or hiding windows is over.
 SettleSoon() => SetTimer(Settle, -SETTLE_DELAY_MS)
 
-; Windows the script has not seen yet (from before it ran) join the grid where they fill a pane, or would
-; when shown normally, that pane its home, made topmost last so it wins an overlap; the others float.
-; Unlike Put, a maximized or minimized window stays so.
-Adopt(l) {
-    zOrder := Windows()
-    loop zOrder.Length {
-        hwnd := zOrder[zOrder.Length - A_Index + 1]
-        try {
-            if IsSeen(hwnd)
-                continue
-            if p := FilledPane(hwnd, l.grids)
-                l.wins[hwnd] := Win(hwnd, [{pane: p, time: NewClaimTime()}])
-            else
-                SetFloating(hwnd)
-        }
-    }
-}
-
-; The pane the window fills, or for a minimized or maximized one would fill when shown normally; "" when
-; off the grid.
-FilledPane(hwnd, grids) => RectPane(WinGetMinMax(hwnd) = 0 ? FrameRect(hwnd) : NormalFrame(hwnd), grids)
-
-; A window shown for the first time floats until the user puts it on the grid; one shown again (e.g. back
-; from the tray) goes home.
+; A window shown again (e.g. back from the tray) goes home; one shown for the first time joins the grid
+; when it fills a pane (Adopt).
 Shown(hwnd) {
     try {
         if IsOwn(hwnd) || !IsAppWindow(hwnd)
             return
-        if IsManaged(hwnd)
-            return Update((l) => GoHome(l, hwnd))
-        if !IsSeen(hwnd)
-            SetFloating(hwnd)
+        Update((l) => GoHome(l, hwnd))
     }
 }
 
-; Moved or resized by hand: the window leaves the grid, and what it held is free for the others.
+; Moved or resized by hand: the window leaves the grid, and what it held is free for the others; landing
+; on a pane, it joins again there (Adopt).
 LeaveGrid(hwnd) {
-    SetFloating(hwnd)
+    ClearClaims(hwnd)
     Settle()
 }
 
-; A window on the grid moved by other means (Win+arrow keys, its own app) floats once it is off its pane;
+; A window on the grid moved by other means (Win+arrow keys, its own app) leaves it once off its pane;
 ; one only a few pixels off, e.g. restored with a guessed border width, is fitted back. A window larger
 ; than its pane from the right top-left corner is one its app keeps from shrinking, and is left so.
 CheckDrift() {

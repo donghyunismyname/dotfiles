@@ -16,7 +16,7 @@ StartRocker() {
 StartSelection() {
     if !IsAppWindow(hwnd := right.hwnd)
         return
-    base := LoadLayout()
+    base := CurrentLayout()
     MouseGetPos(&x, &y)
     g := GridAt(base.grids, x, y)
     global rocker := {active: true, hwnd: hwnd, grid: g, anchor: CellAt(g, x, y), base: base, cells: ShowCells(base.grids), pane: ""}

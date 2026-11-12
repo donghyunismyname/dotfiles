@@ -4,8 +4,7 @@
 ; The claims are stored on the window itself as window properties, so they go away with the window and
 ; outlive a restart of the script. panes.claims holds how many there are, and panes.claim1,
 ; panes.claim2, ... each one, in rank order, as its time and its pane (PackPane, or 0 for the claim of a
-; parked window). panes.claims is FLOATING for a window that left the grid; a window without it has not
-; been seen by the script yet.
+; parked window). A window without them is off the grid.
 
 LoadLayout() {
     grids := MonitorGrids(), wins := Map()
@@ -20,11 +19,28 @@ LoadLayout() {
 ; The window with the claims, as the model sees it, its state read from the window.
 Win(hwnd, claims) => (state := WinGetMinMax(hwnd), {hwnd: hwnd, claims: claims, minimized: state = -1, maximized: state = 1})
 
+; The layout as it stands: the stored claims, with the windows that fill a pane joined (Adopt) and resolved.
+CurrentLayout() => Changed(LoadLayout(), Adopt)
+
 ; Runs change(layout) on the current layout, resolves, and commits; focus, when given, is activated.
 Update(change, focus := 0) {
     Critical
     before := LoadLayout()
-    Commit(before, Changed(before, change), focus)
+    Commit(before, Changed(before, (l) => (Adopt(l), change(l))), focus)
+}
+
+; Joins each window shown normally that fills a pane but is off the grid, that pane its home, made topmost
+; last so it wins an overlap. So whether a window is on the grid follows from where it is: one opened,
+; moved or resized onto a pane joins, and one put anywhere else stays off.
+Adopt(l) {
+    zOrder := Windows()
+    loop zOrder.Length {
+        hwnd := zOrder[zOrder.Length - A_Index + 1]
+        try {
+            if !l.wins.Has(hwnd) && WinGetMinMax(hwnd) = 0 && (p := RectPane(FrameRect(hwnd), l.grids))
+                l.wins[hwnd] := Win(hwnd, [{pane: p, time: NewClaimTime()}])
+        }
+    }
 }
 
 ; Stores the claims that changed, and moves the windows to match `after`.
@@ -68,17 +84,12 @@ ApplyMoves(list) {
 
 ; ---- Stored claims ----
 
-FLOATING := -1
-
-; The window's claims in rank order, each {pane, time} with pane "" for a parked window; "floating"; or ""
-; for a window not seen yet. Claims on cells that are gone (a monitor unplugged) are dropped, the next one
-; then being the home, and a window left without a pane to claim floats.
+; The window's claims in rank order, each {pane, time} with pane "" for a parked window, or "" for a window
+; off the grid. Claims on cells that are gone (a monitor unplugged) are dropped, the next one then being the
+; home, and a window left without a pane to claim is off the grid.
 ReadClaims(hwnd, grids) {
-    n := GetProp(hwnd, "panes.claims")
-    if !n
+    if (n := GetProp(hwnd, "panes.claims")) <= 0
         return ""
-    if n = FLOATING
-        return "floating"
     claims := [], anyPane := false
     loop n {
         v := GetProp(hwnd, "panes.claim" A_Index), code := v & 0xFFFFF
@@ -87,7 +98,7 @@ ReadClaims(hwnd, grids) {
         claims.Push({pane: code ? p : "", time: v >> 20})
         anyPane := anyPane || code
     }
-    return anyPane ? claims : "floating"
+    return anyPane ? claims : ""
 }
 
 WriteClaims(hwnd, claims) {
@@ -99,10 +110,7 @@ WriteClaims(hwnd, claims) {
     SetProp(hwnd, "panes.claims", claims.Length)
 }
 
-SetFloating(hwnd) {
-    WriteClaims(hwnd, [])
-    SetProp(hwnd, "panes.claims", FLOATING)
-}
+ClearClaims(hwnd) => WriteClaims(hwnd, [])
 
 IsManaged(hwnd) => GetProp(hwnd, "panes.claims") > 0
 
@@ -110,6 +118,3 @@ GetProp(hwnd, name) => DllCall("GetProp", "ptr", hwnd, "str", name, "ptr")
 
 ; Setting 0 removes the property.
 SetProp(hwnd, name, v) => v ? DllCall("SetProp", "ptr", hwnd, "str", name, "ptr", v) : DllCall("RemoveProp", "ptr", hwnd, "str", name, "ptr")
-
-; Whether the script has seen the window: on the grid or floating.
-IsSeen(hwnd) => GetProp(hwnd, "panes.claims") != 0

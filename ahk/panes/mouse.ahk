@@ -29,7 +29,7 @@ RunWhileRightHeld(action, *) {
 PreviewDrop() {
     MouseGetPos(&x, &y)
     try {
-        if ReleaseKind(x, y) = "drop" && (base := LoadLayout(), p := DropPane(base, right.hwnd, x, y))
+        if ReleaseKind(x, y) = "drop" && (base := CurrentLayout(), p := DropPane(base, right.hwnd, x, y))
             return ShowMoves(Preview(base, (l) => Put(l, right.hwnd, p), right.hwnd))
     }
     ShowMoves()
@@ -51,7 +51,7 @@ OnRightUp(*) {
 }
 
 Drop(hwnd, x, y) {
-    if p := DropPane(LoadLayout(), hwnd, x, y)
+    if p := DropPane(CurrentLayout(), hwnd, x, y)
         Update((l) => Put(l, hwnd, p), hwnd)
 }
 

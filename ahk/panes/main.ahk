@@ -28,19 +28,18 @@
 ;               (minimized) until one of its claims frees. Claims ranked below a window's place go.
 ; So closing or minimizing a window brings back what it pushed aside, as close to where the user wants it
 ; as the free cells allow. A window the user minimizes holds nothing until restored; maximizing changes
-; only how a window shows; one moved or resized by other means floats, off the grid and out of the model,
-; until the user puts it on the grid again.
+; only how a window shows. A window is on the grid while it fills a pane: one shown normally that fills a
+; pane joins, that pane its home, and one moved or resized by other means off its pane leaves.
 ;
 ; Controls:
 ;   hold Right, press Left (rocker) and drag: every cell shows; the cells between where Left went down
 ;                     and the cursor make a pane, and releasing Left puts the window that was under the
 ;                     cursor when Right went down there. Releasing Right first, or Esc, cancels
 ;   drag Right onto another window: the window takes its pane, and the other its place; onto the desktop
-;                     or a floating window: the cell there. Both preview where every window will go
+;                     or a window off the grid: the cell there. Both preview where every window will go
 ;   drag Right (gestures, on the window under the cursor): 8 directions, see GESTURES
 ;   hold Right, wheel down / up: Ctrl+Tab / Ctrl+Shift+Tab (next / previous tab)
-; A newly opened window floats until the user puts it on the grid. The active window also gets a colored
-; border.
+; The active window also gets a colored border.
 
 ; ---- Config ----
 GRID_LANDSCAPE := {rows: 2, cols: 4}  ; cells of a monitor wider than tall
